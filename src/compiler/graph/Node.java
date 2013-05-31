@@ -1,5 +1,13 @@
 package compiler.graph;
 
+/**@bief Noeud du graphe de réduction
+ * 
+ * Comprend deux champs fonction et argument, ainsi qu'une référence vers le noeud suivant dans le graphe
+ * 
+ * @author kazmiero
+ *
+ */
+
 public class Node {
 	
 	private NodeField function, argument;
