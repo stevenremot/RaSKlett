@@ -1,6 +1,8 @@
 package compiler.combinators;
 
-import compiler.graph;
+import compiler.graph.Node;
+import compiler.reducer.Registry;
+
 /**
  * 
  * @author lagrange

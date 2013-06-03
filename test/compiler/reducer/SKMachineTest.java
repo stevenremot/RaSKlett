@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import compiler.combinators.Combinator;
 import compiler.graph.Node;
-import compiler.combinator.graph.NodeFieldFactory;
+import compiler.graph.NodeFieldFactory;
 
 public class SKMachineTest {
 	
@@ -33,12 +33,45 @@ public class SKMachineTest {
 			}
 			
 			nextNode.setFunction(NodeFieldFactory.create(this));
-			return trus;
+			return true;
 		}
 	}
 	
 	@Test
 	public void testSKMachineReducesKInfCorrectly() {
+		Combinator comb = new Kinf();
+		
+		Node root = new Node(NodeFieldFactory::create(comb), NodeFieldFactory::create(comb)),
+				then = new Node(NodeFieldFactory::create(root), NodeFieldFactory::create(cdomb));
+		root.setNextNode(then);
+		
+		SKMachine sk = new SKMachine(root);
+		
+		assertTrue(sk.step());
+		
+		Node graph = root.getReducedGraph();
+		
+		assertNotNull(graph.getFunction().getCombinator());
+		assertEquals("Kinf", graph.getFunction().getCombinator().getName());
+		
+		assertNotNull(graph.getArgument().getCombinator());
+		assertEquals("Kinf", graph.getArgument().getCombinator().getName());
+		
+		assertNull(graph.getNextNode());
+	}
+	
+	@Test
+	public void testSKMachineStopsCorrectlyWithKinf() {
+		Combinator comb = new Kinf();
+		
+		Node root = new Node(NodeFieldFactory::create(comb), NodeFieldFactory::create(comb));
+		
+		
+		SKMachine sk = new SKMachine(root);
+		
+		assertFalse(sk.step());
+		
+		assertEquals(root, sk.getReducedGraph());
 	}
 
 }
