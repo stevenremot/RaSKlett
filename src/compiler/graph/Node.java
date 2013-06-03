@@ -11,7 +11,7 @@ package compiler.graph;
 public class Node {
 	
 	private NodeField function, argument;
-	private Node nextNode;
+	private Node nextNode = null;
 	
 	public Node(NodeField function, NodeField argument){
 		setFunction(function);

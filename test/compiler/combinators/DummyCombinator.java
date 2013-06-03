@@ -3,11 +3,10 @@ package compiler.combinators;
 import compiler.graph.Node;
 import compiler.reducer.Registry;
 
-/*
+/**
  * Classe simulant un combinateur pour les tests
  */
-
-class DummyCombinator implements Combinator {
+public class DummyCombinator implements Combinator {
 	private String name;
 	
 	public DummyCombinator(String name) {
