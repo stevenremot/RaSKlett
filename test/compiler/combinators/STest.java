@@ -19,7 +19,7 @@ public class STest {
 		
 		Node node1 = new Node(NodeFieldFactory.create(s), NodeFieldFactory.create(x));
 		Node node2 = new Node(NodeFieldFactory.create(node1), NodeFieldFactory.create(y));
-		Node node3 = new Node(NodeFieldFactory.create(node2), NodeFieldFactory.create(z));
+		new Node(NodeFieldFactory.create(node2), NodeFieldFactory.create(z));
 		
 		Registry r = new Registry();
 		r.setNode(node1);
@@ -68,7 +68,7 @@ public class STest {
 				y = new DummyCombinator("Y");
 		
 		Node node1 = new Node(NodeFieldFactory.create(s), NodeFieldFactory.create(x));
-		Node node2 = new Node(NodeFieldFactory.create(node1), NodeFieldFactory.create(y));
+		new Node(NodeFieldFactory.create(node1), NodeFieldFactory.create(y));
 		
 		Registry r = new Registry();
 		r.setNode(node1);
