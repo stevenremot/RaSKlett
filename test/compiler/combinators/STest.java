@@ -1,4 +1,4 @@
-package compiler.combinator;
+package compiler.combinators;
 
 import static org.junit.Assert.*;
 
