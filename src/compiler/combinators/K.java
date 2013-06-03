@@ -1,7 +1,9 @@
 package compiler.combinators;
 
 import compiler.graph.Node;
+import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
+
 
 public class K implements Combinator {
 
@@ -12,7 +14,7 @@ public class K implements Combinator {
 
 	/**
 	 * On se place sur le noeud pointé par le registre qui contient K comme fonction.
-	 * 
+	 * On s'assure d'avoir au moins 2 arguments X et Y pour pouvoir réduire KXY en X
 	 */
 	@Override
 	public boolean applyReduction(Registry registry) {
@@ -26,13 +28,14 @@ public class K implements Combinator {
 			return false;
 		// Si X atomique
 		if(currentNode.getArgument().getCombinator() != null) {
-			nextNode.setFonction(NodeFieldFactory.create(new I));
-			nexNode.setArgument(NodeFieldFactory.create(currentNode.getArgument().getCombinator()));
+			nextNode.setFunction(NodeFieldFactory.create(new I()));
+			nextNode.setArgument(NodeFieldFactory.create(currentNode.getArgument().getCombinator()));
 		}
 		else {
-			
+			thirdNode.setFunction(currentNode.getArgument().getNode().getFunction());
+			thirdNode.setArgument(currentNode.getArgument().getNode().getArgument());
 		}
-		
+		registry.setNode(thirdNode);
 		return true;
 	}
 
