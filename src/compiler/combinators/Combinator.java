@@ -10,13 +10,13 @@ import compiler.reducer.Registry;
  */
 public interface Combinator {
 	
-	Node getGraph();
+	public Node getGraph();
 	/**
 	 * 
 	 * @param registry
 	 * @return true if reduction is over, false otherwise
 	 */
-	boolean applyReduction(Registry registry);
+	public boolean applyReduction(Registry registry);
 
 	String getName();
 

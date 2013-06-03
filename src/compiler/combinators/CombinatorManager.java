@@ -1,7 +1,7 @@
 package compiler.combinators;
 
 import java.util.HashMap;
-import compiler.graph;
+import compiler.graph.Node;
 
 /**
  * 
@@ -17,17 +17,17 @@ public class CombinatorManager {
 		
 	}
 	
-	CombinatorManager getInstance() {
+	public CombinatorManager getInstance() {
 		if(instance == null)
 			instance = new CombinatorManager();
 		return instance;
 	}
 	
-	Combinator getName(String name) {
+	public Combinator getName(String name) {
 		return combinators.get(name);
 	}
 	
-	void set(String name, Node node) {
+	public void set(String name, Node node) {
 		
 	}
 
