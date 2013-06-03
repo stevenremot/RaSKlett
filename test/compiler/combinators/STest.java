@@ -12,32 +12,6 @@ import compiler.reducer.Registry;
 
 public class STest {
 	
-	/*
-	 * Classe simulant un combinateur pour les tests
-	 */
-	class DummyCombinator implements Combinator {
-		private String name;
-		
-		public DummyCombinator(String name) {
-			this.name = name;
-		}
-		
-		@Override
-		public Node getGraph() {
-			return null;
-		}
-
-		@Override
-		public boolean applyReduction(Registry registry) {
-			return false;
-		}
-
-		@Override
-		public String getName() {
-			return name;
-		}
-	}
-	
 	@Test
 	public void testSReducesCorrectly() {
 		Combinator s = new S(), x = new DummyCombinator("X"),
