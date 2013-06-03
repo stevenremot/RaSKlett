@@ -13,8 +13,12 @@ public class K implements Combinator {
 	}
 
 	/**
+	 * @brief Applique le combinateur K au graphe.
+	 * 
 	 * On se place sur le noeud pointé par le registre qui contient K comme fonction.
 	 * On s'assure d'avoir au moins 2 arguments X et Y pour pouvoir réduire KXY en X
+	 * Si X est atomique, on remplace le deuxième noued par IX.
+	 * Sinon, si X = (PQ), on le remplace par PQ
 	 */
 	@Override
 	public boolean applyReduction(Registry registry) {

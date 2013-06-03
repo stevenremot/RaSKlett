@@ -7,10 +7,12 @@ public class I implements Combinator {
 
 	@Override
 	public Node getGraph() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * @brief Applique le combinateur I au graphe.
+	 */
 	@Override
 	public boolean applyReduction(Registry registry) {
 		Node currentNode = registry.getNode(),
@@ -24,7 +26,6 @@ public class I implements Combinator {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return "I";
 	}
 
