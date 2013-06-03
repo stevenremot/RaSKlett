@@ -1,5 +1,7 @@
 package compiler.graph;
 
+import compiler.combinators.Combinator;
+
 /**
  * @brief Champ de noeud contenant un combinateur
  * 
@@ -10,6 +12,10 @@ package compiler.graph;
 public class CombinatorNodeField implements NodeField {
 	
 	private Combinator combinator;
+	
+	public CombinatorNodeField(Combinator combinator){
+		this.combinator = combinator;
+	}
 	
 	public Combinator getCombinator(){
 		return combinator;
