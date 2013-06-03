@@ -20,6 +20,8 @@ public class Node {
 	
 	public void setFunction(NodeField function) {
 		this.function = function;
+		if(function.getNode() != null)
+			function.getNode().setNextNode(this);
 	}
 	
 	public NodeField getFunction(){
