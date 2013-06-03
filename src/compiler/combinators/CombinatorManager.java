@@ -1,7 +1,7 @@
 package compiler.combinators;
 
 import java.util.HashMap;
-import compiler.graph;
+import compiler.graph.Node;
 
 /**
  * 

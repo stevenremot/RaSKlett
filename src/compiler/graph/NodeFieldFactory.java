@@ -11,11 +11,11 @@ import compiler.combinators.Combinator;
 
 public class NodeFieldFactory {
 
-	static NodeField create(Combinator combinator){
+	public static NodeField create(Combinator combinator){
 		return new CombinatorNodeField(combinator);
 	}
 	
-	static NodeField create(Node node){
+	public static NodeField create(Node node){
 		return new NodeNodeField(node);
 	}
 }

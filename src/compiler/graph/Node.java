@@ -14,11 +14,20 @@ public class Node {
 	private Node nextNode;
 	
 	public Node(NodeField function, NodeField argument){
-		
+		setFunction(function);
+		setArgument(argument);
+	}
+	
+	public void setFunction(NodeField function) {
+		this.function = function;
 	}
 	
 	public NodeField getFunction(){
 		return function;
+	}
+	
+	public void setArgument(NodeField argument) {
+		this.argument = argument;
 	}
 	
 	public NodeField getArgument(){

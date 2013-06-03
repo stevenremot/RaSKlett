@@ -17,8 +17,8 @@ public class Registry {
 		return node;
 	}
 	
-	public Node setNode(Node node) {
-		return node;
+	public void setNode(Node node) {
+		this.node = node;
 	}
 
 }
