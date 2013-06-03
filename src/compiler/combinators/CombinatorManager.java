@@ -10,20 +10,20 @@ import compiler.graph.Node;
  */
 public class CombinatorManager {
 	
-	CombinatorManager instance = null;
+	private static CombinatorManager instance = null;
 	HashMap<String, Combinator> combinators;
 	
 	private CombinatorManager() {
-		
+		combinators = new HashMap<String,Combinator>();
 	}
 	
-	public CombinatorManager getInstance() {
+	public static CombinatorManager getInstance() {
 		if(instance == null)
 			instance = new CombinatorManager();
 		return instance;
 	}
 	
-	public Combinator getName(String name) {
+	public Combinator get(String name) {
 		return combinators.get(name);
 	}
 	
