@@ -15,12 +15,21 @@ import compiler.graph.Node;
  */
 public class Compiler {
 	private boolean finished = false;
+	private boolean interrupted = false;
 	private SKMachine sk;
+	private CompilerCallback callback;
 	
-	public Compiler(Reader input) {
-		String[] symbols = Parser.parse(input);
-		Node graph = GraphFactory.create(symbols);
-		sk = new SKMachine(graph);
+	public Compiler(Reader input, CompilerCallback callback) {
+		this.callback = callback;
+		
+		try {
+			String[] symbols = Parser.parse(input);
+			Node graph = GraphFactory.create(symbols);
+			sk = new SKMachine(graph);
+		}
+		catch(CompilerException e) {
+			callback.onFailure(e.getMessage());
+		}
 	}
 	
 	/**
@@ -34,12 +43,18 @@ public class Compiler {
 		return finished;
 	}
 	
+	private void step() {
+		finished = !sk.step();
+	}
+	
 	/**
 	 * @brief effectue une nétape de la réduction
 	 * @return false si aucune étape n'a pu être effectué et que la réduction est donc finie, true sinon
 	 */
 	public boolean reduceStep() {
-		finished = !sk.step();
+		step();
+		
+		callback.onResult(getResult());
 		
 		return !finished;
 	}
@@ -48,9 +63,28 @@ public class Compiler {
 	 * @brief effectue la réduction totale
 	 */
 	public void reduceAll() {
-		while(!isFinished()) {
-			reduceStep();
-		}
+		interrupted = false;
+		
+		final Compiler t = this;
+		
+		Runnable r = new Runnable() {
+			public void run() {
+				while(!t.isFinished() && !t.interrupted) {
+					t.step();
+				}
+				
+				t.callback.onResult(getResult());
+			}
+		};
+		
+		new Thread(r).start();
+	}
+	
+	/**
+	 * @brief stoppe la réduction
+	 */
+	public void stopReduction() {
+		interrupted = true;
 	}
 
 }
