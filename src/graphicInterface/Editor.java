@@ -47,6 +47,13 @@ public class Editor extends JTextPane {
 		doc.insertString(position, "\n"+s, result);
 	}
 	
+	public void disableEdition(){
+		setEditable(false);
+	}
+	
+	public void enableEdition(){
+		setEditable(true);
+	}
 	
 
 }
