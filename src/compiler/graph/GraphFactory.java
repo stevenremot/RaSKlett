@@ -25,12 +25,12 @@ public class GraphFactory {
 		NodeField currentArg = null;
 		
 		
-		if(!combinators[0].equals('('))
+		if(!combinators[0].equals("("))
 			currentFunc = new CombinatorNodeField(cmanager.get(combinators[0]));
 		else
 			currentFunc = new NodeNodeField(create(Arrays.copyOfRange(combinators, 1, combinators.length)));
 		
-		if(!combinators[1].equals('('))
+		if(!combinators[1].equals(")"))
 			currentArg = new CombinatorNodeField(cmanager.get(combinators[1]));
 		
 		else
@@ -48,12 +48,16 @@ public class GraphFactory {
 			currentFunc = new NodeNodeField(previousNode);
 			
 			// parenthèses associatives --> appel récursif
-			if(combinators[index].equals('('))
+			if(combinators[index].equals("(")){
 				currentArg = new NodeNodeField(create(Arrays.copyOfRange(combinators,index+1,combinators.length)));				
-			
+				currentNode = new Node(currentFunc,currentArg);
+				return currentNode;
+			}
 			// cas d'arrêt
-			else if(combinators[index].equals(')') || index == combinators.length - 1)
+			else if(combinators[index].equals(")")){
 				return previousNode;
+			}
+				
 			
 			else{
 				currentArg = new CombinatorNodeField(cmanager.get(combinators[index]));
@@ -65,7 +69,8 @@ public class GraphFactory {
 			index++;
 		}
 		
-		return null;
+		return previousNode;
 	}
+	
 	
 }
