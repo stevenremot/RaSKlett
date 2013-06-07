@@ -1,7 +1,5 @@
 package compiler;
 
-import compiler.graph.Node;
-
 /**
  * @brief Interface pour une classe recevant les résultats et les erreurs du compilateur
  * 
