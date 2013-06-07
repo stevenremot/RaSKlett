@@ -52,4 +52,67 @@ public class CompilerTest {
 		
 		t.join();
 	}
+	
+	@Test
+	public void testInfiniteReductionCanStop() throws InterruptedException {
+		StringReader input = new StringReader("S I I (S I I)");
+		
+		CompilerCallback callback = new CompilerCallback() {
+			public void onResult(String result, boolean finished) {
+				assertFalse(finished);
+			}
+			
+			public void onFailure(String message) {
+				fail();
+			}
+		};
+		
+		Compiler comp = new Compiler(input, callback);
+		
+		Thread t = comp.reduceAll();
+		
+		t.join();
+		
+		comp.stopReduction();
+	}
+	
+	@Test
+	public void testParserExceptionAreThrown() {
+		StringReader input = new StringReader("S (");
+		
+		CompilerCallback callback = new CompilerCallback() {
+
+			@Override
+			public void onResult(String reducedGraph, boolean finished) {
+				fail();
+				
+			}
+
+			@Override
+			public void onFailure(String message) {
+			}		
+		};
+		
+		Compiler comp = new Compiler(input, callback);
+	}
+	
+	@Test
+	public void testGraphExceptionThrown() {
+		StringReader input = new StringReader("blabla");
+		
+		CompilerCallback callback = new CompilerCallback() {
+
+			@Override
+			public void onResult(String reducedGraph, boolean finished) {
+				fail();
+				
+			}
+
+			@Override
+			public void onFailure(String message) {
+			}		
+		};
+		
+		Compiler comp = new Compiler(input, callback);
+	}
 }
