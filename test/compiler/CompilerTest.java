@@ -93,7 +93,7 @@ public class CompilerTest {
 			}		
 		};
 		
-		Compiler comp = new Compiler(input, callback);
+		new Compiler(input, callback);
 	}
 	
 	@Test
@@ -113,6 +113,6 @@ public class CompilerTest {
 			}		
 		};
 		
-		Compiler comp = new Compiler(input, callback);
+		new Compiler(input, callback);
 	}
 }
