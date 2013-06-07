@@ -12,24 +12,107 @@ public class CompilerTest {
 	public void testReducesOneStepCorrectly() {
 		StringReader input = new StringReader("S X Y Z");
 		
-		Compiler comp = new Compiler(input);
+		CompilerCallback callback = new CompilerCallback() {
+			public void onResult(String result, boolean finished) {
+				if(finished) {
+					assertEquals("X Z ( Y Z )", result);
+				}
+			}
+			
+			public void onFailure(String message) {
+				fail();
+			}
+		};
+		
+		Compiler comp = new Compiler(input, callback);
 		
 		assertTrue(comp.reduceStep());
-		assertFalse(comp.reduceStep());
 		
-		assertTrue(comp.isFinished());
-		assertEquals("X Z ( Y Z )", comp.getResult());
+		assertFalse(comp.reduceStep());
 	}
 	
 	@Test
-	public void testReducesAllCorrectly() {
+	public void testReducesAllCorrectly() throws InterruptedException {
 		StringReader input = new StringReader("S K K K");
 		
-		Compiler comp = new Compiler(input);
+		CompilerCallback callback = new CompilerCallback() {
+			public void onResult(String result, boolean finished) {
+				assertTrue(finished);
+				assertEquals("K", result);
+			}
+			
+			public void onFailure(String message) {
+				fail();
+			}
+		};
 		
-		comp.reduceAll();
+		Compiler comp = new Compiler(input, callback);
 		
-		assertTrue(comp.isFinished());
-		assertEquals("K", comp.getResult());
+		Thread t = comp.reduceAll();
+		
+		t.join();
+	}
+	
+	@Test
+	public void testInfiniteReductionCanStop() throws InterruptedException {
+		StringReader input = new StringReader("S I I (S I I)");
+		
+		CompilerCallback callback = new CompilerCallback() {
+			public void onResult(String result, boolean finished) {
+				assertFalse(finished);
+			}
+			
+			public void onFailure(String message) {
+				fail();
+			}
+		};
+		
+		Compiler comp = new Compiler(input, callback);
+		
+		Thread t = comp.reduceAll();
+		
+		t.join();
+		
+		comp.stopReduction();
+	}
+	
+	@Test
+	public void testParserExceptionAreThrown() {
+		StringReader input = new StringReader("S (");
+		
+		CompilerCallback callback = new CompilerCallback() {
+
+			@Override
+			public void onResult(String reducedGraph, boolean finished) {
+				fail();
+				
+			}
+
+			@Override
+			public void onFailure(String message) {
+			}		
+		};
+		
+		new Compiler(input, callback);
+	}
+	
+	@Test
+	public void testGraphExceptionThrown() {
+		StringReader input = new StringReader("blabla");
+		
+		CompilerCallback callback = new CompilerCallback() {
+
+			@Override
+			public void onResult(String reducedGraph, boolean finished) {
+				fail();
+				
+			}
+
+			@Override
+			public void onFailure(String message) {
+			}		
+		};
+		
+		new Compiler(input, callback);
 	}
 }
