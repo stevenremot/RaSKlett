@@ -36,8 +36,10 @@ public class K implements Combinator {
 			nextNode.setArgument(NodeFieldFactory.create(currentNode.getArgument().getCombinator()));
 		}
 		else {
-			thirdNode.setFunction(currentNode.getArgument().getNode().getFunction());
-			thirdNode.setArgument(currentNode.getArgument().getNode().getArgument());
+			//thirdNode.setFunction(currentNode.getArgument().getNode().getFunction());
+			//thirdNode.setArgument(currentNode.getArgument().getNode().getArgument());
+			nextNode.setFunction(currentNode.getArgument().getNode().getFunction());
+			nextNode.setArgument(currentNode.getArgument().getNode().getArgument());
 		}
 		registry.setNode(thirdNode);
 		return true;
