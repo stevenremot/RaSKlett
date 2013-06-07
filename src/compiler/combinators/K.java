@@ -22,26 +22,21 @@ public class K implements Combinator {
 	 */
 	@Override
 	public boolean applyReduction(Registry registry) {
-		// TODO Auto-generated method stub
 		Node currentNode = registry.getNode(),
 				nextNode = currentNode.getNextNode();
 		if(nextNode == null)
 			return false;
-		Node thirdNode = nextNode.getNextNode();
-		if(thirdNode == null)
-			return false;
+		
 		// Si X atomique
 		if(currentNode.getArgument().getCombinator() != null) {
 			nextNode.setFunction(NodeFieldFactory.create(new I()));
-			nextNode.setArgument(NodeFieldFactory.create(currentNode.getArgument().getCombinator()));
+			nextNode.setArgument(currentNode.getArgument());
 		}
 		else {
-			//thirdNode.setFunction(currentNode.getArgument().getNode().getFunction());
-			//thirdNode.setArgument(currentNode.getArgument().getNode().getArgument());
 			nextNode.setFunction(currentNode.getArgument().getNode().getFunction());
 			nextNode.setArgument(currentNode.getArgument().getNode().getArgument());
 		}
-		registry.setNode(thirdNode);
+		registry.setNode(nextNode);
 		return true;
 	}
 
