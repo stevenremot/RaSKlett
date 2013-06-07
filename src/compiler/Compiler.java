@@ -62,7 +62,7 @@ public class Compiler {
 	/**
 	 * @brief effectue la réduction totale
 	 */
-	public void reduceAll() {
+	public Thread reduceAll() {
 		interrupted = false;
 		
 		final Compiler t = this;
@@ -77,7 +77,10 @@ public class Compiler {
 			}
 		};
 		
-		new Thread(r).start();
+		Thread thread = new Thread(r);
+		thread.start();
+		
+		return thread;
 	}
 	
 	/**
