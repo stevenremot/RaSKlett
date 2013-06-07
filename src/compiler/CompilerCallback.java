@@ -12,7 +12,7 @@ public interface CompilerCallback {
 	 * @brief appelée lorsque la réduction est terminée ou stoppée
 	 * @param reducedGraph le graphe réduit
 	 */
-	public void onResult(String reducedGraph);
+	public void onResult(String reducedGraph, boolean finished);
 	
 	/**
 	 * @brief appelé lorsqu'une erreur est survenue

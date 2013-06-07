@@ -54,7 +54,7 @@ public class Compiler {
 	public boolean reduceStep() {
 		step();
 		
-		callback.onResult(getResult());
+		callback.onResult(getResult(), isFinished());
 		
 		return !finished;
 	}
@@ -73,7 +73,7 @@ public class Compiler {
 					t.step();
 				}
 				
-				t.callback.onResult(getResult());
+				t.callback.onResult(getResult(), isFinished());
 			}
 		};
 		
