@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.text.BadLocationException;
 
 
 public class MainWindow extends JFrame{
@@ -75,9 +76,10 @@ public class MainWindow extends JFrame{
 	/**
 	 * Méthode permettant de rajouter du texte à la zone de texte
 	 * @param texte
+	 * @throws BadLocationException 
 	 */
-	public void ecrire(String texte){
-		editor.append(texte + newline);
+	public void ecrire(String texte) throws BadLocationException{
+		editor.appendText(texte + newline);
 	}
 	
 	public Editor getEditor(){
