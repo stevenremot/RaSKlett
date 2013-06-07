@@ -37,7 +37,7 @@ public class MainWindow extends JFrame{
 	 */
 	public MainWindow(){
 		combinators = new ArrayList<String>();
-		combinators.add(" B := S (K S) K");
+		combinators.add("B := S (K S) K");
 		combinators.add("W := S S (K I)");
 		
 		create = new JButton("Create");
@@ -54,16 +54,19 @@ public class MainWindow extends JFrame{
         
 		editor.setEditable(true);
 		JScrollPane panneauTexte = new JScrollPane(editor);
+
         add(panneauTexte,  BorderLayout.CENTER);
         
         JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
         Border border = BorderFactory.createTitledBorder("Native combinators");
-        combinatorPanel.setBorder(border);    
-        JCheckBox check;
-        for (String s : combinators){
-        	check = new JCheckBox(s);
-        	combinatorPanel.add(check);
-        }
+        combinatorPanel.setBorder(border);  
+        CombinatorPanel test = new CombinatorPanel(combinators, "test : ");
+        combinatorPanel.add(test);
+//        JCheckBox check;
+//        for (String s : combinators){
+//        	check = new JCheckBox(s);
+//        	combinatorPanel.add(check);
+//        }
         add(combinatorPanel,  BorderLayout.WEST); 
 
 	    
