@@ -1,19 +1,26 @@
 package compiler.graph;
 
 import static org.junit.Assert.*;
+
+import java.util.Stack;
+
 import org.junit.Test;
 
 import compiler.combinators.CombinatorManager;
 
 public class GraphFactoryTest {
 	
-	//@Test
+	@Test
 	public void simpleGraphTest(){
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
-		String[] example = {"S","K","I"};
-		Node graph = GraphFactory.create(example);
+		//String[] example = {"S","K","I"};
+		Stack<String> example = new Stack<String>();
+		example.push("I");
+		example.push("K");
+		example.push("S"); // stack à remplir dans l'ordre inverse
+		Node graph = GraphFactory.create(example,null);
 		
 		
 		
@@ -24,13 +31,19 @@ public class GraphFactoryTest {
 		assertEquals(cmanager.get("S"), firstNode.getFunction().getCombinator());
 	}
 	
-	//@Test
+	@Test
 	public void simpleButLongerGraphTest(){
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
-		String[] example = {"S","K","I","S","K","I"};
-		Node graph = GraphFactory.create(example);
+		//String[] example = {"S","K","I","S","K","I"};
+		
+		Stack<String> example = new Stack<String>();
+		example.push("I");
+		example.push("I");
+		example.push("K");
+		example.push("S");
+		Node graph = GraphFactory.create(example,null);
 		
 		assertEquals(cmanager.get("I"),graph.getArgument().getCombinator());
 		
@@ -45,8 +58,16 @@ public class GraphFactoryTest {
 	public void firstParenthesisTest(){
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
-		String[] example = {"S","K","(","S","K",")"};
-		Node graph = GraphFactory.create(example);
+		//String[] example = {"S","K","(","S","K",")"};
+		Stack<String> example = new Stack<String>();
+		example.push(")");
+		example.push("K");
+		example.push("S");
+		example.push("(");
+		example.push("K");
+		example.push("S");
+		
+		Node graph = GraphFactory.create(example,null);
 		
 		graph.getArgument().getNode();
 		assertEquals(null,graph.getArgument().getCombinator());

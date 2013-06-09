@@ -1,6 +1,7 @@
 package compiler.graph;
 
 import java.util.Arrays;
+import java.util.Stack;
 import compiler.combinators.CombinatorManager;
 
 /**
@@ -12,6 +13,63 @@ import compiler.combinators.CombinatorManager;
  */
 
 public class GraphFactory {
+	
+	
+	public static Node create(Stack<String> combinators, Node previousNode){
+		
+		//if(combinators.empty()) 	emptyStackException
+		
+		
+		CombinatorManager cmanager = CombinatorManager.getInstance();
+		
+		// initialisation
+		Node currentNode = null;
+		NodeField currentFunc = null, currentArg = null;
+		
+		String currentString = combinators.pop();
+		
+		//if(currentString.equals("(" ))	// exception : meaninglessParenthesis
+		//if(currentString.equals(")"))		// exception : algorithmiquement non possible
+		
+		currentFunc = new CombinatorNodeField(cmanager.get(currentString));
+		currentNode = new Node(currentFunc);
+		
+		currentString = combinators.pop();
+		
+		if(currentString.equals("("))
+			currentArg = new NodeNodeField(create(combinators,currentNode));
+		else
+			currentArg = new CombinatorNodeField(cmanager.get(currentString));
+		
+		currentNode.setArgument(currentArg);
+		currentNode.setNextNode(previousNode);
+		
+		// utilisation du passage par référence des String
+		previousNode = currentNode;
+				
+		// boucle
+		while(!combinators.empty()){
+			
+			currentFunc = new NodeNodeField(previousNode);
+			currentString = combinators.pop();
+			currentNode = new Node(currentFunc);
+			
+			if(currentString.equals("("))
+				currentArg = new NodeNodeField(create(combinators,currentNode));
+			else if(currentString.equals(")"))
+				return previousNode;
+			else
+				currentArg = new CombinatorNodeField(cmanager.get(currentString));
+			
+			currentNode.setArgument(currentArg);
+			currentNode.setNextNode(previousNode);
+			
+			previousNode = currentNode;
+			
+		}
+		
+		return currentNode;
+	}
 
 	public static Node create(String[] combinators){
 		
