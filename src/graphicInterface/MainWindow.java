@@ -155,6 +155,8 @@ public class MainWindow extends JFrame{
         add(panneauTexte,  BorderLayout.CENTER);
         
         JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
+        combinatorPanel.setPreferredSize(new Dimension(150,0));
+
         Border border = BorderFactory.createTitledBorder("Native combinators");
         combinatorPanel.setBorder(border);    
 //        JCheckBox check;
