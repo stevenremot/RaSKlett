@@ -11,7 +11,7 @@ import compiler.combinators.CombinatorManager;
 public class GraphFactoryTest {
 	
 	@Test
-	public void simpleGraphTest(){
+	public void simpleGraphTest() throws EmptyStackException, BadParenthesisException{
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
@@ -32,7 +32,7 @@ public class GraphFactoryTest {
 	}
 	
 	@Test
-	public void simpleButLongerGraphTest(){
+	public void simpleButLongerGraphTest() throws EmptyStackException, BadParenthesisException{
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
@@ -55,12 +55,13 @@ public class GraphFactoryTest {
 	}
 	
 	@Test
-	public void firstParenthesisTest(){
+	public void firstParenthesisTest() throws EmptyStackException, BadParenthesisException{
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		//String[] example = {"S","K","(","S","K",")"};
 		Stack<String> example = new Stack<String>();
 		example.push(")");
+		example.push("K");
 		example.push("K");
 		example.push("S");
 		example.push("(");
@@ -72,6 +73,41 @@ public class GraphFactoryTest {
 		graph.getArgument().getNode();
 		assertEquals(null,graph.getArgument().getCombinator());
 		assertEquals(cmanager.get("K"), graph.getArgument().getNode().getArgument().getCombinator());
+		assertEquals(null,graph.getArgument().getNode().getFunction().getCombinator());
+	}
+	
+	@Test
+	public void doubleParenthesisTest() throws EmptyStackException, BadParenthesisException {
+		
+		CombinatorManager cmanager = CombinatorManager.getInstance();
+		
+		// S K ( S ( S K ) )
+		Stack<String> example = new Stack<String>();
+		example.push(")");
+		example.push(")");
+		example.push("K");
+		example.push("S");
+		example.push("(");
+		example.push("S");
+		example.push("(");
+		example.push("S");
+		Node graph = GraphFactory.create(example,null);
+		
+		assertEquals(cmanager.get("S"), graph.getArgument().getNode().getFunction().getCombinator());
+		assertEquals(cmanager.get("S"), graph.getArgument().getNode().getArgument().getNode().getFunction().getCombinator());
+	}
+	
+	@Test
+	public void singleCombinatorTest() throws EmptyStackException, BadParenthesisException {
+		
+		CombinatorManager cmanager = CombinatorManager.getInstance();
+		
+		Stack<String> example = new Stack<String>();
+		example.push("K");
+		Node graph = GraphFactory.create(example,null);
+		
+		assertEquals(cmanager.get("I"), graph.getFunction().getCombinator());
+		assertEquals(cmanager.get("K"), graph.getArgument().getCombinator());
 	}
 
 }
