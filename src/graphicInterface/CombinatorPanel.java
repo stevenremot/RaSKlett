@@ -1,5 +1,6 @@
 package graphicInterface;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,12 +42,18 @@ public class CombinatorPanel extends JPanel{
 			button.setText("Désactiver");
 		add(text);
 		add(button);
+
+	}
+	
+	public void toggleCombinators(boolean b) {
+		System.out.println("toggle combinators");
 	}
 	
 	class ButtonListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
+			toggleCombinators(enabled);
 			enabled = !enabled;
 			text.setEnabled(enabled);
 			if(enabled) {
