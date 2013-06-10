@@ -42,6 +42,13 @@ public class MainWindow extends JFrame{
 	private JMenuItem iCompileAll = null;
 	private JMenuItem iCompileStepByStep = null;
 	private JMenuItem iNextStep = null;
+	private JMenuItem iNextLine = null;
+	private JMenuItem iToEnd = null;
+	private JMenuItem iInterrupt = null;
+	private JMenuItem iCombinators = null;
+	private JMenuItem iTools = null;
+	private JMenuItem iHelp = null;
+
 
 
 	private JToolBar toolBar = null;
@@ -80,18 +87,28 @@ public class MainWindow extends JFrame{
 		
 		iCompileAll = new JMenuItem("compile all");
 		iCompileStepByStep = new JMenuItem("compile step by step");
-		iNextStep = new JMenuItem("next step");
+		iNextStep = new JMenuItem("compile next step");
+		iNextLine = new JMenuItem("compile next line");
+		iToEnd = new JMenuItem("compile to end");
 
 		
 		compilation.add(iCompileAll);
 		compilation.add(iCompileStepByStep);
 		compilation.add(iNextStep);
+		compilation.add(iNextLine);
+		compilation.add(iToEnd);
 		
 		tools = new JMenu("Tools");
 		tools.setMnemonic(KeyEvent.VK_T);
 		tools.getAccessibleContext().setAccessibleDescription(
 		        "Tools menu");
 		menuBar.add(tools);
+		
+		iCombinators = new JMenuItem("combinators");
+		iTools = new JMenuItem("tools");
+		
+		tools.add(iCombinators);
+		tools.add(iTools);		
 
 		help = new JMenu("Help");
 		help.setMnemonic(KeyEvent.VK_H);
@@ -99,7 +116,11 @@ public class MainWindow extends JFrame{
 		        "Help menu");
 		menuBar.add(help);
 		
-		add(menuBar, BorderLayout.NORTH);
+		iHelp = new JMenuItem("Help");
+		
+		help.add(iHelp);
+		
+		setJMenuBar(menuBar);
 
 		
 		create = new JButton("Create");

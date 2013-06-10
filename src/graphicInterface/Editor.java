@@ -1,7 +1,6 @@
 package graphicInterface;
 
 import java.awt.Color;
-import java.awt.Dimension;
 
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
@@ -19,7 +18,6 @@ public class Editor extends JTextPane {
 	
 	public Editor(){
 		super();
-		setPreferredSize(new Dimension(400, 400));
 	    StyleConstants.setForeground(error, Color.RED);
 	    StyleConstants.setForeground(result, Color.GREEN);
 	    doc = (StyledDocument) getDocument();
