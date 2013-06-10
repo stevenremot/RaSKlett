@@ -34,10 +34,24 @@ public class ConfigManager {
 		return instance;
 	}
 	
+	/**
+	 * @brief Activer / Désactiver une fonctionnalité
+	 * 
+	 * @param feature Foncionnalité à modifier
+	 * @param toggled true si on l'active, false sinon
+	 */
 	public void toggle(String feature, boolean toggled) {
 		features.put(feature, toggled);
 	}
 	
+	/**
+	 * Pour vérifier si la fonctionnalité est activée
+	 * Si une fonctionnalité n'a pas encore été spécifiée est toggle,
+	 * elle est considérée comme désactivée
+	 * 
+	 * @param feature fonctionnalité à détecter
+	 * @return true si elle est activée, false sinon
+	 */
 	public boolean isEnabled(String feature) {
 		return features.containsKey(feature) && features.get(feature);
 	}
