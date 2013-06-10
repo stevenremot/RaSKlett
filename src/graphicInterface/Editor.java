@@ -27,9 +27,10 @@ public class Editor extends JTextPane {
 		return this.getText();
 	}
 
-	public void setText(String text) {
-		this.setText(text);
-	}
+	
+//	public void setText(String text) {
+//		this.setText(text);
+//	}
 	
 	public void appendText(String s) throws BadLocationException{
 		doc.insertString(doc.getLength(), "\n"+s, defaut);
