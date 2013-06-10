@@ -10,6 +10,10 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -68,6 +72,8 @@ combinators.add("W := S S (K I)");
 create = new JButton("Create");
 
 open = new JButton("Open");
+ControleurOpen cOpen = new ControleurOpen();
+open.addActionListener(cOpen);
 
 save = new JButton("Save");
 
@@ -122,6 +128,7 @@ file.getAccessibleContext().setAccessibleDescription(
 menuBar.add(file);
 
 iOpen = new JMenuItem("Open");
+iOpen.addActionListener(cOpen);
 
 iCreate = new JMenuItem("Create");
 
@@ -280,6 +287,45 @@ public class ControleurStop implements ActionListener {
 @Override
 public void actionPerformed(ActionEvent arg0) {
 stopCompilation();
+
+}
+
+}
+
+public class ControleurOpen implements ActionListener{
+
+@Override
+public void actionPerformed(ActionEvent arg0) {
+JFileChooser chooser = new JFileChooser();
+//FileNameExtensionFilter filter = new FileNameExtensionFilter(
+//"JPG & GIF Images", "jpg", "gif");
+//chooser.setFileFilter(filter);
+int returnVal = chooser.showOpenDialog(null);
+if(returnVal == JFileChooser.APPROVE_OPTION) {
+System.out.println("You chose to open this file: " +
+chooser.getSelectedFile().getName());
+File file = chooser.getSelectedFile();
+try {
+FileReader reader = new FileReader(file);
+char[] buffer = new char[(int) file.length()];
+reader.read(buffer);
+reader.close();
+String text = new String(buffer);
+editor.setText(text);
+} catch (FileNotFoundException e) {
+e.printStackTrace();
+} catch (IOException e) {
+e.printStackTrace();
+}
+}
+}
+
+}
+
+public class ControleurSave implements ActionListener{
+
+@Override
+public void actionPerformed(ActionEvent arg0) {
 
 }
 
