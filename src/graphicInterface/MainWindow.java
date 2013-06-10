@@ -26,6 +26,9 @@ public class MainWindow extends JFrame{
 
 	private final static String newline = "\n";
 	private static final long serialVersionUID = 1L;
+	
+	private String filename = null;
+	
 	private Editor editor = null;
 	private JButton create = null;
 	private JButton open = null;
@@ -129,6 +132,7 @@ public class MainWindow extends JFrame{
 
 		
 		create = new JButton("Create");
+		create.addActionListener(new ControleurCreate());
 		
 		open = new JButton("Open");
 		open.addActionListener(new ControleurOpen());
@@ -186,11 +190,6 @@ public class MainWindow extends JFrame{
 
         Border border = BorderFactory.createTitledBorder("Native combinators");
         combinatorPanel.setBorder(border);    
-//        JCheckBox check;
-//        for (String s : combinators){
-//        	check = new JCheckBox(s);
-//        	combinatorPanel.add(check);
-//        }
         CombinatorPanel test = new CombinatorPanel(combinators, "test : ", false);
         CombinatorPanel test2 = new CombinatorPanel(combinators, "test2 : ", true);
         combinatorPanel.add(test2);
@@ -272,13 +271,11 @@ public class MainWindow extends JFrame{
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 		    JFileChooser chooser = new JFileChooser();
-		    //FileNameExtensionFilter filter = new FileNameExtensionFilter(
-		    //    "JPG & GIF Images", "jpg", "gif");
-		    //chooser.setFileFilter(filter);
+		    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+		        "Txt files", "txt");
+		    chooser.setFileFilter(filter);
 		    int returnVal = chooser.showOpenDialog(null);
 		    if(returnVal == JFileChooser.APPROVE_OPTION) {
-		       System.out.println("You chose to open this file: " +
-		            chooser.getSelectedFile().getName());
 		       File file = chooser.getSelectedFile();
 		       try {
 				FileReader reader = new FileReader(file);
@@ -287,6 +284,7 @@ public class MainWindow extends JFrame{
 				reader.close();
 				String text = new String(buffer);
 				editor.setText(text);
+				filename = file.getName();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -297,11 +295,12 @@ public class MainWindow extends JFrame{
 		
 	}
 	
-	public class ControleurSave implements ActionListener{
+	public class ControleurCreate implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-						
+			filename = null;
+			editor.setText(null);
 		}
 		
 	}
