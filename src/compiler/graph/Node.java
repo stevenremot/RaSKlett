@@ -18,6 +18,11 @@ public class Node {
 		setArgument(argument);
 	}
 	
+	public Node(NodeField function){
+		setFunction(function);
+		setArgument(null);
+	}
+	
 	public void setFunction(NodeField function) {
 		this.function = function;
 		if(function.getNode() != null)

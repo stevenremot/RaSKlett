@@ -1,6 +1,7 @@
 package compiler.graph;
 
 import java.util.Arrays;
+import java.util.Stack;
 import compiler.combinators.CombinatorManager;
 
 /**
@@ -12,6 +13,63 @@ import compiler.combinators.CombinatorManager;
  */
 
 public class GraphFactory {
+	
+	
+	public static Node create(Stack<String> combinators, Node previousNode){
+		
+		//if(combinators.empty()) 	emptyStackException
+		
+		
+		CombinatorManager cmanager = CombinatorManager.getInstance();
+		
+		// initialisation
+		Node currentNode = null;
+		NodeField currentFunc = null, currentArg = null;
+		
+		String currentString = combinators.pop();
+		
+		//if(currentString.equals("(" ))	// exception : meaninglessParenthesis
+		//if(currentString.equals(")"))		// exception : algorithmiquement non possible
+		
+		currentFunc = new CombinatorNodeField(cmanager.get(currentString));
+		currentNode = new Node(currentFunc);
+		
+		currentString = combinators.pop();
+		
+		if(currentString.equals("("))
+			currentArg = new NodeNodeField(create(combinators,currentNode));
+		else
+			currentArg = new CombinatorNodeField(cmanager.get(currentString));
+		
+		currentNode.setArgument(currentArg);
+		currentNode.setNextNode(previousNode);
+		
+		// utilisation du passage par référence des String
+		previousNode = currentNode;
+				
+		// boucle
+		while(!combinators.empty()){
+			
+			currentFunc = new NodeNodeField(previousNode);
+			currentString = combinators.pop();
+			currentNode = new Node(currentFunc);
+			
+			if(currentString.equals("("))
+				currentArg = new NodeNodeField(create(combinators,currentNode));
+			else if(currentString.equals(")"))
+				return previousNode;
+			else
+				currentArg = new CombinatorNodeField(cmanager.get(currentString));
+			
+			currentNode.setArgument(currentArg);
+			currentNode.setNextNode(previousNode);
+			
+			previousNode = currentNode;
+			
+		}
+		
+		return currentNode;
+	}
 
 	public static Node create(String[] combinators){
 		
@@ -25,12 +83,12 @@ public class GraphFactory {
 		NodeField currentArg = null;
 		
 		
-		if(!combinators[0].equals('('))
+		if(!combinators[0].equals("("))
 			currentFunc = new CombinatorNodeField(cmanager.get(combinators[0]));
 		else
 			currentFunc = new NodeNodeField(create(Arrays.copyOfRange(combinators, 1, combinators.length)));
 		
-		if(!combinators[1].equals('('))
+		if(!combinators[1].equals(")"))
 			currentArg = new CombinatorNodeField(cmanager.get(combinators[1]));
 		
 		else
@@ -48,12 +106,16 @@ public class GraphFactory {
 			currentFunc = new NodeNodeField(previousNode);
 			
 			// parenthèses associatives --> appel récursif
-			if(combinators[index].equals('('))
+			if(combinators[index].equals("(")){
 				currentArg = new NodeNodeField(create(Arrays.copyOfRange(combinators,index+1,combinators.length)));				
-			
+				currentNode = new Node(currentFunc,currentArg);
+				return currentNode;
+			}
 			// cas d'arrêt
-			else if(combinators[index].equals(')') || index == combinators.length - 1)
+			else if(combinators[index].equals(")")){
 				return previousNode;
+			}
+				
 			
 			else{
 				currentArg = new CombinatorNodeField(cmanager.get(combinators[index]));
@@ -65,7 +127,8 @@ public class GraphFactory {
 			index++;
 		}
 		
-		return null;
+		return previousNode;
 	}
+	
 	
 }
