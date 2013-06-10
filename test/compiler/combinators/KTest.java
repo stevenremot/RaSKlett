@@ -12,13 +12,10 @@ public class KTest {
 	
 	@Test
 	public void testKReducesCorrectlyWithXAtomic() {
-		Combinator k = new K(), x = new DummyCombinator("X"), y = new DummyCombinator("Y"),
-				z = new DummyCombinator("Z");
+		Combinator k = new K(), x = new DummyCombinator("X"), y = new DummyCombinator("Y");
 		
 		Node node1 = new Node(NodeFieldFactory.create(k), NodeFieldFactory.create(x));
-		Node node2 = new Node(NodeFieldFactory.create(node1), NodeFieldFactory.create(y));
-		@SuppressWarnings("unused")
-		Node node3 = new Node(NodeFieldFactory.create(node2), NodeFieldFactory.create(z));
+		new Node(NodeFieldFactory.create(node1), NodeFieldFactory.create(y));
 		
 		Registry registry = new Registry();
 		registry.setNode(node1);
@@ -27,10 +24,8 @@ public class KTest {
 		
 		Node n = registry.getNode();
 		
-		assertEquals(z,n.getArgument().getCombinator());
-		assertNotNull(n.getFunction().getNode());
-		assertEquals(x, n.getFunction().getNode().getArgument().getCombinator());
-		assertEquals("I", n.getFunction().getNode().getFunction().getCombinator().getName());
+		assertEquals(x, n.getArgument().getCombinator());
+		assertEquals("I", n.getFunction().getCombinator().getName());
 		
 		Node nextNode = n.getNextNode();
 		
@@ -39,14 +34,12 @@ public class KTest {
 	
 	@Test
 	public void testKReducesCorrectlyWithXNonAtomic() {
-		Combinator k = new K(), p = new DummyCombinator("P"),q = new DummyCombinator("Q"), y = new DummyCombinator("Y"),
-				z = new DummyCombinator("Z");
+		Combinator k = new K(), p = new DummyCombinator("P"),q = new DummyCombinator("Q"), y = new DummyCombinator("Y");
 		
 		Node node0 = new Node(NodeFieldFactory.create(p), NodeFieldFactory.create(q));
 		Node node1 = new Node(NodeFieldFactory.create(k), NodeFieldFactory.create(node0));
-		Node node2 = new Node(NodeFieldFactory.create(node1), NodeFieldFactory.create(y));
 		@SuppressWarnings("unused")
-		Node node3 = new Node(NodeFieldFactory.create(node2), NodeFieldFactory.create(z));
+		Node node2 = new Node(NodeFieldFactory.create(node1), NodeFieldFactory.create(y));
 		
 		Registry registry = new Registry();
 		registry.setNode(node1);
@@ -55,9 +48,9 @@ public class KTest {
 		
 		Node n = registry.getNode();
 		
-		assertEquals(p,n.getFunction().getNode().getFunction().getCombinator());
-		assertEquals(q,n.getFunction().getNode().getArgument().getCombinator());
-		assertEquals(z,n.getArgument().getCombinator());
+		assertEquals(p,n.getFunction().getCombinator());
+		assertEquals(q,n.getArgument().getCombinator());
+
 		
 	}
 	
@@ -76,17 +69,15 @@ public class KTest {
 		
 		Node n = registry.getNode();
 		
-		assertEquals(node3, n);
+		assertEquals(node3, n.getNextNode());
 		
 	}
 	
 	@Test
 	public void testKStopsWith1Argument() {
-		Combinator k = new K(), x = new DummyCombinator("X"), y = new DummyCombinator("Y");
+		Combinator k = new K(), x = new DummyCombinator("X");
 		
 		Node node1 =  new Node(NodeFieldFactory.create(k), NodeFieldFactory.create(x));
-		@SuppressWarnings("unused")
-		Node node2 =  new Node(NodeFieldFactory.create(node1), NodeFieldFactory.create(y));
 		
 		Registry registry = new Registry();
 		registry.setNode(node1);
