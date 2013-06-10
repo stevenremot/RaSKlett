@@ -14,12 +14,10 @@ import compiler.combinators.CombinatorManager;
 
 public class GraphFactory {
 	
-	
-	public static Node create(Stack<String> combinators, Node previousNode){
+	public static Node create(Stack<String> combinators, Node previousNode) throws EmptyStackException, BadParenthesisException{
 		
-		//if(combinators.empty()) 	emptyStackException
-		
-		
+		if(combinators.empty())
+			throw new EmptyStackException();	
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		// initialisation
@@ -28,9 +26,20 @@ public class GraphFactory {
 		
 		String currentString = combinators.pop();
 		
-		//if(currentString.equals("(" ))	// exception : meaninglessParenthesis
-		//if(currentString.equals(")"))		// exception : algorithmiquement non possible
+		// cas d'un seul combinateur C : le noeud (I, C) est créé 
+		if(combinators.empty()){
+			currentFunc = new CombinatorNodeField(cmanager.get("I"));
+			if(currentString.equals("(" )||currentString.equals(")"))
+				throw new BadParenthesisException();
+			else
+				currentArg = new CombinatorNodeField(cmanager.get(currentString));
+			currentNode = new Node(currentFunc,currentArg);
+			currentNode.setNextNode(previousNode);
+			return currentNode;
+		}
 		
+		if(currentString.equals("(" )||currentString.equals(")"))
+			throw new BadParenthesisException();
 		currentFunc = new CombinatorNodeField(cmanager.get(currentString));
 		currentNode = new Node(currentFunc);
 		
@@ -38,9 +47,10 @@ public class GraphFactory {
 		
 		if(currentString.equals("("))
 			currentArg = new NodeNodeField(create(combinators,currentNode));
+		else if(currentString.equals(")"))
+			throw new BadParenthesisException();
 		else
 			currentArg = new CombinatorNodeField(cmanager.get(currentString));
-		
 		currentNode.setArgument(currentArg);
 		currentNode.setNextNode(previousNode);
 		
