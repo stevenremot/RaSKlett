@@ -1,6 +1,5 @@
 package graphicInterface;
 
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +14,7 @@ import javax.swing.border.Border;
 public class CombinatorPanel extends JPanel{
 	
 	/**
-	 * 
+	 * @brief Classe créant un composant contenant un champ de texte affichant un groupe de combinateurs et un bouton permettant de les activer ou non
 	 */
 	private static final long serialVersionUID = 1L;
 	private JTextArea text;
@@ -45,6 +44,10 @@ public class CombinatorPanel extends JPanel{
 
 	}
 	
+	/**
+	 * @brief Pour rendre natifs les combinateurs du composant.
+	 * @param b Active les combinateurs si b vaut true, les désactive sinon.
+	 */
 	public void toggleCombinators(boolean b) {
 		System.out.println("toggle combinators");
 	}
