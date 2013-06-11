@@ -52,13 +52,16 @@ public class GraphFactoryTest {
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
-		//String[] example = {"S","K","I"};
+		String[] example = {"S","K","I"};
+		Node graph = GraphFactory.create(example);
+		
+		/*
 		Stack<String> example = new Stack<String>();
 		example.push("I");
 		example.push("K");
 		example.push("S"); // stack à remplir dans l'ordre inverse
 		Node graph = GraphFactory.create(example,null);
-		
+		*/
 		
 		
 		assertEquals(cmanager.get("I"),graph.getArgument().getCombinator());
@@ -73,14 +76,17 @@ public class GraphFactoryTest {
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
-		//String[] example = {"S","K","I","S","K","I"};
+		String[] example = {"S","K","I","S","K","I"};
+		Node graph = GraphFactory.create(example);
 		
+		/*
 		Stack<String> example = new Stack<String>();
 		example.push("I");
 		example.push("I");
 		example.push("K");
 		example.push("S");
 		Node graph = GraphFactory.create(example,null);
+		*/
 		
 		assertEquals(cmanager.get("I"),graph.getArgument().getCombinator());
 		
@@ -95,7 +101,10 @@ public class GraphFactoryTest {
 	public void firstParenthesisTest() throws EmptyStackException, BadParenthesisException{
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
-		//String[] example = {"S","K","(","S","K",")"};
+		String[] example = {"S","K","(","S","K","K",")"};
+		Node graph = GraphFactory.create(example);
+		
+		/*
 		Stack<String> example = new Stack<String>();
 		example.push(")");
 		example.push("K");
@@ -106,6 +115,7 @@ public class GraphFactoryTest {
 		example.push("S");
 		
 		Node graph = GraphFactory.create(example,null);
+		*/
 		
 		graph.getArgument().getNode();
 		assertEquals(null,graph.getArgument().getCombinator());
@@ -118,7 +128,10 @@ public class GraphFactoryTest {
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
+		String[] example = {"S","(","S","(","S","K",")",")"};
+		Node graph = GraphFactory.create(example);
 		// S K ( S ( S K ) )
+		/*
 		Stack<String> example = new Stack<String>();
 		example.push(")");
 		example.push(")");
@@ -129,7 +142,7 @@ public class GraphFactoryTest {
 		example.push("(");
 		example.push("S");
 		Node graph = GraphFactory.create(example,null);
-		
+		*/
 		assertEquals(cmanager.get("S"), graph.getArgument().getNode().getFunction().getCombinator());
 		assertEquals(cmanager.get("S"), graph.getArgument().getNode().getArgument().getNode().getFunction().getCombinator());
 	}
