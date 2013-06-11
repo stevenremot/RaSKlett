@@ -2,7 +2,6 @@ package graphicInterface;
 
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -71,27 +70,27 @@ combinators = new ArrayList<String>();
 combinators.add(" B := S (K S) K");
 combinators.add("W := S S (K I)");
 
-create = new JButton("Create");
+create = new JButton(new ImageIcon("icons/create.png"));
 
-open = new JButton("Open");
+open = new JButton(new ImageIcon("icons/open.png"));
 ControleurOpen cOpen = new ControleurOpen();
 open.addActionListener(cOpen);
 
-save = new JButton("Save");
+save = new JButton(new ImageIcon("icons/save.png"));
 
-compileAll = new JButton("Compile all");
+compileAll = new JButton(new ImageIcon("icons/compile.html"));
 ControleurCompileAll cCompileAll = new ControleurCompileAll();
 compileAll.addActionListener(cCompileAll);
 
-compileStepByStep = new JButton("Compile step by step");
+compileStepByStep = new JButton(new ImageIcon("icons/compile_sbs.png"));
 ControleurCompileStepByStep cCompileStepByStep = new ControleurCompileStepByStep();
 compileStepByStep.addActionListener(cCompileStepByStep);
 
-nextStep = new JButton("Next step");
+nextStep = new JButton(new ImageIcon("icons/next.png"));
 
-nextLine = new JButton("Next line");
+nextLine = new JButton(new ImageIcon("icons/next_line.png"));
 
-toEnd = new JButton("Compile to end");
+toEnd = new JButton(new ImageIcon("icons/to_end.html"));
 
 stop = new JButton("Stop");	
 ControleurStop cStop = new ControleurStop();
@@ -132,7 +131,7 @@ menuBar.add(file);
 iOpen = new JMenuItem("Open");
 iOpen.addActionListener(cOpen);
 
-iCreate = new JMenuItem("Create");
+iCreate = new JMenuItem("");
 
 iSave = new JMenuItem("Save");
 
@@ -189,55 +188,7 @@ iHelp = new JMenuItem("Help");
 
 help.add(iHelp);
 
-setJMenuBar(menuBar);create = new JButton("Create");
-create.addActionListener(new ControleurCreate());
-
-open = new JButton("Open");
-open.addActionListener(new ControleurOpen());
-
-save = new JButton("Save");
-
-compileAll = new JButton("Compile all");
-//ControleurCompileAll cCompileAll = new ControleurCompileAll();
-//compileAll.addActionListener(cCompileAll);
-
-compileStepByStep = new JButton("Compile step by step");
-//ControleurCompileStepByStep cCompileStepByStep = new ControleurCompileStepByStep();
-//compileStepByStep.addActionListener(cCompileStepByStep);
-
-nextStep = new JButton("Next step");
-
-nextLine = new JButton("Next line");
-
-toEnd = new JButton("Compile to end");
-
-stop = new JButton("Stop");	
-//ControleurStop cStop = new ControleurStop();
-//stop.addActionListener(cStop);
-
-
-
-nextStep.setEnabled(false);
-nextLine.setEnabled(false);
-toEnd.setEnabled(false);
-
-
-
-editor = new Editor();
-toolBar = new JToolBar();		
-
-toolBar.add(create);
-toolBar.add(open);
-toolBar.add(save);
-toolBar.add(compileAll);
-toolBar.add(compileStepByStep);
-toolBar.add(nextStep);
-toolBar.add(nextLine);
-toolBar.add(toEnd);
-toolBar.add(stop);
-
-
-add(toolBar, BorderLayout.NORTH);
+setJMenuBar(menuBar);
         
 editor.setEditable(true);
 JScrollPane panneauTexte = new JScrollPane(editor);
@@ -273,6 +224,10 @@ JScrollPane panneauTexte = new JScrollPane(editor);
 	
 	public Editor getEditor(){
 		return editor;
+	}
+	
+	public void compile(){
+		//à compléter
 	}
 	
 	public void startCompilationStepByStep(){
