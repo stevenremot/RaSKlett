@@ -58,8 +58,7 @@ public class Compiler {
 		currentInstruction = symbols.get(currentInstructionIndex);
 		
 		try {
-			// TODO: Réimplémenter GraphFactory avec des ArrayList (pas compliqué)
-			graph = GraphFactory.create((String[]) currentInstruction.getInstruction().toArray());
+			graph = GraphFactory.create(currentInstruction.getInstruction());
 		}
 		catch(CompilerException e) {
 			e.setLine(currentInstruction.getLine());
