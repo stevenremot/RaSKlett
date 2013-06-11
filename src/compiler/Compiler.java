@@ -19,7 +19,8 @@ public class Compiler {
 	private boolean interrupted = false;
 	Instruction[] symbols;
 	private SKMachine sk;
-	private int currentInstruction = 0;
+	private int currentInstructionIndex = 0;
+	private Instruction currentInstruction;
 	private CompilerCallback callback;
 	
 	public Compiler(Reader input, CompilerCallback callback) {
@@ -29,7 +30,7 @@ public class Compiler {
 			symbols = Parser.parse(input);
 		}
 		catch(CompilerException e) {
-			callback.onFailure(e.getMessage());
+			callback.onFailure(e);
 		}
 	}
 	
@@ -46,18 +47,23 @@ public class Compiler {
 	
 	// Compile l'instruction en graphe
 	private boolean registerNextInstruction() {
-		if(currentInstruction >= symbols.length) {
+		if(currentInstructionIndex >= symbols.length) {
 			finished = true;
 			return false;
 		}
 		
 		Node graph;
 		
+		currentInstruction = symbols[currentInstruction];
+		
 		try {
-			graph = symbols[currentInstruction].getInstruction();
+			graph = currentInstruction.getInstruction();
 		}
 		catch(CompilerException e) {
-			callback.onFailure(e.getMessage());
+			e.setLine(currentInstruction.getLine());
+			e.setPosition(currentInstruction.getPosition());
+			
+			callback.onFailure(e);
 			return false;
 		}
 		
@@ -68,7 +74,7 @@ public class Compiler {
 			sk.setGraph(graph);
 		}
 		
-		currentInstruction++;
+		currentInstructionIndex++;
 		return true;
 	}
 
@@ -103,9 +109,12 @@ public class Compiler {
 	 * @return false si aucune étape n'a pu être effectué et que la réduction est donc finie, true sinon
 	 */
 	public boolean reduceStep() {
-		step();
+		if(!finished || registerNextInstruction()) {
+			step();
 		
-		callback.onResult(getResult(), isFinished());
+			callback.onResult(getResult(), currentInstruction.getLine(),
+					currentInstruction.getPosition(), isFinished());
+		}
 		
 		return !finished;
 	}
@@ -122,7 +131,8 @@ public class Compiler {
 			public void run() {
 				t.instruction();
 				
-				t.callback.onResult(t.getResult(), t.isFinished());
+				t.callback.onResult(getResult(), currentInstruction.getLine(),
+						currentInstruction.getPosition(), isFinished());
 			}
 		};
 		
@@ -146,7 +156,8 @@ public class Compiler {
 			public void run() {
 				t.all();
 				
-				t.callback.onResult(getResult(), isFinished());
+				t.callback.onResult(getResult(), currentInstruction.getLine(),
+						currentInstruction.getPosition(), isFinished());
 			}
 		};
 		
