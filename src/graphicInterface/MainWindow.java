@@ -105,8 +105,6 @@ public class MainWindow extends JFrame{
 		nextLine.setEnabled(false);
 		toEnd.setEnabled(false);
 
-
-
 		editor = new Editor();
 		toolBar = new JToolBar();	
 
@@ -385,7 +383,7 @@ public class MainWindow extends JFrame{
 
 			try {
 				FileWriter writer = new FileWriter(new File(dir));
-				String text = editor.getText();
+				String text = editor.getCleanedText();
 				char[] buffer = text.toCharArray();
 				writer.write(buffer);
 				writer.close();
