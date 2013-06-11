@@ -23,178 +23,237 @@ import javax.swing.text.BadLocationException;
 
 
 public class MainWindow extends JFrame{
-
-	private final static String newline = "\n";
-	private static final long serialVersionUID = 1L;
 	
-	private String filename = null;
-	
-	private Editor editor = null;
-	private JButton create = null;
-	private JButton open = null;
-	private JButton save = null;
-	private JButton compileAll = null;
-	private JButton compileStepByStep = null;
-	private JButton nextStep = null;
-	private JButton nextLine = null;
-	private JButton toEnd = null;
-	private JButton stop = null;
-	private JMenuBar menuBar = null;
-	private JMenu file = null;
-	private JMenu compilation = null;
-	private JMenu tools = null;
-	private JMenu help = null;
-	private JMenuItem iOpen = null;
-	private JMenuItem iCreate = null;
-	private JMenuItem iSave = null;
-	private JMenuItem iCompileAll = null;
-	private JMenuItem iCompileStepByStep = null;
-	private JMenuItem iNextStep = null;
-	private JMenuItem iNextLine = null;
-	private JMenuItem iToEnd = null;
-	private JMenuItem iInterrupt = null;
-	private JMenuItem iCombinators = null;
-	private JMenuItem iTools = null;
-	private JMenuItem iHelp = null;
+private String filename = null;
+private JTextField dir = new JTextField();
+
+private final static String newline = "\n";
+private static final long serialVersionUID = 1L;
+private Editor editor = null;
+private JButton create = null;
+private JButton open = null;
+private JButton save = null;
+private JButton compileAll = null;
+private JButton compileStepByStep = null;
+private JButton nextStep = null;
+private JButton nextLine = null;
+private JButton toEnd = null;
+private JButton stop = null;
+private JMenuBar menuBar = null;
+private JMenu file = null;
+private JMenu compilation = null;
+private JMenu tools = null;
+private JMenu help = null;
+private JMenuItem iOpen = null;
+private JMenuItem iCreate = null;
+private JMenuItem iSave = null;
+private JMenuItem iCompileAll = null;
+private JMenuItem iCompileStepByStep = null;
+private JMenuItem iNextStep = null;
+private JMenuItem iNextLine = null;
+private JMenuItem iToEnd = null;
+private JMenuItem iStop = null;
+private JMenuItem iCombinators = null;
+private JMenuItem iTools = null;
+private JMenuItem iHelp = null;
 
 
 
-	private JToolBar toolBar = null;
-	private Image createImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("icons/Create.png"));
-	private ArrayList<String> combinators;
-	
-	/**
-	 * Constructeur de la classe Fenetre
-	 */
-	public MainWindow(){
-		combinators = new ArrayList<String>();
-		combinators.add(" B := S (K S) K");
-		combinators.add("W := S S (K I)");
-		
-		menuBar = new JMenuBar();
-		
-		file = new JMenu("File");
-		file.setMnemonic(KeyEvent.VK_F);
-		file.getAccessibleContext().setAccessibleDescription(
-		        "File menu");
-		menuBar.add(file);
-		
-		iOpen = new JMenuItem("open");
-		iCreate = new JMenuItem("create");
-		iSave = new JMenuItem("save");
-		
-		file.add(iOpen);
-		file.add(iCreate);
-		file.add(iSave);		
+private JToolBar toolBar = null;
+private Image createImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("icons/Create.png"));
+private ArrayList<String> combinators;
 
-		compilation = new JMenu("Compilation");
-		compilation.setMnemonic(KeyEvent.VK_C);
-		compilation.getAccessibleContext().setAccessibleDescription(
-		        "Menu with compilation tools");
-		menuBar.add(compilation);
-		
-		iCompileAll = new JMenuItem("compile all");
-		iCompileStepByStep = new JMenuItem("compile step by step");
-		iNextStep = new JMenuItem("compile next step");
-		iNextLine = new JMenuItem("compile next line");
-		iToEnd = new JMenuItem("compile to end");
+/**
+* Constructeur de la classe Fenetre
+*/
+public MainWindow(){
+combinators = new ArrayList<String>();
+combinators.add(" B := S (K S) K");
+combinators.add("W := S S (K I)");
 
-		
-		compilation.add(iCompileAll);
-		compilation.add(iCompileStepByStep);
-		compilation.add(iNextStep);
-		compilation.add(iNextLine);
-		compilation.add(iToEnd);
-		
-		tools = new JMenu("Tools");
-		tools.setMnemonic(KeyEvent.VK_T);
-		tools.getAccessibleContext().setAccessibleDescription(
-		        "Tools menu");
-		menuBar.add(tools);
-		
-		iCombinators = new JMenuItem("combinators");
-		iTools = new JMenuItem("tools");
-		
-		tools.add(iCombinators);
-		tools.add(iTools);		
+create = new JButton("Create");
 
-		help = new JMenu("Help");
-		help.setMnemonic(KeyEvent.VK_H);
-		help.getAccessibleContext().setAccessibleDescription(
-		        "Help menu");
-		menuBar.add(help);
-		
-		iHelp = new JMenuItem("Help");
-		
-		help.add(iHelp);
-		
-		setJMenuBar(menuBar);
+open = new JButton("Open");
+ControleurOpen cOpen = new ControleurOpen();
+open.addActionListener(cOpen);
 
-		
-		create = new JButton("Create");
-		create.addActionListener(new ControleurCreate());
-		
-		open = new JButton("Open");
-		open.addActionListener(new ControleurOpen());
-		
-		save = new JButton("Save");
-		
-		compileAll = new JButton("Compile all");
-		ControleurCompileAll cCompileAll = new ControleurCompileAll();
-		compileAll.addActionListener(cCompileAll);
-		
-		compileStepByStep = new JButton("Compile step by step");
-		ControleurCompileStepByStep cCompileStepByStep = new ControleurCompileStepByStep();
-		compileStepByStep.addActionListener(cCompileStepByStep);
-		
-		nextStep = new JButton("Next step");
-		
-		nextLine = new JButton("Next line");
-		
-		toEnd = new JButton("Compile to end");
-		
-		stop = new JButton("Stop");	
-		ControleurStop cStop = new ControleurStop();
-		stop.addActionListener(cStop);
-		
-		
-		
-		nextStep.setEnabled(false);
-		nextLine.setEnabled(false);
-		toEnd.setEnabled(false);
+save = new JButton("Save");
+
+compileAll = new JButton("Compile all");
+ControleurCompileAll cCompileAll = new ControleurCompileAll();
+compileAll.addActionListener(cCompileAll);
+
+compileStepByStep = new JButton("Compile step by step");
+ControleurCompileStepByStep cCompileStepByStep = new ControleurCompileStepByStep();
+compileStepByStep.addActionListener(cCompileStepByStep);
+
+nextStep = new JButton("Next step");
+
+nextLine = new JButton("Next line");
+
+toEnd = new JButton("Compile to end");
+
+stop = new JButton("Stop");	
+ControleurStop cStop = new ControleurStop();
+stop.addActionListener(cStop);
 
 
-		
-		editor = new Editor();
-		toolBar = new JToolBar();		
-		
-		toolBar.add(create);
-		toolBar.add(open);
-		toolBar.add(save);
-		toolBar.add(compileAll);
-		toolBar.add(compileStepByStep);
-		toolBar.add(nextStep);
-		toolBar.add(nextLine);
-		toolBar.add(toEnd);
-		toolBar.add(stop);
 
-		
-		add(toolBar, BorderLayout.NORTH);
+nextStep.setEnabled(false);
+nextLine.setEnabled(false);
+toEnd.setEnabled(false);
+
+
+
+editor = new Editor();
+toolBar = new JToolBar();	
+
+toolBar.add(create);
+toolBar.add(open);
+toolBar.add(save);
+toolBar.add(compileAll);
+toolBar.add(compileStepByStep);
+toolBar.add(nextStep);
+toolBar.add(nextLine);
+toolBar.add(toEnd);
+toolBar.add(stop);
+
+
+add(toolBar, BorderLayout.NORTH);
+
+menuBar = new JMenuBar();
+
+file = new JMenu("File");
+file.setMnemonic(KeyEvent.VK_F);
+file.getAccessibleContext().setAccessibleDescription(
+"File menu");
+menuBar.add(file);
+
+iOpen = new JMenuItem("Open");
+iOpen.addActionListener(cOpen);
+
+iCreate = new JMenuItem("Create");
+
+iSave = new JMenuItem("Save");
+
+file.add(iOpen);
+file.add(iCreate);
+file.add(iSave);	
+
+compilation = new JMenu("Compilation");
+compilation.setMnemonic(KeyEvent.VK_C);
+compilation.getAccessibleContext().setAccessibleDescription(
+"Menu with compilation tools");
+menuBar.add(compilation);
+
+iCompileAll = new JMenuItem("Compile all");
+iCompileAll.addActionListener(cCompileAll);
+iCompileStepByStep = new JMenuItem("Compile step by step");
+iCompileStepByStep.addActionListener(cCompileStepByStep);
+iNextStep = new JMenuItem("Compile next step");
+iNextLine = new JMenuItem("Compile next line");
+iToEnd = new JMenuItem("Compile to end");
+iStop = new JMenuItem("Stop compilation");
+iStop.addActionListener(cStop);
+
+iNextStep.setEnabled(false);
+iNextLine.setEnabled(false);
+iToEnd.setEnabled(false);
+
+compilation.add(iCompileAll);
+compilation.add(iCompileStepByStep);
+compilation.add(iNextStep);
+compilation.add(iNextLine);
+compilation.add(iToEnd);
+compilation.add(iStop);
+
+tools = new JMenu("Tools");
+tools.setMnemonic(KeyEvent.VK_T);
+tools.getAccessibleContext().setAccessibleDescription(
+"Tools menu");
+menuBar.add(tools);
+
+iCombinators = new JMenuItem("Combinators");
+iTools = new JMenuItem("Tools");
+
+tools.add(iCombinators);
+tools.add(iTools);	
+
+help = new JMenu("Help");
+help.setMnemonic(KeyEvent.VK_H);
+help.getAccessibleContext().setAccessibleDescription(
+"Help menu");
+menuBar.add(help);
+
+iHelp = new JMenuItem("Help");
+
+help.add(iHelp);
+
+setJMenuBar(menuBar);create = new JButton("Create");
+create.addActionListener(new ControleurCreate());
+
+open = new JButton("Open");
+open.addActionListener(new ControleurOpen());
+
+save = new JButton("Save");
+
+compileAll = new JButton("Compile all");
+//ControleurCompileAll cCompileAll = new ControleurCompileAll();
+//compileAll.addActionListener(cCompileAll);
+
+compileStepByStep = new JButton("Compile step by step");
+//ControleurCompileStepByStep cCompileStepByStep = new ControleurCompileStepByStep();
+//compileStepByStep.addActionListener(cCompileStepByStep);
+
+nextStep = new JButton("Next step");
+
+nextLine = new JButton("Next line");
+
+toEnd = new JButton("Compile to end");
+
+stop = new JButton("Stop");	
+//ControleurStop cStop = new ControleurStop();
+//stop.addActionListener(cStop);
+
+
+
+nextStep.setEnabled(false);
+nextLine.setEnabled(false);
+toEnd.setEnabled(false);
+
+
+
+editor = new Editor();
+toolBar = new JToolBar();		
+
+toolBar.add(create);
+toolBar.add(open);
+toolBar.add(save);
+toolBar.add(compileAll);
+toolBar.add(compileStepByStep);
+toolBar.add(nextStep);
+toolBar.add(nextLine);
+toolBar.add(toEnd);
+toolBar.add(stop);
+
+
+add(toolBar, BorderLayout.NORTH);
         
-		editor.setEditable(true);
-		JScrollPane panneauTexte = new JScrollPane(editor);
-        add(panneauTexte,  BorderLayout.CENTER);
+editor.setEditable(true);
+JScrollPane panneauTexte = new JScrollPane(editor);
+        add(panneauTexte, BorderLayout.CENTER);
         
         JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
         combinatorPanel.setPreferredSize(new Dimension(150,0));
 
         Border border = BorderFactory.createTitledBorder("Native combinators");
         combinatorPanel.setBorder(border);    
+
         CombinatorPanel test = new CombinatorPanel(combinators, "test : ", false);
         CombinatorPanel test2 = new CombinatorPanel(combinators, "test2 : ", true);
         combinatorPanel.add(test2);
         combinatorPanel.add(test);
-        add(combinatorPanel,  BorderLayout.WEST); 
+        add(combinatorPanel, BorderLayout.WEST);
 
         setPreferredSize(new Dimension(800, 600));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -220,12 +279,16 @@ public class MainWindow extends JFrame{
 		nextStep.setEnabled(true);
 		nextLine.setEnabled(true);
 		toEnd.setEnabled(true);
+		iNextStep.setEnabled(true);
+		iNextLine.setEnabled(true);
+		iToEnd.setEnabled(true);
 		editor.disableEdition();
 		//et le reste
 	}
 	
 	public void startCompilation(){
 		editor.disableEdition();
+		compile();
 		//et le reste
 	}
 	
@@ -234,6 +297,10 @@ public class MainWindow extends JFrame{
 		nextStep.setEnabled(false);
 		nextLine.setEnabled(false);
 		toEnd.setEnabled(false);
+		iNextStep.setEnabled(false);
+		iNextLine.setEnabled(false);
+		iToEnd.setEnabled(false);
+		compile();
 	}
 	
 	public class ControleurCompileAll implements ActionListener {
@@ -304,5 +371,5 @@ public class MainWindow extends JFrame{
 		}
 		
 	}
-	
+
 }
