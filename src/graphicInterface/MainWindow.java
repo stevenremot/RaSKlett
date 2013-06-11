@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -25,7 +26,7 @@ import javax.swing.text.BadLocationException;
 public class MainWindow extends JFrame{
 	
 private String filename = null;
-private JTextField dir = new JTextField();
+private String dir = new String();
 
 private final static String newline = "\n";
 private static final long serialVersionUID = 1L;
@@ -196,6 +197,7 @@ open = new JButton("Open");
 open.addActionListener(new ControleurOpen());
 
 save = new JButton("Save");
+save.addActionListener(new ControleurSave());
 
 compileAll = new JButton("Compile all");
 //ControleurCompileAll cCompileAll = new ControleurCompileAll();
@@ -288,7 +290,7 @@ JScrollPane panneauTexte = new JScrollPane(editor);
 	
 	public void startCompilation(){
 		editor.disableEdition();
-		compile();
+		//compile();
 		//et le reste
 	}
 	
@@ -300,7 +302,7 @@ JScrollPane panneauTexte = new JScrollPane(editor);
 		iNextStep.setEnabled(false);
 		iNextLine.setEnabled(false);
 		iToEnd.setEnabled(false);
-		compile();
+		//compile();
 	}
 	
 	public class ControleurCompileAll implements ActionListener {
@@ -352,6 +354,7 @@ JScrollPane panneauTexte = new JScrollPane(editor);
 				String text = new String(buffer);
 				editor.setText(text);
 				filename = file.getName();
+				dir = file.getPath();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -367,9 +370,42 @@ JScrollPane panneauTexte = new JScrollPane(editor);
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			filename = null;
+			dir = null;
 			editor.setText(null);
 		}
 		
+	}
+	
+	public class ControleurSave implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			if(filename == null) {
+				JFileChooser chooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter(
+						"Txt files", "txt");
+				chooser.setFileFilter(filter);
+				int returnVal = chooser.showSaveDialog(null);
+				if(returnVal == JFileChooser.APPROVE_OPTION) {
+					File file = chooser.getSelectedFile();		
+					filename = file.getName();
+					dir = file.getPath();
+				}
+			}
+
+			try {
+				FileWriter writer = new FileWriter(new File(dir));
+				String text = editor.getText();
+				char[] buffer = text.toCharArray();
+				writer.write(buffer);
+				writer.close();
+				System.out.println("save");
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 		
+
+		}
+
 	}
 
 }
