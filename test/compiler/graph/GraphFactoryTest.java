@@ -121,6 +121,9 @@ public class GraphFactoryTest {
 		assertEquals(null,graph.getArgument().getCombinator());
 		assertEquals(cmanager.get("K"), graph.getArgument().getNode().getArgument().getCombinator());
 		assertEquals(null,graph.getArgument().getNode().getFunction().getCombinator());
+		
+		String ret = GraphSerializer.serialize(graph);
+		assertEquals("S K ( S K K )", ret);
 	}
 	
 	@Test
@@ -154,7 +157,7 @@ public class GraphFactoryTest {
 		
 		Stack<String> example = new Stack<String>();
 		example.push("K");
-		Node graph = GraphFactory.create(example,null);
+		Node graph = GraphFactory.create(example);
 		
 		assertEquals(cmanager.get("I"), graph.getFunction().getCombinator());
 		assertEquals(cmanager.get("K"), graph.getArgument().getCombinator());
