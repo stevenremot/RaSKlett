@@ -33,6 +33,8 @@ public class Compiler {
 		catch(CompilerException e) {
 			callback.onFailure(e);
 		}
+		
+		registerNextInstruction();
 	}
 	
 	/**
