@@ -53,7 +53,7 @@ public class GraphFactoryTest {
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		String[] example = {"S","K","I"};
-		Node graph = GraphFactory.create(example);
+		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
 		
 		/*
 		Stack<String> example = new Stack<String>();
@@ -77,7 +77,7 @@ public class GraphFactoryTest {
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		String[] example = {"S","K","I","S","K","I"};
-		Node graph = GraphFactory.create(example);
+		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
 		
 		/*
 		Stack<String> example = new Stack<String>();
@@ -102,7 +102,7 @@ public class GraphFactoryTest {
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		String[] example = {"S","K","(","S","K","K",")"};
-		Node graph = GraphFactory.create(example);
+		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
 		
 		/*
 		Stack<String> example = new Stack<String>();
@@ -129,7 +129,7 @@ public class GraphFactoryTest {
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		String[] example = {"S","(","S","(","S","K",")",")"};
-		Node graph = GraphFactory.create(example);
+		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
 		// S K ( S ( S K ) )
 		/*
 		Stack<String> example = new Stack<String>();
