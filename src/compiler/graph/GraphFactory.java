@@ -2,6 +2,7 @@ package compiler.graph;
 
 import java.util.Arrays;
 import java.util.Stack;
+import java.util.List;
 import compiler.combinators.CombinatorManager;
 
 /**
@@ -13,6 +14,57 @@ import compiler.combinators.CombinatorManager;
  */
 
 public class GraphFactory {
+	
+	public static void parseParenthesis(List<String> combinators){
+		
+		// initialisation : suppression (récursive) des premières parenthèses
+		if(combinators.get(0).equals("(")){
+		
+			int matchingIndex = getMatchingParenthesis(combinators,0);
+			combinators.remove(matchingIndex);
+			combinators.remove(0);
+			parseParenthesis(combinators);
+			return;			
+		}
+		
+		else{
+			
+			int count = 1;
+			
+			while(count < combinators.size()){
+				
+				if(combinators.get(count).equals("(")){
+					int matchingIndex = getMatchingParenthesis(combinators,count);
+						if(matchingIndex - count <= 2 || combinators.get(count-1).equals("(")){
+							combinators.remove(matchingIndex);
+							combinators.remove(count);
+						}
+				}
+				
+				count++;
+			}
+		}
+	}
+	
+	public static int getMatchingParenthesis(List<String> list, int index){
+		
+		int i=index+1;
+		int otherParenthesisCount = 0;
+		
+		while(i < list.size()){
+			
+			if(list.get(i).equals("("))
+				otherParenthesisCount++;	
+			else if(list.get(i).equals(")") && otherParenthesisCount>0)
+				otherParenthesisCount--;
+			else if(list.get(i).equals(")") && otherParenthesisCount==0)
+				return i;
+			
+			i++;
+		}
+		
+		return 0;
+	}
 	
 	public static Node create(Stack<String> combinators, Node previousNode) throws EmptyStackException, BadParenthesisException{
 		

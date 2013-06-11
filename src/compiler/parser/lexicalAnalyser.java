@@ -129,7 +129,7 @@ public class lexicalAnalyser {
 	public void lexicalAnalysis(String targetString, int count) {
 		
 		Instruction intstru=new Instruction();
-		intstru.setNumberL(count);
+		intstru.setLine(count);
 		instrArrayList.add(intstru);
 		
 		targetString = targetString.trim();
@@ -143,7 +143,7 @@ public class lexicalAnalyser {
 						
 					} else {
 						result += otherString + "\t\t" + count + "\n";
-						intstru.addContentStrings(otherString);
+						intstru.addInstruction(otherString);
 					}
 					otherString = "";
 				}
@@ -154,7 +154,7 @@ public class lexicalAnalyser {
 						result += count + "\n";
 					} else {
 						result += otherString + "\t\t" + count + "\n";
-						intstru.addContentStrings(otherString);
+						intstru.addInstruction(otherString);
 
 					}
 					otherString = "";
@@ -167,7 +167,7 @@ public class lexicalAnalyser {
 						result += count + "\n";
 					} else {
 						result += otherString + "\t\t" + count + "\n";
-						intstru.addContentStrings(otherString);
+						intstru.addInstruction(otherString);
 
 					}
 					otherString = "";
@@ -189,7 +189,7 @@ public class lexicalAnalyser {
 							result += count + "\n";
 						} else {
 							result += otherTmp + "\t\t" + count + "\n";
-							intstru.addContentStrings(otherTmp);
+							intstru.addInstruction(otherTmp);
 
 						}
 					}
@@ -197,7 +197,7 @@ public class lexicalAnalyser {
 						result += count + "\n";
 					} else {
 						result += tempChar + "" + "\t\t" + count + "\n";
-						intstru.addContentStrings(Character.toString(tempChar));
+						intstru.addInstruction(Character.toString(tempChar));
 
 					}
 					otherString = "";
@@ -206,7 +206,7 @@ public class lexicalAnalyser {
 						result += count + "\n";
 					} else {
 						result += tempChar + "\t\t" + count + "\n";
-						intstru.addContentStrings(Character.toString(tempChar));
+						intstru.addInstruction(Character.toString(tempChar));
 
 					}
 					otherString = "";

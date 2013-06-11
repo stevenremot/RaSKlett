@@ -16,23 +16,23 @@ public class Instruction {
 		this.numberL = numberL;
 	}
 
-	public int getNumberI() {
+	public int getPosition() {
 		return numberI;
 	}
 
-	public void setNumberI(int numberI) {
+	public void setPosition(int numberI) {
 		this.numberI = numberI;
 	}
 
-	public ArrayList<String> getContentStrings() {
+	public ArrayList<String> getInstruction() {
 		return contentStrings;
 	}
 
-	public void setContentStrings(ArrayList<String> contentStrings) {
+	public void setInstruction(ArrayList<String> contentStrings) {
 		this.contentStrings=contentStrings;
 	}
 	
-	public void addContentStrings(String temStr) {
+	public void addInstruction(String temStr) {
 		this.contentStrings.add(temStr);
 	}
 }

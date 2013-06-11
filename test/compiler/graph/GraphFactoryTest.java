@@ -2,6 +2,8 @@ package compiler.graph;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Stack;
 
 import org.junit.Test;
@@ -9,6 +11,41 @@ import org.junit.Test;
 import compiler.combinators.CombinatorManager;
 
 public class GraphFactoryTest {
+	
+	@Test
+	public void parserTest() {
+		
+		String[] example = {"(","(","I","K",")",")"};
+		ArrayList<String> list = new ArrayList<String>(Arrays.asList(example));
+		GraphFactory.parseParenthesis(list);
+		
+		assertEquals("I",list.get(0));
+		assertEquals(2,list.size());
+	}
+	
+	@Test
+	public void parserTest2() {
+		
+		String[] example = {"S","K","(","(","S","K",")","K",")"};
+		ArrayList<String> list = new ArrayList<String>(Arrays.asList(example));
+		GraphFactory.parseParenthesis(list);
+		
+		assertEquals("(",list.get(2));
+		assertEquals(")",list.get(6));
+		assertEquals(7,list.size());
+	}
+	
+	@Test
+	public void parserTest3() {
+		
+		String[] example = {"(","S","K","(","S",")","K",")"};
+		ArrayList<String> list = new ArrayList<String>(Arrays.asList(example));
+		GraphFactory.parseParenthesis(list);
+		
+		assertEquals("S",list.get(2));
+		assertEquals("K",list.get(3));
+		assertEquals(4,list.size());
+	}
 	
 	@Test
 	public void simpleGraphTest() throws EmptyStackException, BadParenthesisException{
