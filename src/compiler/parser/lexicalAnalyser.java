@@ -217,41 +217,10 @@ public class lexicalAnalyser {
 	}
 
 	/**
-	 * @param fileName
+	 * @param 
 	 *            open the file of code by the fileName
 	 */
-	public void readFile() {
-		BufferedReader br = null;
-		int count = 1;
-		try {
-			br = new BufferedReader(new InputStreamReader(System.in));
-
-			String targetString = br.readLine();
-			System.out.println("Your function ");
-			System.out.println(targetString);
-
-			while (targetString != null) {
-				lexicalAnalysis(targetString, count);
-				count++;// count is used to calculate the numbers of
-						// line,count=lineNumber-1
-				targetString = br.readLine();
-			}
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			br.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
+	
 	public void readRowByRow(){
 		BufferedReader br = null;
 		int count = 1;

@@ -8,11 +8,11 @@ public class Instruction {
 
 	private ArrayList<String> contentStrings = new ArrayList<String>();
 
-	public int getNumberL() {
+	public int getLine() {
 		return numberL;
 	}
 
-	public void setNumberL(int numberL) {
+	public void setLine(int numberL) {
 		this.numberL = numberL;
 	}
 
