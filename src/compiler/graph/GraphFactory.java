@@ -1,7 +1,6 @@
 package compiler.graph;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Stack;
 import java.util.List;
 import compiler.combinators.CombinatorManager;
@@ -126,11 +125,11 @@ public class GraphFactory {
 		
 		// cas d'un seul combinateur C : le noeud (I, C) est créé 
 		if(combinators.empty()){
-			currentFunc = new CombinatorNodeField(cmanager.get("I"));
+			currentFunc = NodeFieldFactory.create(cmanager.get("I"));
 			if(currentString.equals("(" )||currentString.equals(")"))
 				throw new BadParenthesisException();
 			else
-				currentArg = new CombinatorNodeField(cmanager.get(currentString));
+				currentArg = NodeFieldFactory.create(cmanager.get(currentString));
 			currentNode = new Node(currentFunc,currentArg);
 			currentNode.setNextNode(previousNode);
 			return currentNode;
@@ -138,17 +137,17 @@ public class GraphFactory {
 		
 		if(currentString.equals("(" )||currentString.equals(")"))
 			throw new BadParenthesisException();
-		currentFunc = new CombinatorNodeField(cmanager.get(currentString));
+		currentFunc = NodeFieldFactory.create(cmanager.get(currentString));
 		currentNode = new Node(currentFunc);
 		
 		currentString = combinators.pop();
 		
 		if(currentString.equals("("))
-			currentArg = new NodeNodeField(create(combinators,currentNode));
+			currentArg = NodeFieldFactory.create(create(combinators,currentNode));
 		else if(currentString.equals(")"))
 			throw new BadParenthesisException();
 		else
-			currentArg = new CombinatorNodeField(cmanager.get(currentString));
+			currentArg = NodeFieldFactory.create(cmanager.get(currentString));
 		currentNode.setArgument(currentArg);
 		currentNode.setNextNode(previousNode);
 		
@@ -158,16 +157,16 @@ public class GraphFactory {
 		// boucle
 		while(!combinators.empty()){
 			
-			currentFunc = new NodeNodeField(previousNode);
+			currentFunc = NodeFieldFactory.create(previousNode);
 			currentString = combinators.pop();
 			currentNode = new Node(currentFunc);
 			
 			if(currentString.equals("("))
-				currentArg = new NodeNodeField(create(combinators,currentNode));
+				currentArg = NodeFieldFactory.create(create(combinators,currentNode));
 			else if(currentString.equals(")"))
 				return previousNode;
 			else
-				currentArg = new CombinatorNodeField(cmanager.get(currentString));
+				currentArg = NodeFieldFactory.create(cmanager.get(currentString));
 			
 			currentNode.setArgument(currentArg);
 			currentNode.setNextNode(previousNode);
