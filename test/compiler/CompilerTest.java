@@ -13,13 +13,13 @@ public class CompilerTest {
 		StringReader input = new StringReader("S X Y Z");
 		
 		CompilerCallback callback = new CompilerCallback() {
-			public void onResult(String result, boolean finished) {
+			public void onResult(String result, int line, int position, boolean finished) {
 				if(finished) {
 					assertEquals("X Z ( Y Z )", result);
 				}
 			}
 			
-			public void onFailure(String message) {
+			public void onFailure(CompilerException e) {
 				fail();
 			}
 		};
@@ -36,12 +36,12 @@ public class CompilerTest {
 		StringReader input = new StringReader("S K K K");
 		
 		CompilerCallback callback = new CompilerCallback() {
-			public void onResult(String result, boolean finished) {
+			public void onResult(String result, int line, int position, boolean finished) {
 				assertTrue(finished);
 				assertEquals("K", result);
 			}
 			
-			public void onFailure(String message) {
+			public void onFailure(CompilerException e) {
 				fail();
 			}
 		};
@@ -54,15 +54,37 @@ public class CompilerTest {
 	}
 	
 	@Test
-	public void testInfiniteReductionCanStop() throws InterruptedException {
+	public void testReducesInstructionCorrectly() throws InterruptedException {
+		StringReader input = new StringReader("S K K K; K I;");
+		
+		CompilerCallback callback = new CompilerCallback() {
+			public void onResult(String result, int line, int position, boolean finished) {
+				assertFalse(finished);
+				assertEquals("K", result);
+			}
+			
+			public void onFailure(CompilerException e) {
+				fail();
+			}
+		};
+		
+		Compiler comp = new Compiler(input, callback);
+		
+		Thread t = comp.reduceInstruction();
+		
+		t.join();
+	}
+	
+	@Test
+	public void testInfiniteReductionCanStopWithAll() throws InterruptedException {
 		StringReader input = new StringReader("S I I (S I I)");
 		
 		CompilerCallback callback = new CompilerCallback() {
-			public void onResult(String result, boolean finished) {
+			public void onResult(String result, int line, int position, boolean finished) {
 				assertFalse(finished);
 			}
 			
-			public void onFailure(String message) {
+			public void onFailure(CompilerException e) {
 				fail();
 			}
 		};
@@ -71,9 +93,32 @@ public class CompilerTest {
 		
 		Thread t = comp.reduceAll();
 		
+		comp.stopReduction();
+		
 		t.join();
+	}
+	
+	@Test
+	public void testInfiniteReductionCanStopWithInstruction() throws InterruptedException {
+		StringReader input = new StringReader("S I I (S I I)");
+		
+		CompilerCallback callback = new CompilerCallback() {
+			public void onResult(String result, int line, int position, boolean finished) {
+				assertFalse(finished);
+			}
+			
+			public void onFailure(CompilerException e) {
+				fail();
+			}
+		};
+		
+		Compiler comp = new Compiler(input, callback);
+		
+		Thread t = comp.reduceInstruction();
 		
 		comp.stopReduction();
+		
+		t.join();
 	}
 	
 	@Test
@@ -83,13 +128,13 @@ public class CompilerTest {
 		CompilerCallback callback = new CompilerCallback() {
 
 			@Override
-			public void onResult(String reducedGraph, boolean finished) {
+			public void onResult(String reducedGraph, int line, int position, boolean finished) {
 				fail();
 				
 			}
 
 			@Override
-			public void onFailure(String message) {
+			public void onFailure(CompilerException e) {
 			}		
 		};
 		
@@ -97,22 +142,24 @@ public class CompilerTest {
 	}
 	
 	@Test
-	public void testGraphExceptionThrown() {
+	public void testGraphExceptionThrown() throws InterruptedException {
 		StringReader input = new StringReader("blabla");
 		
 		CompilerCallback callback = new CompilerCallback() {
 
 			@Override
-			public void onResult(String reducedGraph, boolean finished) {
+			public void onResult(String reducedGraph, int line, int position, boolean finished) {
 				fail();
 				
 			}
 
 			@Override
-			public void onFailure(String message) {
+			public void onFailure(CompilerException e) {
 			}		
 		};
 		
-		new Compiler(input, callback);
+		Compiler c = new Compiler(input, callback);
+		Thread t = c.reduceInstruction();
+		t.join();
 	}
 }
