@@ -1,3 +1,0 @@
-Blablabla
-Test pour savoir si la commande ouvrir marche
-Et respecte les sauts de ligne
