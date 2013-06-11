@@ -29,12 +29,12 @@ public class Compiler {
 		
 		try {
 			symbols = Parser.parse(input);
+			registerNextInstruction();
 		}
 		catch(CompilerException e) {
 			callback.onFailure(e);
 		}
 		
-		registerNextInstruction();
 	}
 	
 	/**
@@ -42,6 +42,14 @@ public class Compiler {
 	 */
 	public String getResult() {
 		return GraphSerializer.serialize(sk.getReducedGraph());
+	}
+	
+	/**
+	 * @brief Envoie le résultat au callback
+	 */
+	public void sendResult() {
+		callback.onResult(getResult(), currentInstruction.getLine(),
+				currentInstruction.getPosition(), isFinished());
 	}
 	
 	public boolean isFinished() {
@@ -115,8 +123,7 @@ public class Compiler {
 		if(!finished || registerNextInstruction()) {
 			step();
 		
-			callback.onResult(getResult(), currentInstruction.getLine(),
-					currentInstruction.getPosition(), isFinished());
+			sendResult();
 		}
 		
 		return !finished;
@@ -134,8 +141,7 @@ public class Compiler {
 			public void run() {
 				t.instruction();
 				
-				t.callback.onResult(getResult(), currentInstruction.getLine(),
-						currentInstruction.getPosition(), isFinished());
+				t.sendResult();
 			}
 		};
 		
@@ -159,8 +165,7 @@ public class Compiler {
 			public void run() {
 				t.all();
 				
-				t.callback.onResult(getResult(), currentInstruction.getLine(),
-						currentInstruction.getPosition(), isFinished());
+				t.sendResult();
 			}
 		};
 		

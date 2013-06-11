@@ -15,6 +15,7 @@ public class Parser {
 	
 	public static ArrayList<Instruction> parse(Reader input) throws CompilerException {
 		LexicalAnalyser lex = new LexicalAnalyser(input);
-		return lex.getSymbols();
+		SemanticalAnalyser sem = new SemanticalAnalyser(lex.getSymbols());
+		return sem.getCombinators();
 	}
 }
