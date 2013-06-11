@@ -1,6 +1,7 @@
 package compiler;
 
 import java.io.Reader;
+import java.util.ArrayList;
 
 import compiler.parser.Parser;
 import compiler.parser.Instruction;
@@ -17,7 +18,7 @@ import compiler.graph.Node;
 public class Compiler {
 	private boolean finished = false;
 	private boolean interrupted = false;
-	Instruction[] symbols;
+	ArrayList<Instruction> symbols;
 	private SKMachine sk;
 	private int currentInstructionIndex = 0;
 	private Instruction currentInstruction;
@@ -47,17 +48,17 @@ public class Compiler {
 	
 	// Compile l'instruction en graphe
 	private boolean registerNextInstruction() {
-		if(currentInstructionIndex >= symbols.length) {
+		if(currentInstructionIndex >= symbols.size()) {
 			finished = true;
 			return false;
 		}
 		
 		Node graph;
 		
-		currentInstruction = symbols[currentInstruction];
+		currentInstruction = symbols.get(currentInstructionIndex);
 		
 		try {
-			graph = currentInstruction.getInstruction();
+			graph = GraphFactory.create(currentInstruction.getInstruction());
 		}
 		catch(CompilerException e) {
 			e.setLine(currentInstruction.getLine());
