@@ -48,7 +48,7 @@ public class GraphFactoryTest {
 	}
 	
 	@Test
-	public void simpleGraphTest() throws EmptyStackException, BadParenthesisException{
+	public void simpleGraphTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
@@ -63,7 +63,7 @@ public class GraphFactoryTest {
 	}
 	
 	@Test
-	public void simpleButLongerGraphTest() throws EmptyStackException, BadParenthesisException{
+	public void simpleButLongerGraphTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
@@ -80,7 +80,7 @@ public class GraphFactoryTest {
 	}
 	
 	@Test
-	public void firstParenthesisTest() throws EmptyStackException, BadParenthesisException{
+	public void firstParenthesisTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		String[] example = {"S","K","(","S","K","K",")"};
@@ -96,7 +96,7 @@ public class GraphFactoryTest {
 	}
 	
 	@Test
-	public void doubleParenthesisTest() throws EmptyStackException, BadParenthesisException {
+	public void doubleParenthesisTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException {
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
@@ -111,7 +111,7 @@ public class GraphFactoryTest {
 	}
 	
 	@Test
-	public void singleCombinatorTest() throws EmptyStackException, BadParenthesisException {
+	public void singleCombinatorTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException {
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
