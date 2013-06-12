@@ -1,21 +1,16 @@
 package compiler.combinators;
 
 import compiler.graph.Node;
-import compiler.graph.NodeFieldFactory;
+import compiler.graph.NodeField;
 import compiler.reducer.Registry;
 
-public class B implements Combinator{
+public class C implements Combinator {
 
 	@Override
 	public Node getGraph() {
 		return null;
-	} 
+	}
 
-	/**
-	 * @brief Applique le combinateur B au graphe
-	 * On vérifie qu'on a au moins 3 arguments F G X.
-	 * Puis on remplace le troisième noeud par F (GX).
-	 */
 	@Override
 	public boolean applyReduction(Registry registry) {
 		Node node1 = registry.getNode();
@@ -25,16 +20,17 @@ public class B implements Combinator{
 		Node node3 = node2.getNextNode();
 		if(node3 == null)
 			return false;
-		node3.setFunction(node1.getArgument());
-		Node node = new Node(node2.getArgument(),node3.getArgument());
-		node3.setArgument(NodeFieldFactory.create(node));
-		registry.setNode(node3);
+		NodeField y = node3.getArgument();
+		node3.setArgument(node2.getArgument());
+		node2.setFunction(node1.getArgument());
+		node2.setArgument(y);
+		registry.setNode(node2);
 		return true;
 	}
 
 	@Override
 	public String getName() {
-		return "B";
+		return "C";
 	}
 
 }
