@@ -322,7 +322,7 @@ public class MainWindow extends JFrame{
 		public void actionPerformed(ActionEvent arg0) {
 			JFileChooser chooser = new JFileChooser();
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(
-					"Txt files", "txt");
+					"rsk files", "rsk");
 			chooser.setFileFilter(filter);
 			int returnVal = chooser.showOpenDialog(null);
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -371,7 +371,7 @@ public class MainWindow extends JFrame{
 			if(filename == null) {
 				JFileChooser chooser = new JFileChooser();
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-						"Txt files", "txt");
+						"rsk files", "rsk");
 				chooser.setFileFilter(filter);
 				int returnVal = chooser.showSaveDialog(null);
 				if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -391,9 +391,7 @@ public class MainWindow extends JFrame{
 			} catch (IOException e) {
 				e.printStackTrace();
 			} 		
-
 		}
-
 	}
 
 }
