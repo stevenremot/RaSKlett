@@ -71,29 +71,29 @@ public class MainWindow extends JFrame{
 		combinators = new ArrayList<String>();
 		combinators.add(" B := S (K S) K");
 		combinators.add("W := S S (K I)");
-
-		create = new JButton("Create");
+		
+		create = new JButton(new ImageIcon("icons/create.png"));
 		create.addActionListener(new ControleurCreate());
 
-		open = new JButton("Open");
-		open.addActionListener(new ControleurOpen());
+		open = new JButton(new ImageIcon("icons/open.png"));
+		ControleurOpen cOpen = new ControleurOpen();
 
-		save = new JButton("Save");
+		save = new JButton(new ImageIcon("icons/save.png"));
 		save.addActionListener(new ControleurSave());
 
-		compileAll = new JButton("Compile all");
+		compileAll = new JButton(new ImageIcon("icons/compile.html"));
 		ControleurCompileAll cCompileAll = new ControleurCompileAll();
 		compileAll.addActionListener(cCompileAll);
 
-		compileStepByStep = new JButton("Compile step by step");
+		compileStepByStep = new JButton(new ImageIcon("icons/compile_sbs.png"));
 		ControleurCompileStepByStep cCompileStepByStep = new ControleurCompileStepByStep();
 		compileStepByStep.addActionListener(cCompileStepByStep);
 
-		nextStep = new JButton("Next step");
+		nextStep = new JButton(new ImageIcon("icons/next.png"));
 
-		nextLine = new JButton("Next line");
+		nextLine = new JButton(new ImageIcon("icons/next_line.png"));
 
-		toEnd = new JButton("Compile to end");
+		toEnd = new JButton(new ImageIcon("icons/to_end.html"));
 
 		stop = new JButton("Stop");	
 		ControleurStop cStop = new ControleurStop();
