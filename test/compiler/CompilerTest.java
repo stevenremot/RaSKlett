@@ -10,12 +10,12 @@ public class CompilerTest {
 
 	@Test
 	public void testReducesOneStepCorrectly() {
-		StringReader input = new StringReader("S X Y Z");
+		StringReader input = new StringReader("S S K I");
 		
 		CompilerCallback callback = new CompilerCallback() {
 			public void onResult(String result, int line, int position, boolean finished) {
 				if(finished) {
-					assertEquals("X Z ( Y Z )", result);
+					assertEquals("S I ( K I )", result);
 				}
 			}
 			
@@ -38,7 +38,7 @@ public class CompilerTest {
 		CompilerCallback callback = new CompilerCallback() {
 			public void onResult(String result, int line, int position, boolean finished) {
 				assertTrue(finished);
-				assertEquals("K", result);
+				assertEquals("I K", result);
 			}
 			
 			public void onFailure(CompilerException e) {
