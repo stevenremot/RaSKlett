@@ -35,29 +35,38 @@ public class Compiler {
 			callback.onFailure(e);
 		}
 		
+		
 	}
 	
 	/**
 	 * @return le graphe réduit sous forme de chaîne de caractères
 	 */
-	public String getResult() {
+	public synchronized String getResult() {
+		if(sk == null) {
+			return "";
+		}
+		
 		return GraphSerializer.serialize(sk.getReducedGraph());
 	}
 	
 	/**
 	 * @brief Envoie le résultat au callback
 	 */
-	public void sendResult() {
+	public synchronized void sendResult() {
 		callback.onResult(getResult(), currentInstruction.getLine(),
 				currentInstruction.getPosition(), isFinished());
 	}
 	
-	public boolean isFinished() {
+	public synchronized boolean isFinished() {
 		return finished;
 	}
 	
+	public synchronized boolean isInterrupted() {
+		return interrupted;
+	}
+	
 	// Compile l'instruction en graphe
-	private boolean registerNextInstruction() {
+	private synchronized boolean registerNextInstruction() {
 		if(currentInstructionIndex >= symbols.size()) {
 			finished = true;
 			return false;
@@ -91,26 +100,24 @@ public class Compiler {
 
 	
 	// réduit une étape
-	private void step() {
-		finished = !sk.step();
-	}
-	
-	// Réduit l'instruction suivante
-	private void instruction() {
-		interrupted = false;
-		
-		if(registerNextInstruction()) {
-			while(!this.isFinished() && !this.interrupted) {
-				this.step();
-			}
+	private synchronized void step() {
+		if(!finished || registerNextInstruction()) {
+			finished = !sk.step();
 		}
 	}
 	
-	// réduit TOUT
-	private void all() {
-		interrupted = false;
+	// Réduit l'instruction suivante
+	private synchronized void instruction() {
+		do {
+			this.step();
+		} while(!this.isFinished() && !this.isInterrupted());
 		
-		while(!this.isFinished() && !this.interrupted) {
+		registerNextInstruction();
+	}
+	
+	// réduit TOUT
+	private synchronized void all() {
+		while(!this.isFinished() && !this.isInterrupted()) {
 			this.instruction();
 		}
 	}
@@ -135,13 +142,17 @@ public class Compiler {
 	 * @return le thread qui exécute la réduction
 	 */
 	public Thread reduceInstruction() {
+		interrupted = false;
+		
 		final Compiler t = this;
 		
 		Runnable r = new Runnable() {
 			public void run() {
-				t.instruction();
+				synchronized(t) {
+					t.instruction();
 				
-				t.sendResult();
+					t.sendResult();
+				}
 			}
 		};
 		
@@ -163,9 +174,11 @@ public class Compiler {
 		
 		Runnable r = new Runnable() {
 			public void run() {
-				t.all();
+				synchronized(t) {
+					t.all();
 				
-				t.sendResult();
+					t.sendResult();
+				}
 			}
 		};
 		
@@ -178,7 +191,7 @@ public class Compiler {
 	/**
 	 * @brief stoppe la réduction
 	 */
-	public void stopReduction() {
+	public synchronized void stopReduction() {
 		interrupted = true;
 	}
 

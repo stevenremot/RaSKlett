@@ -1,7 +1,6 @@
 package compiler.parser;
 
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 import java.util.Stack;
 
 import compiler.CompilerException;
@@ -46,8 +45,12 @@ public class SemanticalAnalyser {
 	private void checkParenthesis() throws CompilerException {
 		if(seekFirstParenthesis()) {
 			boolean firstSymbolAfterParenthesis = true;
+			
+			if(symbolStack.isEmpty()) {
+				throw new CompilerException("')' expected", currentInstruction.getLine(), currentInstruction.getPosition());
+			}
 
-			while(!symbolStack.isEmpty() && !symbolStack.get(0).equals(")")) {
+			do {
 				if(symbolStack.get(0).equals("(")) {
 					checkParenthesis();
 				}
@@ -60,7 +63,7 @@ public class SemanticalAnalyser {
 				symbolStack.remove(0);
 
 
-			}
+			} while(!symbolStack.isEmpty() && !symbolStack.get(0).equals(")"));
 			
 			if(symbolStack.isEmpty()) {
 				throw new CompilerException("')' expected", currentInstruction.getLine(), currentInstruction.getPosition());

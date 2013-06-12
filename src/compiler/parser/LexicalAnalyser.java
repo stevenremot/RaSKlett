@@ -102,6 +102,17 @@ public class LexicalAnalyser {
 	
 	private void registerBoundary() throws IOException {
 		curSymbol = "" + (char)curChar;
+		
+		if(curSymbol.equals(";")) {
+			Instruction next = new Instruction();
+			next.setLine(currentInstruction.getLine());
+			next.setPosition(currentInstruction.getPosition() + 1);
+			
+			registerInstruction();
+			
+			currentInstruction = next;
+		}
+		
 		registerSymbol();
 		nextChar();
 	}
