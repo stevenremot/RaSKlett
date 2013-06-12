@@ -50,16 +50,12 @@ public class GraphFactoryTest {
 	@Test
 	public void simpleGraphTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
 		
-		CombinatorManager cmanager = CombinatorManager.getInstance();
-		
-		String[] example = {"S","K","I"};
+		String[] example = {"S","S","K","I"};
 		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
 		
-		assertEquals(cmanager.get("I"),graph.getArgument().getCombinator());
-		Node firstNode = graph.getFunction().getNode();
-		
-		assertEquals(cmanager.get("K"), firstNode.getArgument().getCombinator());
-		assertEquals(cmanager.get("S"), firstNode.getFunction().getCombinator());
+		String ret = GraphSerializer.serialize(graph);
+		assertEquals(ret,"S S K I");
+		assertEquals(null, graph.getNextNode());
 	}
 	
 	@Test
@@ -93,6 +89,7 @@ public class GraphFactoryTest {
 		
 		String ret = GraphSerializer.serialize(graph);
 		assertEquals("S K ( S K K )", ret);
+		assertEquals(null, graph.getNextNode());
 	}
 	
 	@Test
