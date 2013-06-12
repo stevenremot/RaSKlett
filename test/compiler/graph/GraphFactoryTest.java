@@ -55,15 +55,6 @@ public class GraphFactoryTest {
 		String[] example = {"S","K","I"};
 		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
 		
-		/*
-		Stack<String> example = new Stack<String>();
-		example.push("I");
-		example.push("K");
-		example.push("S"); // stack à remplir dans l'ordre inverse
-		Node graph = GraphFactory.create(example,null);
-		*/
-		
-		
 		assertEquals(cmanager.get("I"),graph.getArgument().getCombinator());
 		Node firstNode = graph.getFunction().getNode();
 		
@@ -78,16 +69,7 @@ public class GraphFactoryTest {
 		
 		String[] example = {"S","K","I","S","K","I"};
 		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
-		
-		/*
-		Stack<String> example = new Stack<String>();
-		example.push("I");
-		example.push("I");
-		example.push("K");
-		example.push("S");
-		Node graph = GraphFactory.create(example,null);
-		*/
-		
+			
 		assertEquals(cmanager.get("I"),graph.getArgument().getCombinator());
 		
 		while(graph.getFunction().getCombinator() == null) {
@@ -103,19 +85,6 @@ public class GraphFactoryTest {
 		
 		String[] example = {"S","K","(","S","K","K",")"};
 		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
-		
-		/*
-		Stack<String> example = new Stack<String>();
-		example.push(")");
-		example.push("K");
-		example.push("K");
-		example.push("S");
-		example.push("(");
-		example.push("K");
-		example.push("S");
-		
-		Node graph = GraphFactory.create(example,null);
-		*/
 		
 		graph.getArgument().getNode();
 		assertEquals(null,graph.getArgument().getCombinator());
@@ -133,21 +102,12 @@ public class GraphFactoryTest {
 		
 		String[] example = {"S","(","S","(","S","K",")",")"};
 		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
-		// S K ( S ( S K ) )
-		/*
-		Stack<String> example = new Stack<String>();
-		example.push(")");
-		example.push(")");
-		example.push("K");
-		example.push("S");
-		example.push("(");
-		example.push("S");
-		example.push("(");
-		example.push("S");
-		Node graph = GraphFactory.create(example,null);
-		*/
+	
 		assertEquals(cmanager.get("S"), graph.getArgument().getNode().getFunction().getCombinator());
 		assertEquals(cmanager.get("S"), graph.getArgument().getNode().getArgument().getNode().getFunction().getCombinator());
+		
+		String ret = GraphSerializer.serialize(graph);
+		assertEquals("S ( S ( S K ) )", ret);
 	}
 	
 	@Test
