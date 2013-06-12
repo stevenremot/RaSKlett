@@ -48,21 +48,12 @@ public class GraphFactoryTest {
 	}
 	
 	@Test
-	public void simpleGraphTest() throws EmptyStackException, BadParenthesisException{
+	public void simpleGraphTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		String[] example = {"S","K","I"};
 		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
-		
-		/*
-		Stack<String> example = new Stack<String>();
-		example.push("I");
-		example.push("K");
-		example.push("S"); // stack à remplir dans l'ordre inverse
-		Node graph = GraphFactory.create(example,null);
-		*/
-		
 		
 		assertEquals(cmanager.get("I"),graph.getArgument().getCombinator());
 		Node firstNode = graph.getFunction().getNode();
@@ -72,22 +63,13 @@ public class GraphFactoryTest {
 	}
 	
 	@Test
-	public void simpleButLongerGraphTest() throws EmptyStackException, BadParenthesisException{
+	public void simpleButLongerGraphTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		String[] example = {"S","K","I","S","K","I"};
 		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
-		
-		/*
-		Stack<String> example = new Stack<String>();
-		example.push("I");
-		example.push("I");
-		example.push("K");
-		example.push("S");
-		Node graph = GraphFactory.create(example,null);
-		*/
-		
+			
 		assertEquals(cmanager.get("I"),graph.getArgument().getCombinator());
 		
 		while(graph.getFunction().getCombinator() == null) {
@@ -98,24 +80,11 @@ public class GraphFactoryTest {
 	}
 	
 	@Test
-	public void firstParenthesisTest() throws EmptyStackException, BadParenthesisException{
+	public void firstParenthesisTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		String[] example = {"S","K","(","S","K","K",")"};
 		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
-		
-		/*
-		Stack<String> example = new Stack<String>();
-		example.push(")");
-		example.push("K");
-		example.push("K");
-		example.push("S");
-		example.push("(");
-		example.push("K");
-		example.push("S");
-		
-		Node graph = GraphFactory.create(example,null);
-		*/
 		
 		graph.getArgument().getNode();
 		assertEquals(null,graph.getArgument().getCombinator());
@@ -127,31 +96,22 @@ public class GraphFactoryTest {
 	}
 	
 	@Test
-	public void doubleParenthesisTest() throws EmptyStackException, BadParenthesisException {
+	public void doubleParenthesisTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException {
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		String[] example = {"S","(","S","(","S","K",")",")"};
 		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
-		// S K ( S ( S K ) )
-		/*
-		Stack<String> example = new Stack<String>();
-		example.push(")");
-		example.push(")");
-		example.push("K");
-		example.push("S");
-		example.push("(");
-		example.push("S");
-		example.push("(");
-		example.push("S");
-		Node graph = GraphFactory.create(example,null);
-		*/
+	
 		assertEquals(cmanager.get("S"), graph.getArgument().getNode().getFunction().getCombinator());
 		assertEquals(cmanager.get("S"), graph.getArgument().getNode().getArgument().getNode().getFunction().getCombinator());
+		
+		String ret = GraphSerializer.serialize(graph);
+		assertEquals("S ( S ( S K ) )", ret);
 	}
 	
 	@Test
-	public void singleCombinatorTest() throws EmptyStackException, BadParenthesisException {
+	public void singleCombinatorTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException {
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
