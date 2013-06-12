@@ -56,6 +56,10 @@ public class Editor extends JTextPane {
 		setEditable(true);
 	}
 	
+	/**
+	 * @brief Méthode renvoyant les intructions écrites dans l'éditeur sans les erreurs et les résultats.  
+	 * @return
+	 */
 	public String getCleanedText() {
 		String text = "";
 		int posInit = getCaretPosition();

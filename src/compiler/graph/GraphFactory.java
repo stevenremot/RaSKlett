@@ -108,12 +108,12 @@ public class GraphFactory {
 	 * @return currentNode
 	 * @throws EmptyStackException
 	 * @throws BadParenthesisException
+	 * @throws CombinatorNotFoundException 
 	 */
-	public static Node create(Stack<String> combinators) throws EmptyStackException, BadParenthesisException{
+	public static Node create(Stack<String> combinators) throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
 		
 		if(combinators.empty())
 			throw new EmptyStackException();	
-		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		// initialisation
 		Node currentNode = null, previousNode = null;
@@ -123,18 +123,18 @@ public class GraphFactory {
 		
 		// cas d'un seul combinateur C : le noeud (I, C) est créé 
 		if(combinators.empty()){
-			currentFunc = NodeFieldFactory.create(cmanager.get("I"));
+			currentFunc = createCombinatorNodeField("I");
 			if(currentString.equals("(" )||currentString.equals(")"))
 				throw new BadParenthesisException();
 			else
-				currentArg = NodeFieldFactory.create(cmanager.get(currentString));
+				currentArg = createCombinatorNodeField(currentString);
 			currentNode = new Node(currentFunc,currentArg);
 			return currentNode;
 		}
 		
 		if(currentString.equals("(" )||currentString.equals(")"))
 			throw new BadParenthesisException();
-		currentFunc = NodeFieldFactory.create(cmanager.get(currentString));
+		currentFunc = createCombinatorNodeField(currentString);
 		currentNode = new Node(currentFunc);
 		
 		currentString = combinators.pop();
@@ -144,11 +144,9 @@ public class GraphFactory {
 		else if(currentString.equals(")"))
 			throw new BadParenthesisException();
 		else
-			currentArg = NodeFieldFactory.create(cmanager.get(currentString));
+			currentArg = createCombinatorNodeField(currentString);
 		currentNode.setArgument(currentArg);
-		//currentNode.setNextNode(previousNode);
-		
-		// utilisation du passage par référence des String
+				
 		previousNode = currentNode;
 				
 		// boucle
@@ -165,7 +163,7 @@ public class GraphFactory {
 				return previousNode;
 			}
 			else
-				currentArg = NodeFieldFactory.create(cmanager.get(currentString));
+				currentArg = createCombinatorNodeField(currentString);
 			
 			currentNode.setArgument(currentArg);
 			previousNode.setNextNode(currentNode);
@@ -177,6 +175,25 @@ public class GraphFactory {
 		return currentNode;
 	}
 
+	
+	/**
+	 * @brief crée un CombinatorNodeField à partir d'un combinateur trouvé dans le CombinatorManager
+	 * Si le combinateur n'est pas dans le manager, une exception est renvoyée
+	 * @param name
+	 * @return CombinatorNodeField
+	 * @throws CombinatorNotFoundException
+	 */
+	public static NodeField createCombinatorNodeField(String name) throws CombinatorNotFoundException{
+		
+		CombinatorManager cmanager = CombinatorManager.getInstance();
+		
+		if(cmanager.get(name) == null)
+			throw new CombinatorNotFoundException(name);
+		
+		return NodeFieldFactory.create(cmanager.get(name));
+	}
+	
+	
 	/**
 	 * @brief méthode haut-niveau de la construction du graphe
 	 * Prend en argument l'ArrayList envoyée par le compilateur correspondant à l'expression à réduire
@@ -187,8 +204,9 @@ public class GraphFactory {
 	 * @return graph
 	 * @throws EmptyStackException
 	 * @throws BadParenthesisException
+	 * @throws CombinatorNotFoundException 
 	 */
-	public static Node create(ArrayList<String> combinators) throws EmptyStackException, BadParenthesisException{
+	public static Node create(ArrayList<String> combinators) throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
 		
 		parseParenthesis(combinators);
 		
