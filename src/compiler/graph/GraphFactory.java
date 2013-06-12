@@ -102,23 +102,21 @@ public class GraphFactory {
 	 * 
 	 * Gestion des expressions entre parenthèses :
 	 * Pour chaque parenthèse ouvrante "(", un appel récursif de create(combinators, currentNode) permet de construire le sous-graphe associé à l'expression entre parenthèses
-	 * Le passage de l'argument currentNode sert à la définition des "nextNode" utilisés dans l'algortithme de la machine SK.
 	 * La détection de la parenthèse fermante "(" sert de condition d'arrêt à la méthode.
 	 * 
 	 * @param combinators
-	 * @param previousNode
 	 * @return currentNode
 	 * @throws EmptyStackException
 	 * @throws BadParenthesisException
 	 */
-	public static Node create(Stack<String> combinators, Node previousNode) throws EmptyStackException, BadParenthesisException{
+	public static Node create(Stack<String> combinators) throws EmptyStackException, BadParenthesisException{
 		
 		if(combinators.empty())
 			throw new EmptyStackException();	
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		// initialisation
-		Node currentNode = null;
+		Node currentNode = null, previousNode = null;
 		NodeField currentFunc = null, currentArg = null;
 		
 		String currentString = combinators.pop();
@@ -131,7 +129,6 @@ public class GraphFactory {
 			else
 				currentArg = NodeFieldFactory.create(cmanager.get(currentString));
 			currentNode = new Node(currentFunc,currentArg);
-			currentNode.setNextNode(previousNode);
 			return currentNode;
 		}
 		
@@ -143,13 +140,13 @@ public class GraphFactory {
 		currentString = combinators.pop();
 		
 		if(currentString.equals("("))
-			currentArg = NodeFieldFactory.create(create(combinators,currentNode));
+			currentArg = NodeFieldFactory.create(create(combinators));
 		else if(currentString.equals(")"))
 			throw new BadParenthesisException();
 		else
 			currentArg = NodeFieldFactory.create(cmanager.get(currentString));
 		currentNode.setArgument(currentArg);
-		currentNode.setNextNode(previousNode);
+		//currentNode.setNextNode(previousNode);
 		
 		// utilisation du passage par référence des String
 		previousNode = currentNode;
@@ -162,14 +159,16 @@ public class GraphFactory {
 			currentNode = new Node(currentFunc);
 			
 			if(currentString.equals("("))
-				currentArg = NodeFieldFactory.create(create(combinators,currentNode));
-			else if(currentString.equals(")"))
+				currentArg = NodeFieldFactory.create(create(combinators));
+			else if(currentString.equals(")")){
+				previousNode.setNextNode(null);
 				return previousNode;
+			}
 			else
 				currentArg = NodeFieldFactory.create(cmanager.get(currentString));
 			
 			currentNode.setArgument(currentArg);
-			currentNode.setNextNode(previousNode);
+			previousNode.setNextNode(currentNode);
 			
 			previousNode = currentNode;
 			
@@ -199,6 +198,6 @@ public class GraphFactory {
 			stack.push(combinators.get(i));
 		}
 		
-		return create(stack, null);
+		return create(stack);
 	}
 }
