@@ -3,69 +3,140 @@ package compiler.parser;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.junit.Test;
-
-import compiler.CompilerException;
 
 public class SemanticalAnalyserTest {
 
 	@Test
-	public void testGoodParenthesisWorks() throws CompilerException {
+	public void testBasicInstructionWorks() {
 		Instruction i = new Instruction();
 		i.addInstruction("(");
 		i.addInstruction("A");
 		i.addInstruction(")");
 		
-		ArrayList<Instruction> symbols = new ArrayList<Instruction>();
-		symbols.add(i);
+		SemanticalAnalyser sem = new SemanticalAnalyser();
 		
-		SemanticalAnalyser sem = new SemanticalAnalyser(symbols);
+		sem.semanticAnalysis(i);
 		
-		symbols = sem.getCombinators();
+		LinkedList<String> result = sem.myresult;
 		
-		ArrayList<String> combinators = symbols.get(0).getInstruction();
-		
-		assertEquals(3, combinators.size());
-		assertEquals("(", combinators.get(0));
-		assertEquals("A", combinators.get(1));
-		assertEquals(")", combinators.get(2));
+		assertEquals(3, result.size());
+		assertEquals("(", result.get(0));
+		assertEquals("A", result.get(1));
+		assertEquals(")", result.get(2));
 	}
 	
-	@Test(expected=CompilerException.class)
-	public void testFewParenthesisWorks() throws CompilerException {
+	@Test
+	public void testStrangerNameWorks() {
 		Instruction i = new Instruction();
-		i.addInstruction("(");
+		i.addInstruction("_");
+		i.addInstruction("a");
+		i.addInstruction("a");
+		i.addInstruction("0");
+		i.addInstruction("a");
+		i.addInstruction("_");
+		i.addInstruction("a");
+		i.addInstruction("J");
+		i.addInstruction("a");
+		i.addInstruction("a");
+		
+		SemanticalAnalyser sem = new SemanticalAnalyser();
+		
+		sem.semanticAnalysis(i);
+		
+		LinkedList<String> result = sem.myresult;
+		
+		assertEquals(1, result.size());
+		assertEquals("_aa0a_aJaa", result.get(0));
+	}
+	
+	@Test
+	public void testAssigmentWorks() {
+		Instruction i = new Instruction();
+		i.addInstruction("A");
+		i.addInstruction(":");
+		i.addInstruction("=");
+		i.addInstruction("B");
+		
+		SemanticalAnalyser sem = new SemanticalAnalyser();
+		
+		sem.semanticAnalysis(i);
+		
+		LinkedList<String> result = sem.myresult;
+		
+		assertEquals(3, result.size());
+		assertEquals("A", result.get(0));
+		assertEquals(":=", result.get(1));
+		assertEquals("B", result.get(2));
+	}
+	
+	@Test
+	public void testSpacedExpressionsWork() {
+		Instruction i = new Instruction();
+		i.addInstruction("A");
+		i.addInstruction(" ");
+		i.addInstruction("B");
+		
+		SemanticalAnalyser sem = new SemanticalAnalyser();
+		
+		sem.semanticAnalysis(i);
+		
+		LinkedList<String> result = sem.myresult;
+		
+		assertEquals(2, result.size());
+		assertEquals("A", result.get(0));
+		assertEquals("B", result.get(1));
+	}
+	
+	@Test
+	public void testDoubleSemiColonWork() {
+		Instruction i = new Instruction();
+		i.addInstruction("A");
+		i.addInstruction(" ");
+		i.addInstruction("B");
+		i.addInstruction(";");
+		i.addInstruction(";");
+		
+		SemanticalAnalyser sem = new SemanticalAnalyser();
+		
+		sem.semanticAnalysis(i);
+		
+		LinkedList<String> result = sem.myresult;
+		
+		assertEquals(3, result.size());
+		assertEquals("A", result.get(0));
+		assertEquals("B", result.get(1));
+		assertEquals(";;", result.get(2));
+	}
+
+	@Test
+	public void testLambdaWork() {
+		Instruction i = new Instruction();
+		i.addInstruction("l");
+		i.addInstruction("a");
+		i.addInstruction("m");
+		i.addInstruction("b");
+		i.addInstruction("d");
+		i.addInstruction("a");
+		i.addInstruction("+");
+		i.addInstruction("+");
+		i.addInstruction("x");
+		i.addInstruction(".");
 		i.addInstruction("A");
 		
-		ArrayList<Instruction> symbols = new ArrayList<Instruction>();
-		symbols.add(i);
+		SemanticalAnalyser sem = new SemanticalAnalyser();
 		
-		new SemanticalAnalyser(symbols);
-	}
-	
-	@Test(expected=CompilerException.class)
-	public void testClosingParenthesisWorks() throws CompilerException {
-		Instruction i = new Instruction();
-		i.addInstruction(")");
-		i.addInstruction("A");
+		sem.semanticAnalysis(i);
 		
-		ArrayList<Instruction> symbols = new ArrayList<Instruction>();
-		symbols.add(i);
+		LinkedList<String> result = sem.myresult;
 		
-		new SemanticalAnalyser(symbols);
-	}
-	
-	@Test(expected=CompilerException.class)
-	public void testEmptyParenthesisWorks() throws CompilerException {
-		Instruction i = new Instruction();
-		i.addInstruction("(");
-		i.addInstruction(")");
-		
-		ArrayList<Instruction> symbols = new ArrayList<Instruction>();
-		symbols.add(i);
-		
-		new SemanticalAnalyser(symbols);
+		assertEquals(4, result.size());
+		assertEquals("lambda++", result.get(0));
+		assertEquals("x", result.get(1));
+		assertEquals(".", result.get(2));
+		assertEquals("A", result.get(3));
 	}
 
 }
