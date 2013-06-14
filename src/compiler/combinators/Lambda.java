@@ -44,5 +44,9 @@ public class Lambda implements Combinator {
 		
 		return s;
 	}
+	
+	public int getLevel() {
+		return level;
+	}
 
 }
