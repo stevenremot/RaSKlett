@@ -14,5 +14,5 @@ public interface NodeField {
 	
 	public Combinator getCombinator();
 	public Node getNode();
-
+	
 }
