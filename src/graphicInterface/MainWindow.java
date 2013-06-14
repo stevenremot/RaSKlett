@@ -15,6 +15,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -22,9 +24,15 @@ import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 
+import compiler.Compiler;
+import compiler.CompilerCallback;
+import compiler.CompilerException;
 
-public class MainWindow extends JFrame{
 
+public class MainWindow extends JFrame implements CompilerCallback{
+
+	private Compiler compiler;
+	
 	private String filename = null;
 	private String dir = null;
 
@@ -68,6 +76,9 @@ public class MainWindow extends JFrame{
 	 * Constructeur de la classe Fenetre
 	 */
 	public MainWindow(){
+		
+		compiler = new Compiler(new StringReader(null),this);
+		
 		combinators = new ArrayList<String>();
 		combinators.add(" B := S (K S) K");
 		combinators.add("W := S S (K I)");
@@ -250,15 +261,24 @@ public class MainWindow extends JFrame{
 		iToEnd.setEnabled(true);
 		iStop.setEnabled(true);
 		editor.disableEdition();
-		//et le reste
+		
+		String code = editor.getCleanedText();
+		Reader reader = new StringReader(code);
+		compiler = new Compiler(reader,this);
+		compiler.reduceStep();
+
 	}
 
 	public void startCompilation(){
 		editor.disableEdition();
 		stop.setEnabled(true);
 		iStop.setEnabled(true);
-		//compile();
-		//et le reste
+		
+		String code = editor.getCleanedText();
+		Reader reader = new StringReader(code);
+		compiler = new Compiler(reader,this);
+		compiler.reduceAll();
+
 	}
 
 	public void stopCompilation(){
@@ -271,7 +291,8 @@ public class MainWindow extends JFrame{
 		iNextLine.setEnabled(false);
 		iToEnd.setEnabled(false);
 		iStop.setEnabled(false);
-		//compile();
+		
+		compiler.stopReduction();
 	}
 
 	public class ControleurCompileAll implements ActionListener {
@@ -385,6 +406,26 @@ public class MainWindow extends JFrame{
 			} catch (IOException e) {
 				e.printStackTrace();
 			} 		
+		}
+	}
+
+	@Override
+	public void onResult(String reducedGraph, int line, int position,
+			boolean finished) {
+		try {
+			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,0);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onFailure(CompilerException e) {
+		int line = e.getLine();
+		try {
+			editor.insertError("Erreur ligne "+line+" "+e.getMessage(),0);
+		} catch (BadLocationException e1) {
+			e1.printStackTrace();
 		}
 	}
 
