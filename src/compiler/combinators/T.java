@@ -1,20 +1,16 @@
 package compiler.combinators;
 
 import compiler.graph.Node;
+import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
 
-public class W implements Combinator {
+public class T implements Combinator {
 
 	@Override
 	public Node getGraph() {
 		return null;
 	}
 
-	/**
-	 * @brief Applique le combinateur permutateur W au graphe.
-	 * On vérifie qu'on a au moins 2 arguments F et X.
-	 * Ensuite on remplace le deuxième noeud par (F X) X
-	 */
 	@Override
 	public boolean applyReduction(Registry registry) {
 		Node currentNode = registry.getNode(),
@@ -22,15 +18,15 @@ public class W implements Combinator {
 		if(nextNode == null)
 			return false;
 		
-		currentNode.setFunction(currentNode.getArgument());
-		currentNode.setArgument(nextNode.getArgument());
-		registry.setNode(currentNode);
+		nextNode.setFunction(NodeFieldFactory.create(new I()));
+		nextNode.setArgument(currentNode.getArgument());
+		registry.setNode(nextNode);
 		return true;
 	}
 
 	@Override
 	public String getName() {
-		return "W";
+		return "t";
 	}
 
 }

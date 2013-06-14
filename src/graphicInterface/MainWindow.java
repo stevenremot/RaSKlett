@@ -26,7 +26,7 @@ import javax.swing.text.BadLocationException;
 public class MainWindow extends JFrame{
 
 	private String filename = null;
-	private String dir = new String();
+	private String dir = null;
 
 	private final static String newline = "\n";
 	private static final long serialVersionUID = 1L;
@@ -382,12 +382,13 @@ public class MainWindow extends JFrame{
 			}
 
 			try {
-				FileWriter writer = new FileWriter(new File(dir));
-				String text = editor.getCleanedText();
-				char[] buffer = text.toCharArray();
-				writer.write(buffer);
-				writer.close();
-				System.out.println("save");
+				if(dir != null) {
+					FileWriter writer = new FileWriter(new File(dir));
+					String text = editor.getCleanedText();
+					char[] buffer = text.toCharArray();
+					writer.write(buffer);
+					writer.close();
+					System.out.println("save");}
 			} catch (IOException e) {
 				e.printStackTrace();
 			} 		
