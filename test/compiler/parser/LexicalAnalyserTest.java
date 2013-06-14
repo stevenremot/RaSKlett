@@ -114,4 +114,40 @@ public class LexicalAnalyserTest {
 		assertEquals("C", symbols.get(4));
 		assertEquals("D", symbols.get(5));
 	}
+	
+	@Test
+	public void testDoubleSemiColon() throws CompilerException {
+		StringReader input = new StringReader("A B;; C D");
+		
+		LexicalAnalyser lex = new LexicalAnalyser(input);
+		
+		ArrayList<Instruction> instructions = lex.getSymbols();
+		
+		assertEquals(2, instructions.size());
+		
+		Instruction ins = instructions.get(0);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(0, ins.getPosition());
+		
+		ArrayList<String> symbols = ins.getInstruction();
+		assertEquals(5, symbols.size());
+		assertEquals("A", symbols.get(0));
+		assertEquals(" ", symbols.get(1));
+		assertEquals("B", symbols.get(2));
+		assertEquals(";", symbols.get(3));
+		assertEquals(";", symbols.get(4));
+		
+		ins = instructions.get(1);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(1, ins.getPosition());
+		
+		symbols = ins.getInstruction();
+		assertEquals(4, symbols.size());
+		assertEquals(" ", symbols.get(0));
+		assertEquals("C", symbols.get(1));
+		assertEquals(" ", symbols.get(2));
+		assertEquals("D", symbols.get(3));
+	}
 }
