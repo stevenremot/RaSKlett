@@ -22,14 +22,82 @@ public class LexicalAnalyserTest {
 		assertEquals(1, instructions.size());
 		
 		ArrayList<String> symbols = instructions.get(0).getInstruction();
-		assertEquals(2, symbols.size());
+		assertEquals(3, symbols.size());
 		assertEquals("A", symbols.get(0));
-		assertEquals("B", symbols.get(1));
+		assertEquals(" ", symbols.get(1));
+		assertEquals("B", symbols.get(2));
 	}
 	
 	@Test
-	public void testParenthesis() throws CompilerException {
-		StringReader input = new StringReader("A (B C)");
+	public void testLines() throws CompilerException {
+		StringReader input = new StringReader("A B;\nC D");
+		
+		LexicalAnalyser lex = new LexicalAnalyser(input);
+		
+		ArrayList<Instruction> instructions = lex.getSymbols();
+		
+		assertEquals(2, instructions.size());
+		
+		Instruction ins = instructions.get(0);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(0, ins.getPosition());
+		
+		ArrayList<String> symbols = ins.getInstruction();
+		assertEquals(3, symbols.size());
+		assertEquals("A", symbols.get(0));
+		assertEquals(" ", symbols.get(1));
+		assertEquals("B", symbols.get(2));
+		
+		ins = instructions.get(1);
+		
+		assertEquals(1, ins.getLine());
+		assertEquals(0, ins.getPosition());
+		
+		symbols = ins.getInstruction();
+		assertEquals(3, symbols.size());
+		assertEquals("C", symbols.get(0));
+		assertEquals(" ", symbols.get(1));
+		assertEquals("D", symbols.get(2));
+	}
+	
+	@Test
+	public void testSemiColons() throws CompilerException {
+		StringReader input = new StringReader("A B; C D");
+		
+		LexicalAnalyser lex = new LexicalAnalyser(input);
+		
+		ArrayList<Instruction> instructions = lex.getSymbols();
+		
+		assertEquals(2, instructions.size());
+		
+		Instruction ins = instructions.get(0);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(0, ins.getPosition());
+		
+		ArrayList<String> symbols = ins.getInstruction();
+		assertEquals(3, symbols.size());
+		assertEquals("A", symbols.get(0));
+		assertEquals(" ", symbols.get(1));
+		assertEquals("B", symbols.get(2));
+		
+		ins = instructions.get(1);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(1, ins.getPosition());
+		
+		symbols = ins.getInstruction();
+		assertEquals(4, symbols.size());
+		assertEquals(" ", symbols.get(0));
+		assertEquals("C", symbols.get(1));
+		assertEquals(" ", symbols.get(2));
+		assertEquals("D", symbols.get(3));
+	}
+	
+	@Test
+	public void testMultiLineExpression() throws CompilerException {
+		StringReader input = new StringReader("A B C\n  D;");
 		
 		LexicalAnalyser lex = new LexicalAnalyser(input);
 		
@@ -38,11 +106,48 @@ public class LexicalAnalyserTest {
 		assertEquals(1, instructions.size());
 		
 		ArrayList<String> symbols = instructions.get(0).getInstruction();
+		assertEquals(6, symbols.size());
+		assertEquals("A", symbols.get(0));
+		assertEquals(" ", symbols.get(1));
+		assertEquals("B", symbols.get(2));
+		assertEquals(" ", symbols.get(3));
+		assertEquals("C", symbols.get(4));
+		assertEquals("D", symbols.get(5));
+	}
+	
+	@Test
+	public void testDoubleSemiColon() throws CompilerException {
+		StringReader input = new StringReader("A B;; C D");
+		
+		LexicalAnalyser lex = new LexicalAnalyser(input);
+		
+		ArrayList<Instruction> instructions = lex.getSymbols();
+		
+		assertEquals(2, instructions.size());
+		
+		Instruction ins = instructions.get(0);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(0, ins.getPosition());
+		
+		ArrayList<String> symbols = ins.getInstruction();
 		assertEquals(5, symbols.size());
 		assertEquals("A", symbols.get(0));
-		assertEquals("(", symbols.get(1));
+		assertEquals(" ", symbols.get(1));
 		assertEquals("B", symbols.get(2));
-		assertEquals("C", symbols.get(3));
-		assertEquals(")", symbols.get(4));
+		assertEquals(";", symbols.get(3));
+		assertEquals(";", symbols.get(4));
+		
+		ins = instructions.get(1);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(1, ins.getPosition());
+		
+		symbols = ins.getInstruction();
+		assertEquals(4, symbols.size());
+		assertEquals(" ", symbols.get(0));
+		assertEquals("C", symbols.get(1));
+		assertEquals(" ", symbols.get(2));
+		assertEquals("D", symbols.get(3));
 	}
 }
