@@ -56,7 +56,7 @@ public class CStarTest {
 	}
 	
 	@Test
-	public void testKStopsWith1Argument() {
+	public void testCStarStopsWith1Argument() {
 		Combinator c = new CStar(), x = new DummyCombinator("X");
 		
 		Node node1 =  new Node(NodeFieldFactory.create(c), NodeFieldFactory.create(x));

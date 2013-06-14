@@ -11,6 +11,10 @@ public class C implements Combinator {
 		return null;
 	}
 
+	/**
+	 * @brief Applique le combinateur de permutation C au graphe
+	 * Vérifie qu'on a au moins trois arguments F X Y et remplace le troisième noeud par (F Y) X
+	 */
 	@Override
 	public boolean applyReduction(Registry registry) {
 		Node node1 = registry.getNode();

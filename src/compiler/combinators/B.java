@@ -12,7 +12,7 @@ public class B implements Combinator{
 	} 
 
 	/**
-	 * @brief Applique le combinateur B au graphe
+	 * @brief Applique le combinateur de compostion B au graphe
 	 * On vérifie qu'on a au moins 3 arguments F G X.
 	 * Puis on remplace le troisième noeud par F (GX).
 	 */
