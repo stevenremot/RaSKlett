@@ -67,6 +67,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	private JToolBar toolBar = null;
 	private ArrayList<String> combinators;
+	
+	private int offset = 1;
 
 	/**
 	 * Constructeur de la classe Fenetre
@@ -224,6 +226,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		combinatorPanel.add(test);
 		add(combinatorPanel, BorderLayout.WEST);
 
+		
+
+		
+		
 		setPreferredSize(new Dimension(800, 600));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("RaSKlett");
@@ -236,6 +242,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	
 	public void startCompilationStepByStep(){
+		editor.setText(editor.getCleanedText());
 		nextStep.setEnabled(true);
 		nextLine.setEnabled(true);
 		toEnd.setEnabled(true);
@@ -252,6 +259,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
 	public void startCompilation(){
+		editor.setText(editor.getCleanedText());
 		editor.disableEdition();
 		stop.setEnabled(true);
 		iStop.setEnabled(true);
@@ -386,14 +394,25 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			dir = null;
 			editor.setText(null);
 			
-			test += "bla";
-			try {
-				testReader.reset();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+//			try {
+//				int pos = getPos(1+offset,0);
+//				editor.insertResult("Resultat",pos);
+//				offset++;
+//				pos = getPos(1+offset,1);
+//				editor.insertResult("Resultat2",pos);
+//				offset++;
+//				pos = getPos(2+offset,0);
+//				editor.insertResult("Resultat3",pos);
+//				offset++;
+//				pos = getPos(2+offset,1);
+//				editor.insertResult("Resultat4",pos);
+//				offset++;
+//				
+//			} catch (BadLocationException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 
 	}
 
@@ -434,12 +453,32 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			} 		
 		}
 	}
+	
+	public int getPos(int line, int position) {
+		String s = editor.getText();
+		String[] instructions = s.split("\n");
+		int pos = 1;
+		for(int i = 0; i < line; i++) {
+			pos += instructions[i].length();
+		}
+		String[] instructions_2 = instructions[line].split(";");
+		int j = 0;
+		while(j < position) {
+			pos += instructions_2[j].length();
+			if(instructions_2[j].length() > 0)
+				j++;
+		}
+		System.out.println("ligne "+ line +" : " + instructions[line]+ " inst "+position+" : "+ instructions_2[position]);
+		return pos;
+	}
 
 	@Override
 	public void onResult(String reducedGraph, int line, int position,
 			boolean finished) {
 		try {
-			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,0);
+			int pos = getPos(line + offset,position);
+			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,pos);
+			offset++;
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -449,7 +488,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void onFailure(CompilerException e) {
 		int line = e.getLine();
 		try {
-			editor.insertError("Erreur ligne "+line+" "+e.getMessage(),0);
+			editor.insertError("Erreur ligne "+line+" "+e.getMessage(),line + offset);
+			offset++;
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
