@@ -47,8 +47,6 @@ public class S implements Combinator {
 		node3.setFunction(NodeFieldFactory.create(funcNode));
 		node3.setArgument(NodeFieldFactory.create(argNode));
 		
-		funcNode.setNextNode(node3);
-		
 		registry.setNode(funcNode);
 		
 		return true;

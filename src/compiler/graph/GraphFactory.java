@@ -1,6 +1,6 @@
 package compiler.graph;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Stack;
 import java.util.List;
 import compiler.combinators.CombinatorManager;
@@ -15,6 +15,17 @@ import compiler.combinators.CombinatorManager;
 
 public class GraphFactory {
 	
+	/**
+	 * @brief Petit parser pour supprimer les parenthèses inutiles (sans valeur sémantique)
+	 * Prend en argument une liste de String correspondant à une expression à réduire
+	 * L'expression est déjà supposée syntaxiquement correcte
+	 * Le parser supprime :
+	 * 	- les parenthèses en tête d'expression
+	 * 	- les parenthèses de la forme ( A ) et ( )
+	 * 
+	 * @param combinators
+	 * la liste combinators doit correspondre à une implémentation des listes qui supporte la méthode remove(int) (exemple ArrayList)
+	 */
 	public static void parseParenthesis(List<String> combinators){
 		
 		// initialisation : suppression (récursive) des premières parenthèses
@@ -46,6 +57,13 @@ public class GraphFactory {
 		}
 	}
 	
+	/**
+	 * Récupère pour la position "(" index, la position de la parenthèse ")" correspondante, dans la liste de String list, supposée syntaxiquement correcte.
+	 * Renvoie 0 en cas d'échec, ce qui correspond à une liste d'entrée syntaxiquement incorrecte
+	 * @param list
+	 * @param index
+	 * @return matchingIndex
+	 */
 	public static int getMatchingParenthesis(List<String> list, int index){
 		
 		int i=index+1;
@@ -66,65 +84,89 @@ public class GraphFactory {
 		return 0;
 	}
 	
-	public static Node create(Stack<String> combinators, Node previousNode) throws EmptyStackException, BadParenthesisException{
+	/**
+	 * @brief création de graphe
+	 * 
+	 * Prend en argument une pile correspondant à l'expression à évaluer
+	 * 
+	 * Si l'expression n'est constituée que d'un seul combinateur C, le noeud (func : I, Arg : C) est construit 
+	 * 
+	 * La contruction de graphe se fait en deux étapes :
+	 * L'initialisation :
+	 * 	le premier noeud est de la forme (func : C, arg) où C est le premier terme de l'expression.
+	 * 	C ne peut pas être une parenthèse après application de parseParenthesis. 
+	 * 	L'argument arg est soit un combinateur, soit un noeud correspondant à une expression entre parenthèses.
+	 * La boucle :
+	 * 	L'expression est ensuite traitée combinateur par combinateur. Pour un combinateur Ci, le noeud (func, arg : Ci) est créé
+	 * 	Où func est le noeud qui a été créé juste avant.
+	 * 
+	 * Gestion des expressions entre parenthèses :
+	 * Pour chaque parenthèse ouvrante "(", un appel récursif de create(combinators, currentNode) permet de construire le sous-graphe associé à l'expression entre parenthèses
+	 * La détection de la parenthèse fermante "(" sert de condition d'arrêt à la méthode.
+	 * 
+	 * @param combinators
+	 * @return currentNode
+	 * @throws EmptyStackException
+	 * @throws BadParenthesisException
+	 * @throws CombinatorNotFoundException 
+	 */
+	public static Node create(Stack<String> combinators) throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
 		
 		if(combinators.empty())
 			throw new EmptyStackException();	
-		CombinatorManager cmanager = CombinatorManager.getInstance();
 		
 		// initialisation
-		Node currentNode = null;
+		Node currentNode = null, previousNode = null;
 		NodeField currentFunc = null, currentArg = null;
 		
 		String currentString = combinators.pop();
 		
 		// cas d'un seul combinateur C : le noeud (I, C) est créé 
 		if(combinators.empty()){
-			currentFunc = new CombinatorNodeField(cmanager.get("I"));
+			currentFunc = createCombinatorNodeField("I");
 			if(currentString.equals("(" )||currentString.equals(")"))
 				throw new BadParenthesisException();
 			else
-				currentArg = new CombinatorNodeField(cmanager.get(currentString));
+				currentArg = createCombinatorNodeField(currentString);
 			currentNode = new Node(currentFunc,currentArg);
-			currentNode.setNextNode(previousNode);
 			return currentNode;
 		}
 		
 		if(currentString.equals("(" )||currentString.equals(")"))
 			throw new BadParenthesisException();
-		currentFunc = new CombinatorNodeField(cmanager.get(currentString));
+		currentFunc = createCombinatorNodeField(currentString);
 		currentNode = new Node(currentFunc);
 		
 		currentString = combinators.pop();
 		
 		if(currentString.equals("("))
-			currentArg = new NodeNodeField(create(combinators,currentNode));
+			currentArg = NodeFieldFactory.create(create(combinators));
 		else if(currentString.equals(")"))
 			throw new BadParenthesisException();
 		else
-			currentArg = new CombinatorNodeField(cmanager.get(currentString));
+			currentArg = createCombinatorNodeField(currentString);
 		currentNode.setArgument(currentArg);
-		currentNode.setNextNode(previousNode);
-		
-		// utilisation du passage par référence des String
+				
 		previousNode = currentNode;
 				
 		// boucle
 		while(!combinators.empty()){
 			
-			currentFunc = new NodeNodeField(previousNode);
+			currentFunc = NodeFieldFactory.create(previousNode);
 			currentString = combinators.pop();
 			currentNode = new Node(currentFunc);
 			
 			if(currentString.equals("("))
-				currentArg = new NodeNodeField(create(combinators,currentNode));
-			else if(currentString.equals(")"))
+				currentArg = NodeFieldFactory.create(create(combinators));
+			else if(currentString.equals(")")){
+				previousNode.setNextNode(null);
 				return previousNode;
+			}
 			else
-				currentArg = new CombinatorNodeField(cmanager.get(currentString));
+				currentArg = createCombinatorNodeField(currentString);
 			
 			currentNode.setArgument(currentArg);
-			currentNode.setNextNode(previousNode);
+			previousNode.setNextNode(currentNode);
 			
 			previousNode = currentNode;
 			
@@ -133,64 +175,47 @@ public class GraphFactory {
 		return currentNode;
 	}
 
-	public static Node create(String[] combinators){
+	
+	/**
+	 * @brief crée un CombinatorNodeField à partir d'un combinateur trouvé dans le CombinatorManager
+	 * Si le combinateur n'est pas dans le manager, une exception est renvoyée
+	 * @param name
+	 * @return CombinatorNodeField
+	 * @throws CombinatorNotFoundException
+	 */
+	public static NodeField createCombinatorNodeField(String name) throws CombinatorNotFoundException{
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
-	
-		Node currentNode = null;
-		Node previousNode = null;
 		
-		// initialisation
-		NodeField currentFunc = null;
-		NodeField currentArg = null;
+		if(cmanager.get(name) == null)
+			throw new CombinatorNotFoundException(name);
 		
-		
-		if(!combinators[0].equals("("))
-			currentFunc = new CombinatorNodeField(cmanager.get(combinators[0]));
-		else
-			currentFunc = new NodeNodeField(create(Arrays.copyOfRange(combinators, 1, combinators.length)));
-		
-		if(!combinators[1].equals(")"))
-			currentArg = new CombinatorNodeField(cmanager.get(combinators[1]));
-		
-		else
-			currentArg = new NodeNodeField(create(Arrays.copyOfRange(combinators,2,combinators.length)));
-		
-		currentNode = new Node(currentFunc,currentArg);
-		previousNode = currentNode;
-		
-		
-		// boucle
-		int index = 2;
-		
-		while(index < combinators.length){
-			
-			currentFunc = new NodeNodeField(previousNode);
-			
-			// parenthèses associatives --> appel récursif
-			if(combinators[index].equals("(")){
-				currentArg = new NodeNodeField(create(Arrays.copyOfRange(combinators,index+1,combinators.length)));				
-				currentNode = new Node(currentFunc,currentArg);
-				return currentNode;
-			}
-			// cas d'arrêt
-			else if(combinators[index].equals(")")){
-				return previousNode;
-			}
-				
-			
-			else{
-				currentArg = new CombinatorNodeField(cmanager.get(combinators[index]));
-			}
-			
-			currentNode = new Node(currentFunc,currentArg);	
-			previousNode.setNextNode(currentNode);	
-			previousNode = currentNode;
-			index++;
-		}
-		
-		return previousNode;
+		return NodeFieldFactory.create(cmanager.get(name));
 	}
 	
 	
+	/**
+	 * @brief méthode haut-niveau de la construction du graphe
+	 * Prend en argument l'ArrayList envoyée par le compilateur correspondant à l'expression à réduire
+	 * Applique parseParenthesis pour supprimer les parenthèses non sémantiques
+	 * Construit la pile puis applique la construction de graphe
+	 * 
+	 * @param combinators
+	 * @return graph
+	 * @throws EmptyStackException
+	 * @throws BadParenthesisException
+	 * @throws CombinatorNotFoundException 
+	 */
+	public static Node create(ArrayList<String> combinators) throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
+		
+		parseParenthesis(combinators);
+		
+		Stack<String> stack = new Stack<String>();
+		
+		for(int i=combinators.size()-1; i>=0; i--){
+			stack.push(combinators.get(i));
+		}
+		
+		return create(stack);
+	}
 }

@@ -19,7 +19,7 @@ public class STest {
 		
 		Node node1 = new Node(NodeFieldFactory.create(s), NodeFieldFactory.create(x));
 		Node node2 = new Node(NodeFieldFactory.create(node1), NodeFieldFactory.create(y));
-		new Node(NodeFieldFactory.create(node2), NodeFieldFactory.create(z));
+		Node node3 = new Node(NodeFieldFactory.create(node2), NodeFieldFactory.create(z));
 		
 		Registry r = new Registry();
 		r.setNode(node1);
@@ -30,6 +30,7 @@ public class STest {
 		
 		assertEquals(x, n.getFunction().getCombinator());
 		assertEquals(z, n.getArgument().getCombinator());
+		assertEquals(node3, n.getNextNode());
 		
 		Node root = n.getNextNode();
 		
@@ -40,6 +41,7 @@ public class STest {
 		assertNotNull(argRoot);
 		assertEquals(y, argRoot.getFunction().getCombinator());
 		assertEquals(z, argRoot.getArgument().getCombinator());
+		assertEquals(null, argRoot.getNextNode());
 	}
 	
 	@Test

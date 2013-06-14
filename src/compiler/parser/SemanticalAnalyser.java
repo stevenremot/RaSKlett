@@ -207,6 +207,7 @@ public class SemanticalAnalyser {
 			}
 		}
 
+
 	}
 
 	// if ((tempChar >= 'a' && tempChar <= 'z')

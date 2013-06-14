@@ -1,6 +1,7 @@
 package compiler;
 
 import java.io.Reader;
+import java.util.ArrayList;
 
 import compiler.parser.Parser;
 import compiler.parser.Instruction;
@@ -17,7 +18,7 @@ import compiler.graph.Node;
 public class Compiler {
 	private boolean finished = false;
 	private boolean interrupted = false;
-	Instruction[] symbols;
+	ArrayList<Instruction> symbols;
 	private SKMachine sk;
 	private int currentInstructionIndex = 0;
 	private Instruction currentInstruction;
@@ -28,36 +29,55 @@ public class Compiler {
 		
 		try {
 			symbols = Parser.parse(input);
+			registerNextInstruction();
 		}
 		catch(CompilerException e) {
 			callback.onFailure(e);
 		}
+		
+		
 	}
 	
 	/**
 	 * @return le graphe réduit sous forme de chaîne de caractères
 	 */
-	public String getResult() {
+	public synchronized String getResult() {
+		if(sk == null) {
+			return "";
+		}
+		
 		return GraphSerializer.serialize(sk.getReducedGraph());
 	}
 	
-	public boolean isFinished() {
+	/**
+	 * @brief Envoie le résultat au callback
+	 */
+	public synchronized void sendResult() {
+		callback.onResult(getResult(), currentInstruction.getLine(),
+				currentInstruction.getPosition(), isFinished());
+	}
+	
+	public synchronized boolean isFinished() {
 		return finished;
 	}
 	
+	public synchronized boolean isInterrupted() {
+		return interrupted;
+	}
+	
 	// Compile l'instruction en graphe
-	private boolean registerNextInstruction() {
-		if(currentInstructionIndex >= symbols.length) {
+	private synchronized boolean registerNextInstruction() {
+		if(currentInstructionIndex >= symbols.size()) {
 			finished = true;
 			return false;
 		}
 		
 		Node graph;
 		
-		currentInstruction = symbols[currentInstruction];
+		currentInstruction = symbols.get(currentInstructionIndex);
 		
 		try {
-			graph = currentInstruction.getInstruction();
+			graph = GraphFactory.create(currentInstruction.getInstruction());
 		}
 		catch(CompilerException e) {
 			e.setLine(currentInstruction.getLine());
@@ -80,26 +100,24 @@ public class Compiler {
 
 	
 	// réduit une étape
-	private void step() {
-		finished = !sk.step();
-	}
-	
-	// Réduit l'instruction suivante
-	private void instruction() {
-		interrupted = false;
-		
-		if(registerNextInstruction()) {
-			while(!this.isFinished() && !this.interrupted) {
-				this.step();
-			}
+	private synchronized void step() {
+		if(!finished || registerNextInstruction()) {
+			finished = !sk.step();
 		}
 	}
 	
-	// réduit TOUT
-	private void all() {
-		interrupted = false;
+	// Réduit l'instruction suivante
+	private synchronized void instruction() {
+		do {
+			this.step();
+		} while(!this.isFinished() && !this.isInterrupted());
 		
-		while(!this.isFinished() && !this.interrupted) {
+		registerNextInstruction();
+	}
+	
+	// réduit TOUT
+	private synchronized void all() {
+		while(!this.isFinished() && !this.isInterrupted()) {
 			this.instruction();
 		}
 	}
@@ -112,8 +130,7 @@ public class Compiler {
 		if(!finished || registerNextInstruction()) {
 			step();
 		
-			callback.onResult(getResult(), currentInstruction.getLine(),
-					currentInstruction.getPosition(), isFinished());
+			sendResult();
 		}
 		
 		return !finished;
@@ -125,14 +142,17 @@ public class Compiler {
 	 * @return le thread qui exécute la réduction
 	 */
 	public Thread reduceInstruction() {
+		interrupted = false;
+		
 		final Compiler t = this;
 		
 		Runnable r = new Runnable() {
 			public void run() {
-				t.instruction();
+				synchronized(t) {
+					t.instruction();
 				
-				t.callback.onResult(getResult(), currentInstruction.getLine(),
-						currentInstruction.getPosition(), isFinished());
+					t.sendResult();
+				}
 			}
 		};
 		
@@ -154,10 +174,11 @@ public class Compiler {
 		
 		Runnable r = new Runnable() {
 			public void run() {
-				t.all();
+				synchronized(t) {
+					t.all();
 				
-				t.callback.onResult(getResult(), currentInstruction.getLine(),
-						currentInstruction.getPosition(), isFinished());
+					t.sendResult();
+				}
 			}
 		};
 		
@@ -170,7 +191,7 @@ public class Compiler {
 	/**
 	 * @brief stoppe la réduction
 	 */
-	public void stopReduction() {
+	public synchronized void stopReduction() {
 		interrupted = true;
 	}
 

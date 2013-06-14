@@ -21,6 +21,12 @@ public class CombinatorPanel extends JPanel{
 	private JButton button;
 	private boolean enabled;
 	
+	/**
+	 * @brief Le constructeur de CombinatorPanel
+	 * @param combinators liste des combinateurs qui seront natifs ou non à l'aide de ce composant
+	 * @param category catégorie des combinateurs (ex : opérateurs logiques)
+	 * @param enabled les combinateurs sont natifs par défaut si enabled vaut true
+	 */
 	public CombinatorPanel(ArrayList<String> combinators, String category, boolean enabled) {
 		super(new GridLayout(0,1));
 		text = new JTextArea();

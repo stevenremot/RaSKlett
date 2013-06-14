@@ -1,4 +1,5 @@
 package compiler.parser;
+
 import java.util.ArrayList;
 
 /**
@@ -8,11 +9,6 @@ import java.util.ArrayList;
  */
 public class Parser {
 	public String resultString;
-	/**
-	 * constructor
-	 */
-	public Parser(){		
-	}
 	
 	/**
 	 * to be a interface for call lexicalAnalyser and SemanticalAnalyser
@@ -58,5 +54,6 @@ public class Parser {
 	public static void main(String[] args) {
 		Parser myparser=new Parser();
 		myparser.driverParser();
+
 	}
 }

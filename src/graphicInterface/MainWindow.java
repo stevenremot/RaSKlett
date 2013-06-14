@@ -55,7 +55,7 @@ public class MainWindow extends JFrame{
 	private JMenuItem iToEnd = null;
 	private JMenuItem iStop = null;
 	private JMenuItem iCombinators = null;
-	private JMenuItem iTools = null;
+	private JMenuItem iPreferences = null;
 	private JMenuItem iHelp = null;
 
 
@@ -71,41 +71,45 @@ public class MainWindow extends JFrame{
 		combinators = new ArrayList<String>();
 		combinators.add(" B := S (K S) K");
 		combinators.add("W := S S (K I)");
-
-		create = new JButton("Create");
+		
+		create = new JButton(new ImageIcon("icons/create.png"));
+		create.setToolTipText("Open a new file");
 		create.addActionListener(new ControleurCreate());
 
-		open = new JButton("Open");
-		open.addActionListener(new ControleurOpen());
+		open = new JButton(new ImageIcon("icons/open.png"));
+		open.setToolTipText("Open an existing file");
+		ControleurOpen cOpen = new ControleurOpen();
 
-		save = new JButton("Save");
+		save = new JButton(new ImageIcon("icons/save.png"));
+		save.setToolTipText("Save the current file");
 		save.addActionListener(new ControleurSave());
 
-		compileAll = new JButton("Compile all");
-		ControleurCompileAll cCompileAll = new ControleurCompileAll();
-		compileAll.addActionListener(cCompileAll);
+		compileAll = new JButton(new ImageIcon("icons/compile.png"));
+		compileAll.setToolTipText("Compile all the code");
+		compileAll.addActionListener(new ControleurCompileAll());
 
-		compileStepByStep = new JButton("Compile step by step");
-		ControleurCompileStepByStep cCompileStepByStep = new ControleurCompileStepByStep();
-		compileStepByStep.addActionListener(cCompileStepByStep);
+		compileStepByStep = new JButton(new ImageIcon("icons/compile_sbs.png"));
+		compileStepByStep.setToolTipText("Compile the code step by step");
+		compileStepByStep.addActionListener(new ControleurCompileStepByStep());
 
-		nextStep = new JButton("Next step");
+		nextStep = new JButton(new ImageIcon("icons/next.png"));
+		nextStep.setToolTipText("Compile next instruction");
 
-		nextLine = new JButton("Next line");
+		nextLine = new JButton(new ImageIcon("icons/next_line.png"));
+		nextLine.setToolTipText("Compile next line");
 
-		toEnd = new JButton("Compile to end");
+		toEnd = new JButton(new ImageIcon("icons/to_end.png"));
+		toEnd.setToolTipText("Compile the rest of the code");
 
-		stop = new JButton("Stop");	
-		ControleurStop cStop = new ControleurStop();
-		stop.addActionListener(cStop);
-
-
+		stop = new JButton(new ImageIcon("icons/stop.png"));	
+		stop.setToolTipText("Interrupt compilation");
+		stop.addActionListener( new ControleurStop());
+		
 
 		nextStep.setEnabled(false);
 		nextLine.setEnabled(false);
 		toEnd.setEnabled(false);
-
-
+		stop.setEnabled(false);
 
 		editor = new Editor();
 		toolBar = new JToolBar();	
@@ -151,18 +155,19 @@ public class MainWindow extends JFrame{
 		menuBar.add(compilation);
 
 		iCompileAll = new JMenuItem("Compile all");
-		iCompileAll.addActionListener(cCompileAll);
+		iCompileAll.addActionListener(new ControleurCompileAll());
 		iCompileStepByStep = new JMenuItem("Compile step by step");
-		iCompileStepByStep.addActionListener(cCompileStepByStep);
+		iCompileStepByStep.addActionListener(new ControleurCompileStepByStep());
 		iNextStep = new JMenuItem("Compile next step");
 		iNextLine = new JMenuItem("Compile next line");
 		iToEnd = new JMenuItem("Compile to end");
 		iStop = new JMenuItem("Stop compilation");
-		iStop.addActionListener(cStop);
+		iStop.addActionListener(new ControleurStop());
 
 		iNextStep.setEnabled(false);
 		iNextLine.setEnabled(false);
 		iToEnd.setEnabled(false);
+		iStop.setEnabled(false);
 
 		compilation.add(iCompileAll);
 		compilation.add(iCompileStepByStep);
@@ -178,10 +183,10 @@ public class MainWindow extends JFrame{
 		menuBar.add(tools);
 
 		iCombinators = new JMenuItem("Combinators");
-		iTools = new JMenuItem("Tools");
+		iPreferences = new JMenuItem("Preferences");
 
 		tools.add(iCombinators);
-		tools.add(iTools);	
+		tools.add(iPreferences);	
 
 		help = new JMenu("Help");
 		help.setMnemonic(KeyEvent.VK_H);
@@ -194,30 +199,6 @@ public class MainWindow extends JFrame{
 		help.add(iHelp);
 
 		setJMenuBar(menuBar);
-		create = new JButton("Create");
-		create.addActionListener(new ControleurCreate());
-
-		open = new JButton("Open");
-		open.addActionListener(new ControleurOpen());
-
-		save = new JButton("Save");
-		save.addActionListener(new ControleurSave());
-
-		editor = new Editor();
-		toolBar = new JToolBar();		
-
-		toolBar.add(create);
-		toolBar.add(open);
-		toolBar.add(save);
-		toolBar.add(compileAll);
-		toolBar.add(compileStepByStep);
-		toolBar.add(nextStep);
-		toolBar.add(nextLine);
-		toolBar.add(toEnd);
-		toolBar.add(stop);
-
-
-		add(toolBar, BorderLayout.NORTH);
 
 		editor.setEditable(true);
 		JScrollPane panneauTexte = new JScrollPane(editor);
@@ -255,19 +236,27 @@ public class MainWindow extends JFrame{
 		return editor;
 	}
 
+	public void compile(String code){
+		
+	}
+	
 	public void startCompilationStepByStep(){
 		nextStep.setEnabled(true);
 		nextLine.setEnabled(true);
 		toEnd.setEnabled(true);
+		stop.setEnabled(true);
 		iNextStep.setEnabled(true);
 		iNextLine.setEnabled(true);
 		iToEnd.setEnabled(true);
+		iStop.setEnabled(true);
 		editor.disableEdition();
 		//et le reste
 	}
 
 	public void startCompilation(){
 		editor.disableEdition();
+		stop.setEnabled(true);
+		iStop.setEnabled(true);
 		//compile();
 		//et le reste
 	}
@@ -277,9 +266,11 @@ public class MainWindow extends JFrame{
 		nextStep.setEnabled(false);
 		nextLine.setEnabled(false);
 		toEnd.setEnabled(false);
+		stop.setEnabled(false);
 		iNextStep.setEnabled(false);
 		iNextLine.setEnabled(false);
 		iToEnd.setEnabled(false);
+		iStop.setEnabled(false);
 		//compile();
 	}
 
@@ -324,7 +315,7 @@ public class MainWindow extends JFrame{
 		public void actionPerformed(ActionEvent arg0) {
 			JFileChooser chooser = new JFileChooser();
 			FileNameExtensionFilter filter = new FileNameExtensionFilter(
-					"Txt files", "txt");
+					"rsk files", "rsk");
 			chooser.setFileFilter(filter);
 			int returnVal = chooser.showOpenDialog(null);
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -373,7 +364,7 @@ public class MainWindow extends JFrame{
 			if(filename == null) {
 				JFileChooser chooser = new JFileChooser();
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-						"Txt files", "txt");
+						"rsk files", "rsk");
 				chooser.setFileFilter(filter);
 				int returnVal = chooser.showSaveDialog(null);
 				if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -385,7 +376,7 @@ public class MainWindow extends JFrame{
 
 			try {
 				FileWriter writer = new FileWriter(new File(dir));
-				String text = editor.getText();
+				String text = editor.getCleanedText();
 				char[] buffer = text.toCharArray();
 				writer.write(buffer);
 				writer.close();
@@ -393,9 +384,7 @@ public class MainWindow extends JFrame{
 			} catch (IOException e) {
 				e.printStackTrace();
 			} 		
-
 		}
-
 	}
 
 }

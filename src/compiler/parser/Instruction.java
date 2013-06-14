@@ -2,6 +2,12 @@ package compiler.parser;
 
 import java.util.ArrayList;
 
+/**
+ * Représente une instruction du code et sa position
+ * 
+ * @author qianqian
+ *
+ */
 public class Instruction {
 	private int numberL = 0;
 	private int numberI = 0;
@@ -32,6 +38,11 @@ public class Instruction {
 		this.contentStrings=contentStrings;
 	}
 	
+	/**
+	 * Ajoute un symbole ou combinateur à l'expression
+	 * 
+	 * @param temStr
+	 */
 	public void addInstruction(String temStr) {
 		this.contentStrings.add(temStr);
 	}
