@@ -120,6 +120,7 @@ public class SemanticalAnalyserTest {
 		i.addInstruction("b");
 		i.addInstruction("d");
 		i.addInstruction("a");
+		i.addInstruction(" ");
 		i.addInstruction("+");
 		i.addInstruction("+");
 		i.addInstruction("x");
@@ -131,6 +132,32 @@ public class SemanticalAnalyserTest {
 		sem.semanticAnalysis(i);
 		
 		LinkedList<String> result = sem.myresult;
+		
+		// Sans espace entre lambda et ++
+		assertEquals(4, result.size());
+		assertEquals("lambda++", result.get(0));
+		assertEquals("x", result.get(1));
+		assertEquals(".", result.get(2));
+		assertEquals("A", result.get(3));
+		
+		i = new Instruction();
+		i.addInstruction("l");
+		i.addInstruction("a");
+		i.addInstruction("m");
+		i.addInstruction("b");
+		i.addInstruction("d");
+		i.addInstruction("a");
+		i.addInstruction("+");
+		i.addInstruction("+");
+		i.addInstruction("x");
+		i.addInstruction(".");
+		i.addInstruction("A");
+		
+		sem = new SemanticalAnalyser();
+		
+		sem.semanticAnalysis(i);
+		
+		result = sem.myresult;
 		
 		assertEquals(4, result.size());
 		assertEquals("lambda++", result.get(0));
