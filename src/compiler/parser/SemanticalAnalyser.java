@@ -36,7 +36,7 @@ public class SemanticalAnalyser {
 	 * @param count
 	 *            to see if it is a number or the words that are not keywords
 	 */
-	public void IsDigit(int count) {
+	public void isDigit(int count) {
 		if (strTemp != "") {
 			Object tempDouble = null;
 			if (strTemp.charAt(0) >= '0' && strTemp.charAt(0) <= '9') {
@@ -45,14 +45,14 @@ public class SemanticalAnalyser {
 						&& (tempDouble + "").length() == strTemp.length()) {
 					result += strTemp + "\t" + "78" + "\t" + count + "\n";
 				} else {
-					if (IsKeyWord(strTemp)) {
+					if (isKeyWord(strTemp)) {
 						result += count + "\n";
 					} else {
 						result += strTemp + "\t\t" + count + "\n";
 					}
 				}
 			} else {
-				if (IsKeyWord(strTemp)) {
+				if (isKeyWord(strTemp)) {
 					result += count + "\n";
 				} else {
 					result += strTemp + "\t\t" + count + "\n";
@@ -65,7 +65,7 @@ public class SemanticalAnalyser {
 	 * @param string
 	 * @return To see whether it is a keyword
 	 */
-	public boolean IsKeyWord(String string) {
+	public boolean isKeyWord(String string) {
 		if (string != "") {
 			for (int i = 0; i < keyWords.length; i++) {
 				if (string.equals(keyWords[i])) {
@@ -81,7 +81,7 @@ public class SemanticalAnalyser {
 	 * @param string
 	 * @return To see whether it is a keyword
 	 */
-	public boolean IsSkMachOpera(String string) {
+	public boolean isSkMachOpera(String string) {
 		if (string != "") {
 			for (int i = 0; i < skMachOpera.length; i++) {
 				if (string.equals(skMachOpera[i])) {
@@ -96,7 +96,7 @@ public class SemanticalAnalyser {
 	 * @param string
 	 * @return To see if it is contained in the string of operators
 	 */
-	public boolean IsOperator(String string) {
+	public boolean isOperator(String string) {
 		if (string != "") {
 			for (int i = 0; i < operator.length; i++) {
 				if (string.equals(operator[i])) {
@@ -113,7 +113,7 @@ public class SemanticalAnalyser {
 	 * @return In order to see whether it is the end of a row or the end of a
 	 *         operation
 	 */
-	public boolean IsBoundary(String string) {
+	public boolean isBoundary(String string) {
 		if (string != "") {
 			for (int i = 0; i < boundary.length; i++) {
 				if (string.equals(boundary[i])) {
@@ -130,7 +130,7 @@ public class SemanticalAnalyser {
 	 * @return In order to see whether it is the end of a row or the end of a
 	 *         operation
 	 */
-	public boolean IsDefinition(String string) {
+	public boolean isDefinition(String string) {
 		if (string != "") {
 			for (int i = 0; i < definition.length; i++) {
 				if (string.equals(definition[i])) {
@@ -145,7 +145,7 @@ public class SemanticalAnalyser {
 	 * @param string
 	 * @return To see if it is a bracket
 	 */
-	public boolean Iscontained(String string) {
+	public boolean isContained(String string) {
 		if (string != "") {
 			for (int i = 0; i < operator.length; i++) {
 				if (operator[i].equals(string))
@@ -179,14 +179,14 @@ public class SemanticalAnalyser {
 					tempString += tempChar;
 					if (tempChar >= 'a' && tempChar <= 'z' || tempChar >= 'A'
 							&& tempChar <= 'Z') {												
-						if (IsSkMachOpera(Character.toString(tempChar)) && otherString == "") {
+						if (isSkMachOpera(Character.toString(tempChar)) && otherString == "") {
 							myresult.add(tempString);
 							tempString = "";
 
 						} else {						
 							if (otherString != "") {
 								otherString = tempString;
-								if (IsKeyWord(otherString)) {
+								if (isKeyWord(otherString)) {
 									myresult.add(otherString);
 									tempString = "";
 									otherString = "";
@@ -194,7 +194,7 @@ public class SemanticalAnalyser {
 								}
 							} else {
 								otherString = tempString;
-								if (IsKeyWord(otherString)) {
+								if (isKeyWord(otherString)) {
 									myresult.add(otherString);
 									tempString = "";
 									otherString = "";

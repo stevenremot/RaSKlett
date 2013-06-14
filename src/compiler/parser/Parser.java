@@ -1,5 +1,6 @@
 package compiler.parser;
 
+import java.io.Reader;
 import java.util.ArrayList;
 
 /**
@@ -13,17 +14,22 @@ public class Parser {
 	/**
 	 * to be a interface for call lexicalAnalyser and SemanticalAnalyser
 	 */
-	public void driverParser() {
-		lexicalAnalyser lA = new lexicalAnalyser();
+	public static ArrayList<Instruction> parse(Reader input) {
+		LexicalAnalyser lA = new LexicalAnalyser(input);
 		SemanticalAnalyser sA=new SemanticalAnalyser();
-		//String fileName = textField.getText();
 
-		//lA.openCFile(fileName);
-		lA.readRowByRow();
-		int line=0;
-		ArrayList<String> tempArrayList=new ArrayList<String>();
-
-		for(int i=0;i<lA.resInstruArrayList.size();i++)
+		ArrayList<Instruction>symbols = lA.getSymbols(); 
+		
+		for(Instruction instruction : symbols){
+			sA.semanticAnalysis(instruction);
+			
+			instruction.setInstruction(new ArrayList<String>(sA.myresult));
+		}
+		
+		return symbols;
+		
+		/*
+		for(int i=0;i<symbols.size();i++)
 		{
 			System.out.println("============================START===========================================");
 
@@ -47,13 +53,8 @@ public class Parser {
 
 
 			
-		}
+		}*/
 		//textArea.setText(resultString);
-
-	}
-	public static void main(String[] args) {
-		Parser myparser=new Parser();
-		myparser.driverParser();
 
 	}
 }
