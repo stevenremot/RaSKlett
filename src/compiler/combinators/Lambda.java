@@ -13,6 +13,9 @@ import compiler.abstracter.Abstracter;
 public class Lambda implements Combinator {
 	private int level;
 	
+	/**
+	 * @param level Niveau de l'abstraction, de 1 à 4
+	 */
 	public Lambda(int level) {
 		this.level = level;
 	}
