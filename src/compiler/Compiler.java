@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import compiler.parser.Parser;
 import compiler.parser.Instruction;
 import compiler.reducer.SKMachine;
+import compiler.combinators.CombinatorManager;
 import compiler.graph.GraphFactory;
 import compiler.graph.GraphSerializer;
 import compiler.graph.Node;
@@ -26,6 +27,8 @@ public class Compiler {
 	private CompilerCallback callback;
 	
 	public Compiler(Reader input, CompilerCallback callback) {
+		CombinatorManager.reset();
+		
 		this.callback = callback;
 		
 		try {

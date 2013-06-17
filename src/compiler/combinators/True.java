@@ -4,7 +4,7 @@ import compiler.graph.Node;
 import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
 
-public class T implements Combinator {
+public class True implements Combinator {
 
 	@Override
 	public Node getGraph() {
@@ -26,7 +26,7 @@ public class T implements Combinator {
 
 	@Override
 	public String getName() {
-		return "t";
+		return "true";
 	}
 
 }
