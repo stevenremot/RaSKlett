@@ -393,7 +393,14 @@ public class MainWindow extends JFrame implements CompilerCallback{
 					reader.read(buffer);
 					reader.close();
 					String text = new String(buffer);
-					editor.setText(text);
+					//editor.setText(text);
+					try {
+						editor.setText(null);
+						editor.insertText(text, 0);
+					} catch (BadLocationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					filename = file.getName();
 					dir = file.getPath();
 				} catch (FileNotFoundException e) {
@@ -480,9 +487,12 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		System.out.println(s);
 		String[] instructions = s.split("\n");
 		int pos = 1;
-		for(int i = 0; i < line + offset + position; i++) {
+		System.out.println(line + offset + position);
+		for(int i = 0; i < line + offset + position +1; i++) {
+			System.out.println("instructions : "+instructions[i]);
 			pos += instructions[i].length();
 		}
+		System.out.println(pos);
 		return pos+position;
 	}
 
@@ -490,8 +500,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void onResult(String reducedGraph, int line, int position,
 			boolean finished) {
 		try {
+			System.out.println(line+" , "+position);
 			int pos = getPos(line ,position);
-			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -2 +line);
+			System.out.println(reducedGraph);
+			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
 			offset++;
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -502,7 +514,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void onFailure(CompilerException e) {
 		int line = e.getLine();
 		try {
-			editor.insertError("Erreur ligne "+line+" +e.getMessage()",line + offset );
+			editor.insertError("Erreur ligne "+line+" " +e.getMessage(),line + offset );
 			offset++;
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();

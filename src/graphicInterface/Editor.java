@@ -27,6 +27,7 @@ public class Editor extends JTextPane {
 	    StyleConstants.setForeground(error, Color.RED);
 	    StyleConstants.setForeground(result, Color.GREEN);
 	   doc = (StyledDocument) getDocument();
+	   doc.setParagraphAttributes(0, 1, defaut, true);
 	}
 
 	public void appendText(String s) throws BadLocationException{
@@ -48,7 +49,7 @@ public class Editor extends JTextPane {
 		if(getText().length() > 0)
 			doc.insertString(position, "\n"+s , error);
 		else
-			doc.insertString(doc.getLength(), s, defaut);
+			doc.insertString(doc.getLength(), s, error);
 		
 	}
 	
@@ -56,7 +57,7 @@ public class Editor extends JTextPane {
 		if(getText().length() > 0)
 			doc.insertString(position, "\n"+s, result);
 		else
-			doc.insertString(doc.getLength(), s, defaut);
+			doc.insertString(doc.getLength(), s, result);
 	}
 	
 	public void disableEdition(){
@@ -76,14 +77,17 @@ public class Editor extends JTextPane {
 		int posInit = getCaretPosition();
 		for(int pos = 0; pos < getText().length(); pos++) {
 			AttributeSet attr = getCharacterAttributes();
-		    Enumeration<?> e = attr.getAttributeNames();
-		    while (e.hasMoreElements()) {
-		      Object name = e.nextElement();
-		      Object value = attr.getAttribute(name);
-		      if(value == Color.BLACK) {
-					text += getText().charAt(pos);
-		      }
-		    }
+			if(doc.getForeground(attr) == Color.BLACK)
+				text += getText().charAt(pos);
+//		    Enumeration<?> e = attr.getAttributeNames();
+//		    while (e.hasMoreElements()) {
+//		      Object name = e.nextElement();
+//		      Object value = attr.getAttribute(name);
+//		      System.out.println(value + " "+ name);
+//		      if(value == Color.BLACK) {
+//					text += getText().charAt(pos);
+//		      }
+//		    }
 			moveCaretPosition(pos);
 		}
 		moveCaretPosition(posInit);
