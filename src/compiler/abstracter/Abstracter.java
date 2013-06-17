@@ -50,27 +50,28 @@ public class Abstracter {
 		
 		// réécriture du graphe de manière plus pratique
 		if(root.getFunction().getCombinator() != null){
-			Node newRoot = new Node(null, NodeFieldFactory.create(root.getFunction().getCombinator()));
-			root.setFunction(NodeFieldFactory.create(root));
+			Node newRoot = new Node(new NodeNodeField(null), NodeFieldFactory.create(root.getFunction().getCombinator()));
+			root.setFunction(NodeFieldFactory.create(newRoot));
 			newRoot.setNextNode(root);
+			root = newRoot;
 		}
 			
 		
 		
-		Node lastNode = expression.getLastNode();
+		Node lastNode = root.getLastNode();
 		
 		// cas particuliers
-		if(lastNode.equals(expression)){
+		if(lastNode.equals(root)){
 			
 			// pas possible
 			return null;
 			
 		}
 		
-		else if(lastNode.getFunction().getNode().equals(expression)){
-			
-			Node firstNode = new Node(nfS,abstractNodeField(expression.getArgument(),level,var));
+		else if(lastNode.getFunction().getNode().equals(root)){
+	
 			lastNode.setArgument(abstractNodeField(lastNode.getArgument(),level,var));
+			Node firstNode = new Node(nfS,abstractNodeField(root.getArgument(),level,var));
 			lastNode.setFunction(NodeFieldFactory.create(firstNode));
 			firstNode.setNextNode(lastNode);
 			
@@ -79,7 +80,7 @@ public class Abstracter {
 		}
 		
 		else{
-			
+			lastNode.getFunction().getNode().setNextNode(null);
 			Node firstNode = new Node(nfS,abstractNodeField(lastNode.getFunction(),level,var));
 			lastNode.setArgument(abstractNodeField(lastNode.getArgument(),level,var));
 			lastNode.setFunction(NodeFieldFactory.create(firstNode));
