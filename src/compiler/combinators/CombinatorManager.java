@@ -19,11 +19,17 @@ public class CombinatorManager {
 	
 	private CombinatorManager() {
 		combinators = new HashMap<String,Combinator>();
+		factories = new ArrayList<CombinatorFactory>();
+		
+		ConfigManager conf = ConfigManager.getInstance();
+		
 		addCombinator(new S());
 		addCombinator(new K());
 		addCombinator(new I());
 		
-		ConfigManager conf = ConfigManager.getInstance();
+		addCombinator(new Definition());
+		
+		addFactory(new LambdaFactory());
 		
 		if(conf.isEnabled(ConfigManager.BASIC_COMBINATORS)) {
 			addCombinator(new B());
@@ -39,7 +45,6 @@ public class CombinatorManager {
 			addCombinator(new Or());
 		}
 		
-		factories = new ArrayList<CombinatorFactory>();
 	}
 	
 	/**
