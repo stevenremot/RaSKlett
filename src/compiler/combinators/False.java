@@ -30,7 +30,7 @@ public class False implements Combinator {
 			return false;
 		}
 		
-		node2.setFunction(NodeFieldFactory.create(CombinatorManager.getInstance().get("I")));
+		node2.setFunction(NodeFieldFactory.create(new I()));
 		
 		registry.setNode(node2);
 		
