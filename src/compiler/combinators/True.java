@@ -26,7 +26,7 @@ public class True implements Combinator {
 
 	@Override
 	public String getName() {
-		return "t";
+		return "true";
 	}
 
 }
