@@ -34,6 +34,13 @@ public class CombinatorManager {
 	}
 	
 	/**
+	 * Remet à zéro le l'instance du combinatorManager
+	 */
+	public static void reset() {
+		instance = null;
+	}
+	
+	/**
 	 * @param name
 	 * @return le combinateur de nom name
 	 */
