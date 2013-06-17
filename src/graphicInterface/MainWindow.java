@@ -14,7 +14,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -34,7 +33,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private String filename = null;
 	private String dir = null;
 
-	private final static String newline = "\n";
 	private static final long serialVersionUID = 1L;
 	private Editor editor = null;
 	private JButton create = null;
@@ -271,7 +269,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	
 	public void toNextStep() {
+		enableCompilation(false);
 		compiler.reduceStep();
+		enableCompilation(true);
 
 	}
 	
@@ -289,19 +289,39 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void stopCompilation(){
 		
 		editor.enableEdition();
-		nextStep.setEnabled(false);
-		nextLine.setEnabled(false);
-		toEnd.setEnabled(false);
-		stop.setEnabled(false);
-		iNextStep.setEnabled(false);
-		iNextLine.setEnabled(false);
-		iToEnd.setEnabled(false);
-		iStop.setEnabled(false);
+		
+//		nextStep.setEnabled(false);
+//		nextLine.setEnabled(false);
+//		toEnd.setEnabled(false);
+//		stop.setEnabled(false);
+//		iNextStep.setEnabled(false);
+//		iNextLine.setEnabled(false);
+//		iToEnd.setEnabled(false);
+//		iStop.setEnabled(false);
 		
 		compiler = new Compiler(new StringReader(""),this);
 		compiler.stopReduction();
+		enableCompilation(true);
 		
 
+	}
+	
+	public void enableCompilation(boolean b)
+	{
+		if(compileStepByStep.isEnabled()) {
+			nextStep.setEnabled(b);
+			nextLine.setEnabled(b);
+			toEnd.setEnabled(b);
+			iNextStep.setEnabled(b);
+			iNextLine.setEnabled(b);
+			iToEnd.setEnabled(b);
+		}
+		iCompileAll.setEnabled(b);
+		compileAll.setEnabled(b);
+		stop.setEnabled(!b);
+		iStop.setEnabled(!b);
+		
+		
 	}
 	
 
@@ -393,26 +413,27 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			filename = null;
 			dir = null;
 			editor.setText(null);
-			
-//			try {
-//				int pos = getPos(1+offset,0);
-//				editor.insertResult("Resultat",pos);
-//				offset++;
-//				pos = getPos(1+offset,1);
-//				editor.insertResult("Resultat2",pos);
-//				offset++;
-//				pos = getPos(2+offset,0);
-//				editor.insertResult("Resultat3",pos);
-//				offset++;
-//				pos = getPos(2+offset,1);
-//				editor.insertResult("Resultat4",pos);
-//				offset++;
-//				
-//			} catch (BadLocationException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
+			try {
+				String[] s = editor.getCleanedText().split("\n");
+				int n = s.length;
+				System.out.println("nb lignes : "+n);
+				for(int i = 0; i < n ; i ++) {
+					if(s[i].length() > 0) {
+						int k = s[i].split(";").length;
+						System.out.println("nb instruct ligne "+i+ " : "+k);
+						
+						for(int j = 0; j < k; j++) {
+							int pos = getPos(i,j);
+							editor.insertResult("Résultat ligne "+i+ " instruction "+j +";",pos +offset -2 +i);
+						}
+						offset += k;
+					}
+					
+				}		
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -456,27 +477,20 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	
 	public int getPos(int line, int position) {
 		String s = editor.getText();
+		System.out.println(s);
 		String[] instructions = s.split("\n");
 		int pos = 1;
-		for(int i = 0; i < line; i++) {
+		for(int i = 0; i < line + offset + position; i++) {
 			pos += instructions[i].length();
 		}
-		String[] instructions_2 = instructions[line].split(";");
-		int j = 0;
-		while(j < position) {
-			pos += instructions_2[j].length();
-			if(instructions_2[j].length() > 0)
-				j++;
-		}
-		System.out.println("ligne "+ line +" : " + instructions[line]+ " inst "+position+" : "+ instructions_2[position]);
-		return pos;
+		return pos+position;
 	}
 
 	@Override
 	public void onResult(String reducedGraph, int line, int position,
 			boolean finished) {
 		try {
-			int pos = getPos(line + offset,position);
+			int pos = getPos(line ,position);
 			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,pos);
 			offset++;
 		} catch (BadLocationException e) {
