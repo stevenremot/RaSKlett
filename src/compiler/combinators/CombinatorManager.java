@@ -43,6 +43,7 @@ public class CombinatorManager {
 			addCombinator(new False());
 			addCombinator(new And());
 			addCombinator(new Or());
+			addCombinator(new Not());
 		}
 		
 	}
