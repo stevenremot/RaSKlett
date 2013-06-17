@@ -52,7 +52,7 @@ public class CombinatorManager {
 	}
 	
 	/**
-	 * Remet à zéro le l'instance du combinatorManager
+	 * Remet à zéro l'instance du combinatorManager
 	 */
 	public static void reset() {
 		instance = null;

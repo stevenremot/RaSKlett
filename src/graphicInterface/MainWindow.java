@@ -66,7 +66,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JToolBar toolBar = null;
 	private ArrayList<String> combinators;
 	
-	private int offset = 1;
+	private int offset = 0;
 
 	/**
 	 * Constructeur de la classe Fenetre
@@ -491,7 +491,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			boolean finished) {
 		try {
 			int pos = getPos(line ,position);
-			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,pos);
+			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -2 +line);
 			offset++;
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -502,7 +502,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void onFailure(CompilerException e) {
 		int line = e.getLine();
 		try {
-			editor.insertError("Erreur ligne "+line+" "+e.getMessage(),line + offset);
+			editor.insertError("Erreur ligne "+line+" +e.getMessage()",line + offset );
 			offset++;
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
