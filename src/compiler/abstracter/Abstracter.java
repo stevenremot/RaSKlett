@@ -43,24 +43,52 @@ public class Abstracter {
 	
 	public Node abstraction(Node expression, int level, Var var){
 		
-		// on suppose que expression.getFunction() = null (technique pour éviter de remonter trop loin)
+		CombinatorManager cmanager = CombinatorManager.getInstance();
+		NodeField nfS = NodeFieldFactory.create(cmanager.get("S"));
+		
+		Node root = expression.getRoot();
+		
+		// réécriture du graphe de manière plus pratique
+		if(root.getFunction().getCombinator() != null){
+			Node newRoot = new Node(null, NodeFieldFactory.create(root.getFunction().getCombinator()));
+			root.setFunction(NodeFieldFactory.create(root));
+			newRoot.setNextNode(root);
+		}
+			
+		
+		
 		Node lastNode = expression.getLastNode();
 		
 		// cas particuliers
 		if(lastNode.equals(expression)){
-	
+			
+			// pas possible
+			return null;
+			
 		}
 		
 		else if(lastNode.getFunction().getNode().equals(expression)){
+			
+			Node firstNode = new Node(nfS,abstractNodeField(expression.getArgument(),level,var));
+			lastNode.setArgument(abstractNodeField(lastNode.getArgument(),level,var));
+			lastNode.setFunction(NodeFieldFactory.create(firstNode));
+			firstNode.setNextNode(lastNode);
+			
+			return firstNode;
 			
 		}
 		
 		else{
 			
+			Node firstNode = new Node(nfS,abstractNodeField(lastNode.getFunction(),level,var));
+			lastNode.setArgument(abstractNodeField(lastNode.getArgument(),level,var));
+			lastNode.setFunction(NodeFieldFactory.create(firstNode));
+			firstNode.setNextNode(lastNode);
+			
+			return firstNode;
 		}
 		
 		
-		return null;
 	}
 	
 	private NodeField abstractNodeField(NodeField nf, int level, Var var){
