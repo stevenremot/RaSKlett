@@ -16,11 +16,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
+
 
 
 public class MainWindow extends JFrame{
@@ -184,6 +187,7 @@ public class MainWindow extends JFrame{
 
 		iCombinators = new JMenuItem("Combinators");
 		iPreferences = new JMenuItem("Preferences");
+		iPreferences.addActionListener(new ControleurPreferences());
 
 		tools.add(iCombinators);
 		tools.add(iPreferences);	
@@ -201,8 +205,13 @@ public class MainWindow extends JFrame{
 		setJMenuBar(menuBar);
 
 		editor.setEditable(true);
+		
 		JScrollPane panneauTexte = new JScrollPane(editor);
 		add(panneauTexte, BorderLayout.CENTER);
+		
+		TextLineNumbers tln = new TextLineNumbers(editor);
+		panneauTexte.setRowHeaderView( tln );
+
 
 		JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
 		combinatorPanel.setPreferredSize(new Dimension(150,0));
@@ -304,6 +313,16 @@ public class MainWindow extends JFrame{
 
 	}
 
+	public class ControleurPreferences implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			PreferencesDialog dialog = new PreferencesDialog();
+	        dialog.createAndShowGUI();
+
+		}
+
+	}
 	/**
 	 * @brief Ouvre une boîte de dialogue pour sélectionner le fichier à ouvrir.
 	 * @author lagrange
@@ -388,4 +407,112 @@ public class MainWindow extends JFrame{
 		}
 	}
 
+	public static class PreferencesDialog extends JPanel{
+		
+		private ImageIcon textPreferences = null;
+		private ImageIcon combinatorPreferences = null;
+	    
+	    private JComboBox sizeList;
+	    private JCheckBox lineNumbers;
+
+		
+		private Preferences preferences = Preferences.userRoot();
+
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5325511632318062715L;
+
+		public PreferencesDialog() {
+			// TODO Auto-generated constructor stub
+			setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+			JTabbedPane tabbedPane = new JTabbedPane();
+			
+			textPreferences = new ImageIcon("icons/textPreferences.png");
+			combinatorPreferences = new ImageIcon("icons/combinators.png");
+			
+			
+			JPanel textPanel = new JPanel(new GridLayout(0, 1));		
+		    
+			Object[] numbers = {6, 7, 8, 9, 10, 11, 12, 14, 16, 18};
+			sizeList = new JComboBox(numbers);
+			sizeList.setEditable(true);
+			sizeList.setMaximumSize(new Dimension(100,10));
+			
+			JPanel sizePanel = new JPanel(new GridLayout(0, 1));
+			sizePanel.add(new JLabel("Change text size"));
+			sizePanel.add(sizeList);
+			textPanel.add(sizePanel);
+			
+			lineNumbers = new JCheckBox("Add line numbers");
+			textPanel.add(lineNumbers);
+			
+			textPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+			
+		    tabbedPane.addTab("Text preferences", textPreferences, textPanel,
+	                "Editor's text preferences");
+		    
+		    
+			JPanel combinatorsPanel = new JPanel(new GridLayout(1, 1));
+			combinatorsPanel.setLayout(new BoxLayout(combinatorsPanel, BoxLayout.PAGE_AXIS));
+			JLabel availableCombinators = new JLabel("Available combinators");
+			combinatorsPanel.add(availableCombinators);
+			
+			
+			tabbedPane.addTab("Available combinators", combinatorPreferences, combinatorsPanel,
+		            "Natively available combinators");
+			
+	        //Add the tabbed pane to this panel.
+	        add(tabbedPane);
+	         
+	        //The following line enables to use scrolling tabs.
+	        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);	
+	        tabbedPane.setBorder(new EmptyBorder(3, 3, 3, 3));
+
+	        JButton apply = new JButton("Apply");
+	        apply.addActionListener(new ControleurApply());
+	        add(apply);
+		    	    
+		}
+	    /**
+	     * Create the GUI and show it.  For thread safety,
+	     * this method should be invoked from
+	     * the event dispatch thread.
+	     */
+	    private static void createAndShowGUI() {
+	        //Create and set up the window.
+	        JFrame frame = new JFrame("TabbedPaneDemo");
+	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	         
+	        //Add content to the window.
+	        frame.add(new PreferencesDialog(), BorderLayout.CENTER);
+	        frame.setPreferredSize(new Dimension(400,250)) ;
+	        //Display the window.
+	        frame.pack();
+	        frame.setVisible(true);
+	    }
+	    /* 
+	    public static void main(String[] args) {
+	        //Schedule a job for the event dispatch thread:
+	        //creating and showing this application's GUI.
+	        SwingUtilities.invokeLater(new Runnable() {
+	            public void run() {
+	                //Turn off metal's use of bold fonts
+	        UIManager.put("swing.boldMetal", Boolean.FALSE);
+	        createAndShowGUI();
+	            }
+	        });
+	    }
+	    */
+		public class ControleurApply implements ActionListener {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
+				preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
+			}
+
+		}
+	}
 }
