@@ -1,5 +1,6 @@
 package compiler.reducer;
 
+import compiler.CompilerException;
 import compiler.combinators.Combinator;
 import compiler.graph.Node;
 
@@ -45,8 +46,9 @@ public class SKMachine {
 	 * Si a retourne false, la réduction est probablement terminée.
 	 * 
 	 * @return true si la réduction s'est appliquée, false sinon
+	 * @throws CompilerException 
 	 */
-	public boolean step() {
+	public boolean step() throws CompilerException {
 		Combinator c;
 		
 		while((c = registry.getNode().getFunction().getCombinator()) == null) {

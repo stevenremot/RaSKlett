@@ -37,22 +37,33 @@ public class Editor extends JTextPane {
 	}
 
 	public void appendText(String s) throws BadLocationException{
-		doc.insertString(doc.getLength(), "\n"+s, defaut);
-		
+		if(getText().length() > 0)
+			doc.insertString(doc.getLength(), "\n"+s, defaut);
+		else
+			doc.insertString(doc.getLength(), s, defaut);
 	}
 	
 	public void insertText(String s, int position) throws BadLocationException {
-		doc.insertString(position, "\n"+s, defaut);
+		if(getText().length() > 0)
+			doc.insertString(position, "\n"+s, defaut);
+		else
+			doc.insertString(doc.getLength(), s, defaut);
 		
 	}	
 	
 	public void insertError(String s, int position) throws BadLocationException{
-		doc.insertString(position, "\n"+s , error);
+		if(getText().length() > 0)
+			doc.insertString(position, "\n"+s , error);
+		else
+			doc.insertString(doc.getLength(), s, defaut);
 		
 	}
 	
 	public void insertResult(String s, int position) throws BadLocationException{
-		doc.insertString(position, "\n"+s, result);;
+		if(getText().length() > 0)
+			doc.insertString(position, "\n"+s, result);
+		else
+			doc.insertString(doc.getLength(), s, defaut);
 	}
 	
 	public void disableEdition(){

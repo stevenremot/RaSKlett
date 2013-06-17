@@ -10,6 +10,10 @@ public class CStar implements Combinator {
 		return null;
 	}
 
+	/**
+	 * Applique le combinateur de permutation pour deux arguments : C* X Y := Y X
+	 * On vérifie qu'on a deux arguments et on remplace le deuxième noeud par Y X.
+	 */
 	@Override
 	public boolean applyReduction(Registry registry) {
 		Node currentNode = registry.getNode(),

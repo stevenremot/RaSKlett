@@ -3,6 +3,8 @@ package compiler.combinators;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import compiler.config.ConfigManager;
+
 /**
  * @brief Enregistre et rend disponible les combinateurs natifs et créés par l'utilisateur
  * 
@@ -17,11 +19,33 @@ public class CombinatorManager {
 	
 	private CombinatorManager() {
 		combinators = new HashMap<String,Combinator>();
-		set("S", new S());
-		set("K", new K());
-		set("I", new I());
-		
 		factories = new ArrayList<CombinatorFactory>();
+		
+		ConfigManager conf = ConfigManager.getInstance();
+		
+		addCombinator(new S());
+		addCombinator(new K());
+		addCombinator(new I());
+		
+		addCombinator(new Definition());
+		
+		addFactory(new LambdaFactory());
+		
+		if(conf.isEnabled(ConfigManager.BASIC_COMBINATORS)) {
+			addCombinator(new B());
+			addCombinator(new C());
+			addCombinator(new CStar());
+			addCombinator(new W());
+		}
+		
+		if(conf.isEnabled(ConfigManager.BOOLEANS)) {
+			addCombinator(new True());
+			addCombinator(new False());
+			addCombinator(new And());
+			addCombinator(new Or());
+			addCombinator(new Not());
+		}
+		
 	}
 	
 	/**
@@ -31,6 +55,13 @@ public class CombinatorManager {
 		if(instance == null)
 			instance = new CombinatorManager();
 		return instance;
+	}
+	
+	/**
+	 * Remet à zéro l'instance du combinatorManager
+	 */
+	public static void reset() {
+		instance = null;
 	}
 	
 	/**
@@ -48,7 +79,7 @@ public class CombinatorManager {
 			// et surtout tous les combinateurs avec ce nom partageront la même
 			// référence, ce qui est pratique pour tester l'égalité
 			if(comb != null) {
-				set(name, comb);
+				addCombinator(name, comb);
 			}
 		}
 		
@@ -76,13 +107,23 @@ public class CombinatorManager {
 	}
 	
 	/**
-	 * Enregistre le combinator combinator de nom name
+	 * Enregistre le combinator combinator avec le nom name
 	 * 
 	 * @param name
 	 * @param combinator
 	 */
-	public void set(String name, Combinator combinator) {
+	public void addCombinator(String name, Combinator combinator) {
 		combinators.put(name, combinator);
+	}
+	
+	/**
+	 * Enregistre le combinator combinator
+	 * 
+	 * @param name
+	 * @param combinator
+	 */
+	public void addCombinator(Combinator combinator) {
+		addCombinator(combinator.getName(), combinator);
 	}
 	
 	/**

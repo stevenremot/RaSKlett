@@ -1,5 +1,6 @@
 package compiler.combinators;
 
+import compiler.CompilerException;
 import compiler.graph.Node;
 import compiler.reducer.Registry;
 
@@ -16,7 +17,7 @@ public interface Combinator {
 	 * @param registry
 	 * @return true si le combinateur a pu appliquer sa réduction, false sinon (la réduction est probablement finie)
 	 */
-	public boolean applyReduction(Registry registry);
+	public boolean applyReduction(Registry registry) throws CompilerException;
 
 	String getName();
 

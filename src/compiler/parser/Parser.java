@@ -3,6 +3,8 @@ package compiler.parser;
 import java.io.Reader;
 import java.util.ArrayList;
 
+import compiler.CompilerException;
+
 /**
  * @author qchen
  * For the call of lexicalAnalyser and SemanticalAnalyser
@@ -13,8 +15,9 @@ public class Parser {
 	
 	/**
 	 * to be a interface for call lexicalAnalyser and SemanticalAnalyser
+	 * @throws CompilerException 
 	 */
-	public static ArrayList<Instruction> parse(Reader input) {
+	public static ArrayList<Instruction> parse(Reader input) throws CompilerException {
 		LexicalAnalyser lA = new LexicalAnalyser(input);
 		SemanticalAnalyser sA=new SemanticalAnalyser();
 
@@ -27,34 +30,6 @@ public class Parser {
 		}
 		
 		return symbols;
-		
-		/*
-		for(int i=0;i<symbols.size();i++)
-		{
-			System.out.println("============================START===========================================");
-
-			
-			line=lA.resInstruArrayList.get(i).getLine();
-			tempArrayList=lA.resInstruArrayList.get(i).getInstruction();
-			System.out.println("LineNumber:   "+line+"   Content:   "+tempArrayList);
-
-			sA.semanticAnalysis(lA.resInstruArrayList.get(i));
-
-			for (int j=0;j<sA.myresult.size();j++) {				
-				System.out.println(" ("+sA.myresult.get(j)+" )");
-			}
-			
-			
-			
-			System.out.println("------------------------------END--------------------------------------------");
-			System.out.println("");
-
-
-
-
-			
-		}*/
-		//textArea.setText(resultString);
 
 	}
 }

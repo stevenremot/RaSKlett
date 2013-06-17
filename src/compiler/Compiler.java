@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import compiler.parser.Parser;
 import compiler.parser.Instruction;
 import compiler.reducer.SKMachine;
+import compiler.combinators.CombinatorManager;
 import compiler.graph.GraphFactory;
 import compiler.graph.GraphSerializer;
 import compiler.graph.Node;
@@ -17,6 +18,7 @@ import compiler.graph.Node;
  */
 public class Compiler {
 	private boolean finished = false;
+	private boolean lineFinished = false;
 	private boolean interrupted = false;
 	ArrayList<Instruction> symbols;
 	private SKMachine sk;
@@ -25,6 +27,8 @@ public class Compiler {
 	private CompilerCallback callback;
 	
 	public Compiler(Reader input, CompilerCallback callback) {
+		CombinatorManager.reset();
+		
 		this.callback = callback;
 		
 		try {
@@ -94,20 +98,22 @@ public class Compiler {
 			sk.setGraph(graph);
 		}
 		
+		lineFinished = false;
+		
 		currentInstructionIndex++;
 		return true;
 	}
 
 	
 	// réduit une étape
-	private synchronized void step() {
-		if(!finished || registerNextInstruction()) {
-			finished = !sk.step();
+	private synchronized void step() throws CompilerException {
+		if(!finished && lineFinished || registerNextInstruction()) {
+			lineFinished = !sk.step();
 		}
 	}
 	
 	// Réduit l'instruction suivante
-	private synchronized void instruction() {
+	private synchronized void instruction() throws CompilerException {
 		do {
 			this.step();
 		} while(!this.isFinished() && !this.isInterrupted());
@@ -116,7 +122,7 @@ public class Compiler {
 	}
 	
 	// réduit TOUT
-	private synchronized void all() {
+	private synchronized void all() throws CompilerException {
 		while(!this.isFinished() && !this.isInterrupted()) {
 			this.instruction();
 		}
@@ -127,10 +133,17 @@ public class Compiler {
 	 * @return false si aucune étape n'a pu être effectué et que la réduction est donc finie, true sinon
 	 */
 	public boolean reduceStep() {
-		if(!finished || registerNextInstruction()) {
-			step();
-		
-			sendResult();
+		if(!finished) {
+			try {
+				step();
+				sendResult();
+			}
+			catch(CompilerException e) {
+				e.setLine(currentInstruction.getLine());
+				e.setPosition(currentInstruction.getPosition());
+				
+				callback.onFailure(e);
+			}
 		}
 		
 		return !finished;
@@ -149,9 +162,16 @@ public class Compiler {
 		Runnable r = new Runnable() {
 			public void run() {
 				synchronized(t) {
-					t.instruction();
-				
-					t.sendResult();
+					try {
+						t.instruction();
+						t.sendResult();
+					}
+					catch(CompilerException e) {
+						e.setLine(currentInstruction.getLine());
+						e.setPosition(currentInstruction.getPosition());
+						
+						callback.onFailure(e);
+					}
 				}
 			}
 		};
@@ -175,9 +195,16 @@ public class Compiler {
 		Runnable r = new Runnable() {
 			public void run() {
 				synchronized(t) {
-					t.all();
-				
-					t.sendResult();
+					try {
+						t.all();
+						t.sendResult();
+					}
+					catch(CompilerException e) {
+						e.setLine(currentInstruction.getLine());
+						e.setPosition(currentInstruction.getPosition());
+						
+						callback.onFailure(e);
+					}
 				}
 			}
 		};

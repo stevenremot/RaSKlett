@@ -29,7 +29,7 @@ public class Lambda implements Combinator {
 	public boolean applyReduction(Registry registry) {
 		Abstracter a = new Abstracter(registry.getNode(), level);
 		
-		registry.setNode(a.getReducedGraph());
+		registry.setNode(a.getAbstractedGraph());
 		
 		return true;
 	}
@@ -43,6 +43,10 @@ public class Lambda implements Combinator {
 		}
 		
 		return s;
+	}
+	
+	public int getLevel() {
+		return level;
 	}
 
 }

@@ -2,11 +2,8 @@ package graphicInterface;
 
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.prefs.Preferences;
 
@@ -24,14 +23,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 
+import compiler.Compiler;
+import compiler.CompilerCallback;
+import compiler.CompilerException;
 
+public class MainWindow extends JFrame implements CompilerCallback{
 
-public class MainWindow extends JFrame{
-
+	private Compiler compiler;
+	
 	private String filename = null;
 	private String dir = null;
 
-	private final static String newline = "\n";
 	private static final long serialVersionUID = 1L;
 	private Editor editor = null;
 	private JButton create = null;
@@ -62,15 +64,16 @@ public class MainWindow extends JFrame{
 	private JMenuItem iHelp = null;
 
 
-
 	private JToolBar toolBar = null;
-	private Image createImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("icons/Create.png"));
 	private ArrayList<String> combinators;
+	
+	private int offset = 0;
 
 	/**
 	 * Constructeur de la classe Fenetre
 	 */
 	public MainWindow(){
+
 		combinators = new ArrayList<String>();
 		combinators.add(" B := S (K S) K");
 		combinators.add("W := S S (K I)");
@@ -81,7 +84,7 @@ public class MainWindow extends JFrame{
 
 		open = new JButton(new ImageIcon("icons/open.png"));
 		open.setToolTipText("Open an existing file");
-		ControleurOpen cOpen = new ControleurOpen();
+		open.addActionListener(new ControleurOpen());
 
 		save = new JButton(new ImageIcon("icons/save.png"));
 		save.setToolTipText("Save the current file");
@@ -97,12 +100,15 @@ public class MainWindow extends JFrame{
 
 		nextStep = new JButton(new ImageIcon("icons/next.png"));
 		nextStep.setToolTipText("Compile next instruction");
+		nextStep.addActionListener(new ControleurToNextStep());
 
 		nextLine = new JButton(new ImageIcon("icons/next_line.png"));
 		nextLine.setToolTipText("Compile next line");
+		nextLine.addActionListener(new ControleurToNextInstruction());
 
 		toEnd = new JButton(new ImageIcon("icons/to_end.png"));
 		toEnd.setToolTipText("Compile the rest of the code");
+		toEnd.addActionListener(new ControleurCompileAll());
 
 		stop = new JButton(new ImageIcon("icons/stop.png"));	
 		stop.setToolTipText("Interrupt compilation");
@@ -225,6 +231,10 @@ public class MainWindow extends JFrame{
 		combinatorPanel.add(test);
 		add(combinatorPanel, BorderLayout.WEST);
 
+		
+
+		
+		
 		setPreferredSize(new Dimension(800, 600));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("RaSKlett");
@@ -232,24 +242,12 @@ public class MainWindow extends JFrame{
 		setVisible(true);
 	}
 
-	/**
-	 * Méthode permettant de rajouter du texte à la zone de texte
-	 * @param texte
-	 * @throws BadLocationException 
-	 */
-	public void ecrire(String texte) throws BadLocationException{
-		editor.appendText(texte + newline);
-	}
-
 	public Editor getEditor(){
 		return editor;
 	}
-
-	public void compile(String code){
-		
-	}
 	
 	public void startCompilationStepByStep(){
+		editor.setText(editor.getCleanedText());
 		nextStep.setEnabled(true);
 		nextLine.setEnabled(true);
 		toEnd.setEnabled(true);
@@ -259,56 +257,123 @@ public class MainWindow extends JFrame{
 		iToEnd.setEnabled(true);
 		iStop.setEnabled(true);
 		editor.disableEdition();
-		//et le reste
+		
+		String code = editor.getCleanedText();
+		Reader reader = new StringReader(code);
+		compiler = new Compiler(reader,this);
 	}
 
 	public void startCompilation(){
+		editor.setText(editor.getCleanedText());
 		editor.disableEdition();
 		stop.setEnabled(true);
 		iStop.setEnabled(true);
-		//compile();
-		//et le reste
+		
+		String code = editor.getCleanedText();
+		Reader reader = new StringReader(code);
+		compiler = new Compiler(reader,this);
+		compiler.reduceAll();
+	}
+	
+	public void toNextStep() {
+		enableCompilation(false);
+		compiler.reduceStep();
+		enableCompilation(true);
+
+	}
+	
+	public void toNextInstruction() {
+		compiler.reduceInstruction();
+	}
+	
+	public void toEnd() {
+		compiler.reduceAll();
+		editor.enableEdition();
+		stop.setEnabled(false);
+		iStop.setEnabled(false);
 	}
 
 	public void stopCompilation(){
+		
 		editor.enableEdition();
-		nextStep.setEnabled(false);
-		nextLine.setEnabled(false);
-		toEnd.setEnabled(false);
-		stop.setEnabled(false);
-		iNextStep.setEnabled(false);
-		iNextLine.setEnabled(false);
-		iToEnd.setEnabled(false);
-		iStop.setEnabled(false);
-		//compile();
+		
+//		nextStep.setEnabled(false);
+//		nextLine.setEnabled(false);
+//		toEnd.setEnabled(false);
+//		stop.setEnabled(false);
+//		iNextStep.setEnabled(false);
+//		iNextLine.setEnabled(false);
+//		iToEnd.setEnabled(false);
+//		iStop.setEnabled(false);
+		
+		compiler = new Compiler(new StringReader(""),this);
+		compiler.stopReduction();
+		enableCompilation(true);
+		
+
 	}
+	
+	public void enableCompilation(boolean b)
+	{
+		if(compileStepByStep.isEnabled()) {
+			nextStep.setEnabled(b);
+			nextLine.setEnabled(b);
+			toEnd.setEnabled(b);
+			iNextStep.setEnabled(b);
+			iNextLine.setEnabled(b);
+			iToEnd.setEnabled(b);
+		}
+		iCompileAll.setEnabled(b);
+		compileAll.setEnabled(b);
+		stop.setEnabled(!b);
+		iStop.setEnabled(!b);
+		
+		
+	}
+	
 
 	public class ControleurCompileAll implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			startCompilation();
-
 		}
 
 	}
 
 	public class ControleurCompileStepByStep implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			startCompilationStepByStep();
-
 		}
 
 	}
+	
+	public class ControleurToNextStep implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			toNextStep();
+		}
+	}
+	
+	public class ControleurToNextInstruction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			toNextInstruction();
+		}
+	}
+	
+	public class ControleurToEnd implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			toEnd();
+		}
+	}
+
 
 	public class ControleurStop implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			stopCompilation();
-
 		}
 
 	}
@@ -365,6 +430,26 @@ public class MainWindow extends JFrame{
 			filename = null;
 			dir = null;
 			editor.setText(null);
+			try {
+				String[] s = editor.getCleanedText().split("\n");
+				int n = s.length;
+				System.out.println("nb lignes : "+n);
+				for(int i = 0; i < n ; i ++) {
+					if(s[i].length() > 0) {
+						int k = s[i].split(";").length;
+						System.out.println("nb instruct ligne "+i+ " : "+k);
+						
+						for(int j = 0; j < k; j++) {
+							int pos = getPos(i,j);
+							editor.insertResult("Résultat ligne "+i+ " instruction "+j +";",pos +offset -2 +i);
+						}
+						offset += k;
+					}
+					
+				}		
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -404,6 +489,40 @@ public class MainWindow extends JFrame{
 			} catch (IOException e) {
 				e.printStackTrace();
 			} 		
+		}
+	}
+	
+	public int getPos(int line, int position) {
+		String s = editor.getText();
+		System.out.println(s);
+		String[] instructions = s.split("\n");
+		int pos = 1;
+		for(int i = 0; i < line + offset + position; i++) {
+			pos += instructions[i].length();
+		}
+		return pos+position;
+	}
+
+	@Override
+	public void onResult(String reducedGraph, int line, int position,
+			boolean finished) {
+		try {
+			int pos = getPos(line ,position);
+			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -2 +line);
+			offset++;
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onFailure(CompilerException e) {
+		int line = e.getLine();
+		try {
+			editor.insertError("Erreur ligne "+line+" +e.getMessage()",line + offset );
+			offset++;
+		} catch (BadLocationException e1) {
+			e1.printStackTrace();
 		}
 	}
 

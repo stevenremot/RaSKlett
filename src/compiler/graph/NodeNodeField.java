@@ -24,7 +24,5 @@ public class NodeNodeField implements NodeField {
 	public Node getNode(){
 		return node;
 	}
-	
-	
-	
+		
 }

@@ -31,5 +31,9 @@ public class Var implements Combinator {
 	public String getName() {
 		return name;
 	}
+	
+	public String getVarName() {
+		return name.substring(1);
+	}
 
 }

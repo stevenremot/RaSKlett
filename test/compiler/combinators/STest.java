@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import compiler.CompilerException;
 import compiler.combinators.Combinator;
 import compiler.combinators.S;
 import compiler.graph.Node;
@@ -13,7 +14,7 @@ import compiler.reducer.Registry;
 public class STest {
 	
 	@Test
-	public void testSReducesCorrectly() {
+	public void testSReducesCorrectly() throws CompilerException {
 		Combinator s = new S(), x = new DummyCombinator("X"),
 				y = new DummyCombinator("Y"), z = new DummyCombinator("Z");
 		
@@ -45,7 +46,7 @@ public class STest {
 	}
 	
 	@Test
-	public void testSKeepNextNode() {
+	public void testSKeepNextNode() throws CompilerException {
 		Combinator s = new S(), x = new DummyCombinator("X"),
 				y = new DummyCombinator("Y"), z = new DummyCombinator("Z");
 		
@@ -65,7 +66,7 @@ public class STest {
 	}
 	
 	@Test
-	public void testSStopsWith2Arguments() {
+	public void testSStopsWith2Arguments() throws CompilerException {
 		Combinator s = new S(), x = new DummyCombinator("X"),
 				y = new DummyCombinator("Y");
 		
@@ -79,7 +80,7 @@ public class STest {
 	}
 	
 	@Test
-	public void testSStopsWith1Argument() {
+	public void testSStopsWith1Argument() throws CompilerException {
 		Combinator s = new S(), x = new DummyCombinator("X");
 		
 		Node node1 = new Node(NodeFieldFactory.create(s), NodeFieldFactory.create(x));

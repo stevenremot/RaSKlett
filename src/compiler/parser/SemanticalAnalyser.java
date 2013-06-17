@@ -157,7 +157,7 @@ public class SemanticalAnalyser {
 
 	public void semanticAnalysis(Instruction instru) {
 		ArrayList<String> targetString = instru.getInstruction();
-		// targetString = targetString.trim();
+		
 		String tempStrDef = "";
 		
 		myresult.clear();

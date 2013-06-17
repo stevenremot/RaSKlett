@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import compiler.CompilerException;
 import compiler.combinators.Combinator;
 import compiler.graph.Node;
 import compiler.graph.NodeFieldFactory;
@@ -39,7 +40,7 @@ public class SKMachineTest {
 	}
 	
 	@Test
-	public void testSKMachineReducesKInfCorrectly() {
+	public void testSKMachineReducesKInfCorrectly() throws CompilerException {
 		Combinator comb = new KInf();
 		
 		Node root = new Node(NodeFieldFactory.create(comb), NodeFieldFactory.create(comb)),
@@ -62,7 +63,7 @@ public class SKMachineTest {
 	}
 	
 	@Test
-	public void testSKMachineStopsCorrectlyWithKinf() {
+	public void testSKMachineStopsCorrectlyWithKinf() throws CompilerException {
 		Combinator comb = new KInf();
 		
 		Node root = new Node(NodeFieldFactory.create(comb), NodeFieldFactory.create(comb));
