@@ -190,6 +190,9 @@ public class GraphFactory {
 		if(cmanager.get(name) == null)
 			throw new CombinatorNotFoundException(name);
 		
+		if(cmanager.get(name).getGraph() != null)
+			return NodeFieldFactory.create(cmanager.get(name).getGraph());
+		
 		return NodeFieldFactory.create(cmanager.get(name));
 	}
 	

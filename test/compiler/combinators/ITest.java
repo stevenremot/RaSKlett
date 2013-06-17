@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import compiler.CompilerException;
 import compiler.graph.Node;
 import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
@@ -11,7 +12,7 @@ import compiler.reducer.Registry;
 public class ITest {
 	
 	@Test
-	public void testIReducesCorrectlyWithXAtomic() {
+	public void testIReducesCorrectlyWithXAtomic() throws CompilerException {
 		Combinator i = new I(), x = new DummyCombinator("X"), y = new DummyCombinator("Y");
 		
 		Node node1 = new Node(NodeFieldFactory.create(i), NodeFieldFactory.create(x));
@@ -34,7 +35,7 @@ public class ITest {
 	}
 	
 	@Test
-	public void testIReducesCorrectlyWithXNonAtomic() {
+	public void testIReducesCorrectlyWithXNonAtomic() throws CompilerException {
 		Combinator i = new I(), y = new DummyCombinator("Y"),
 				p = new DummyCombinator("P"), q = new DummyCombinator("Q");
 		
@@ -62,7 +63,7 @@ public class ITest {
 	}
 	
 	@Test
-	public void testIKeepsNextNode() {
+	public void testIKeepsNextNode() throws CompilerException {
 		Combinator i = new I(), x = new DummyCombinator("X"), y = new DummyCombinator("Y"),
 				z = new DummyCombinator("Z");
 		
@@ -81,7 +82,7 @@ public class ITest {
 	}
 	
 	@Test
-	public void testIStopsWith1Argument() {
+	public void testIStopsWith1Argument() throws CompilerException {
 		Combinator i = new I(), x = new DummyCombinator("X");
 		
 		Node node = new Node(NodeFieldFactory.create(i), NodeFieldFactory.create(x));

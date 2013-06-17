@@ -106,14 +106,14 @@ public class Compiler {
 
 	
 	// réduit une étape
-	private synchronized void step() {
+	private synchronized void step() throws CompilerException {
 		if(!finished && lineFinished || registerNextInstruction()) {
 			lineFinished = !sk.step();
 		}
 	}
 	
 	// Réduit l'instruction suivante
-	private synchronized void instruction() {
+	private synchronized void instruction() throws CompilerException {
 		do {
 			this.step();
 		} while(!this.isFinished() && !this.isInterrupted());
@@ -122,7 +122,7 @@ public class Compiler {
 	}
 	
 	// réduit TOUT
-	private synchronized void all() {
+	private synchronized void all() throws CompilerException {
 		while(!this.isFinished() && !this.isInterrupted()) {
 			this.instruction();
 		}
@@ -134,9 +134,16 @@ public class Compiler {
 	 */
 	public boolean reduceStep() {
 		if(!finished) {
-			step();
-		
-			sendResult();
+			try {
+				step();
+				sendResult();
+			}
+			catch(CompilerException e) {
+				e.setLine(currentInstruction.getLine());
+				e.setPosition(currentInstruction.getPosition());
+				
+				callback.onFailure(e);
+			}
 		}
 		
 		return !finished;
@@ -155,9 +162,16 @@ public class Compiler {
 		Runnable r = new Runnable() {
 			public void run() {
 				synchronized(t) {
-					t.instruction();
-				
-					t.sendResult();
+					try {
+						t.instruction();
+						t.sendResult();
+					}
+					catch(CompilerException e) {
+						e.setLine(currentInstruction.getLine());
+						e.setPosition(currentInstruction.getPosition());
+						
+						callback.onFailure(e);
+					}
 				}
 			}
 		};
@@ -181,9 +195,16 @@ public class Compiler {
 		Runnable r = new Runnable() {
 			public void run() {
 				synchronized(t) {
-					t.all();
-				
-					t.sendResult();
+					try {
+						t.all();
+						t.sendResult();
+					}
+					catch(CompilerException e) {
+						e.setLine(currentInstruction.getLine());
+						e.setPosition(currentInstruction.getPosition());
+						
+						callback.onFailure(e);
+					}
 				}
 			}
 		};

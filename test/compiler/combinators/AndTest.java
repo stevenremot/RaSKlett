@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import compiler.CompilerException;
 import compiler.graph.Node;
 import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
@@ -11,7 +12,7 @@ import compiler.reducer.Registry;
 public class AndTest {
 
 	@Test
-	public void testWorksCorrectly() {
+	public void testWorksCorrectly() throws CompilerException {
 		Combinator and = new And(), a = new DummyCombinator("A"),
 				b = new DummyCombinator("B");
 		
@@ -36,7 +37,7 @@ public class AndTest {
 	}
 	
 	@Test
-	public void testStopsWith1Argument() {
+	public void testStopsWith1Argument() throws CompilerException {
 		Combinator and = new And(), a = new DummyCombinator("A");
 		
 		Node node1 = new Node(
