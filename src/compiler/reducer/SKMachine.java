@@ -1,7 +1,6 @@
 package compiler.reducer;
 
 import compiler.CompilerException;
-import compiler.combinators.Combinator;
 import compiler.graph.Node;
 
 /**
@@ -22,7 +21,7 @@ public class SKMachine {
 	}
 	
 	public void setGraph(Node graph) {
-		registry.setNode(graph);
+		registry.setNode(graph.getRoot());
 	}
 	
 	/**
@@ -49,13 +48,9 @@ public class SKMachine {
 	 * @throws CompilerException 
 	 */
 	public boolean step() throws CompilerException {
-		Combinator c;
+		Node n = registry.getNode();
 		
-		while((c = registry.getNode().getFunction().getCombinator()) == null) {
-			registry.setNode(registry.getNode().getFunction().getNode());
-		}
-		
-		return c.applyReduction(registry);
+		return n.getFunction().getCombinator().applyReduction(registry);
 	}
 
 }

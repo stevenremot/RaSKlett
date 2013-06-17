@@ -2,8 +2,11 @@ package graphicInterface;
 
 import java.awt.Color;
 import java.util.Enumeration;
+import java.util.prefs.Preferences;
 
+import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -20,14 +23,20 @@ public class Editor extends JTextPane {
 	private Style error = this.addStyle("error", defaut);
 	private Style result = this.addStyle("result", defaut);
 	private StyledDocument doc;
+	private Preferences preferences = Preferences.userRoot();
 	
 	public Editor(){
 		super();
+	    StyleConstants.setFontSize(defaut, preferences.getInt("textSize", 11));
+	    StyleConstants.setFontSize(error, preferences.getInt("textSize", 11));
+	    StyleConstants.setFontSize(result, preferences.getInt("textSize", 11));
 		StyleConstants.setForeground(defaut, Color.BLACK);
 	    StyleConstants.setForeground(error, Color.RED);
 	    StyleConstants.setForeground(result, Color.GREEN);
+
 	   doc = (StyledDocument) getDocument();
 	   doc.setParagraphAttributes(0, 1, defaut, true);
+
 	}
 
 	public void appendText(String s) throws BadLocationException{
