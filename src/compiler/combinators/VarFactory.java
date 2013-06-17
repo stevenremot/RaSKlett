@@ -1,5 +1,10 @@
 package compiler.combinators;
 
+/**
+ * Factory pour les variables
+ * @author kazmiero
+ *
+ */
 public class VarFactory implements CombinatorFactory {
 
 	@Override
