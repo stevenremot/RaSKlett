@@ -3,6 +3,8 @@ package compiler.combinators;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import compiler.config.ConfigManager;
+
 /**
  * @brief Enregistre et rend disponible les combinateurs natifs et créés par l'utilisateur
  * 
@@ -20,6 +22,22 @@ public class CombinatorManager {
 		set("S", new S());
 		set("K", new K());
 		set("I", new I());
+		
+		ConfigManager conf = ConfigManager.getInstance();
+		
+		if(conf.isEnabled(ConfigManager.BASIC_COMBINATORS)) {
+			set("B", new B());
+			set("C", new C());
+			set("CStar", new CStar());
+			set("W", new W());
+		}
+		
+		if(conf.isEnabled(ConfigManager.BOOLEANS)) {
+			set("true", new True());
+			set("false", new False());
+			set("and", new And());
+			set("or", new Or());
+		}
 		
 		factories = new ArrayList<CombinatorFactory>();
 	}
