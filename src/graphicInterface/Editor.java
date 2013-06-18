@@ -1,13 +1,11 @@
 package graphicInterface;
 
 import java.awt.Color;
-import java.util.Enumeration;
 import java.util.prefs.Preferences;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
