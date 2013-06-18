@@ -1,5 +1,10 @@
 package compiler.combinators;
 
+/**
+ * Représente la soustraction d'entiers
+ * @author steven
+ *
+ */
 public class Minus extends NumberOperator {
 
 	@Override

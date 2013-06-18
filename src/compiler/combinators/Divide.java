@@ -1,5 +1,10 @@
 package compiler.combinators;
 
+/**
+ * Représente la division d'entiers
+ * @author steven
+ *
+ */
 public class Divide extends NumberOperator {
 
 	@Override
