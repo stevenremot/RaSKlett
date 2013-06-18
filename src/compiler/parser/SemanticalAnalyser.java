@@ -5,46 +5,48 @@ import java.util.LinkedList;
 
 public class SemanticalAnalyser {
 
+	public String[] header = { "import" };
+
+	public String[] keyWords = { "void", "main", "if", "for", "while", "char",
+			"int", "float", "double", "else", "return", "break", "default",
+			"case", "struct", "new", "printf" };
 
 
-	public String[] keyWords = { "auto", "short", "int", "float", "long",
-			"double", "char", "struct", "union", "enum", "typedef", "const",
-			"unsigned", "signed", "extern", "register", "static ", "volatile",
-			"void ", "if", "else", "switch", "case", "for", "do", "while",
-			"goto", "continue", "break", "default", "sizeof", "return" };
+	public String[] operators = { "+", "-", "*", "/", "++", "--", "%" };
+	public String[] coms = { "<", "<=", "=", ">", ">=", "<>", "==", "!=", "!" };
+	public String[] inters = { ",", ";", "'", ".", "(", ")", "{", "}", "\"" };
 
-	// public String[] operator = { "(", ")", "[", "]", "->", ".", "!", "~",
-	// "++",
-	// "--", "+", "-", "*", "&", "/", "%", "<<", ">>", "<", ">", ">=",
-	// "<=", "==", "!=", "^", "|", "&&", "||", "?", "+=", "-=", "*=",
-	// "/=", "%=", "&=", "|=", "^=", "<<=", ">=", "=" };
 
-	public String[] operators = { "+", "-", "*", "/", "= ", "!=", "<", " >",
-			"<=", ">=", " && ", "||" };
-	public String[] commentaire = {};
-	public String[] boundary = { ",", ";", "\"\"", "\'\'" };
-
-	// public String[] skMachOpera = { "S", "K", "I", "s", "k", "i" };
-	// public String[] definition = { ":=" };
-	public String strTemp = "";
-	public static String otherString = "";
+	public char[] cha;
+	public String string = "";
 	public char tempChar;
 	public String result = "";
-	public static String tempWord = "";
+	public String tempWord = "";
+	public static String tempStr = "";
 
 	public LinkedList<String> myresult = new LinkedList<String>();
 	Instruction instruction = new Instruction();
+	ArrayList<String> targetString;
+
+	public int k = 0, sit;
+	char ch = ' ';
 
 	public SemanticalAnalyser(Instruction instru) {
-		this.instruction=instru;
+		this.instruction = instru;
+		myresult.clear();
+		targetString = instruction.getInstruction();
+		k = 0;
+		string = "";
+		semanticAnalysis();
+
 	}
 
 	/**
 	 * @param count
 	 *            to see if it is a number or the words that are not keywords
 	 */
-	public boolean isDigit(char tempCh) {
-		if (tempCh >= '0' && tempCh <= '9') {
+	public boolean isDigit() {
+		if (ch >= '0' && ch <= '9') {
 			return true;
 
 		} else {
@@ -52,13 +54,22 @@ public class SemanticalAnalyser {
 		}
 	}
 
-	public boolean isLetter(char tempCh) {
-		if (tempCh >= 'a' && tempCh <= 'z' || tempCh >= 'A' && tempCh <= 'Z') {
+	public boolean isLetter() {
+		if (ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z') {
 			return true;
 
 		} else {
 			return false;
 		}
+	}
+
+	public boolean isHeader(String tempStr) {
+		for (int n = 0; n < header.length; n++) {
+			if (string.equals(header[n])) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public boolean isOperator(String tempStr) {
@@ -81,121 +92,150 @@ public class SemanticalAnalyser {
 		return false;
 	}
 
-	public boolean isBoundrary(String tempStr) {
-		for (int i = 0; i < boundary.length; i++) {
-			if (tempStr.equals(boundary[i])) {
-				return true;
-			}
+	private void getChar() {
+		if (k<targetString.size()) {
+			ch = targetString.get(k).charAt(0);
+			k++;
+		}else {
+			return;
 		}
-		return false;
-	}
 	
+	}
+
+	private void conCat() {
+		string += Character.toString(ch);
+	}
 
 	public void semanticAnalysis() {
-		ArrayList<String> targetString = instruction.getInstruction();
 
-		myresult.clear();
-
-		for (int i = 0; i < targetString.size(); i++) {
-
-			tempChar = targetString.get(i).charAt(0);
-			if (isLetter(tempChar)) {
-				if (tempWord != "") {
-					if (isOperator(tempWord) || isBoundrary(tempWord)
-							|| isKeyword(tempWord)) {
-						myresult.add(tempWord);
-						tempWord = "";
-					}
+		int n, symble = 0, sy = 0;
+		while (ch == ' ') {
+			getChar();
+		}
+		if (isLetter()) {
+			while (isLetter()) {
+				conCat();
+				if (k<targetString.size()) {				
+				getChar();
+				}else {
+					string=string.trim();
+					myresult.add(string);
+					return;
 				}
-				tempWord += tempChar;
-
-			} else if (isDigit(tempChar)) {
-				if (tempWord != "") {
-					if (isOperator(tempWord) || isBoundrary(tempWord)
-							|| isKeyword(tempWord)) {
-						myresult.add(tempWord);
-						tempWord = "";
-					}
-				}
-				tempWord += tempChar;
-			} else if (tempChar == ' ') {
-                  if (tempWord!="") {
-					if (isOperator(tempWord)||isBoundrary(tempWord)||isKeyword(tempWord)) {
-						myresult.add(tempWord);
-					}
-				}
-                  tempWord+=tempChar;
+				
 			}
+
+			if (isHeader(string)) {
+				myresult.add(string);
+			} else {
+				if (isKeyword(string)) {
+
+					myresult.add(string);
+				} else {
+
+					string = string.trim();
+					myresult.add(string);
+
+				}
+			}
+
+			k--;
+
+		} else if (isDigit()) {
+			while (isDigit()) {
+				conCat();
+				getChar();
+			}
+			myresult.add(string);
+			k--;
+		} else {
+			string = string.trim();
+			conCat();
+
+			for (n = 0; n < operators.length; n++) {
+				if (string.equals(operators[n])) {
+					symble = 0;
+					sit = n;
+				}
+
+			}
+			for (n = 0; n < coms.length; n++) {
+				if (string.equals(coms[n])) {
+					symble = 1;
+					sit = n;
+				}
+
+			}
+			for (n = 0; n < inters.length; n++) {
+
+				if (string.equals(inters[n])) {
+					symble = 2;
+					sit = n;
+				}
+
+			}
+			if (symble == 0) {
+				getChar();
+				tempStr += Character.toString(ch);
+
+				for (n = 0; n < operators.length; n++) {
+					if (tempStr.equals(operators[n])) {
+						sy = 0;
+						conCat();
+						for (n = 0; n < operators.length; n++) {
+							if (string.equals(operators[n])) {
+								sit = n;
+							}
+
+						}
+					}
+				}
+				if (sy != 0)
+					k--;
+			} else if (symble == 1) {
+
+				tempStr += Character.toString(ch);
+				for (n = 0; n < coms.length; n++) {
+					if (tempStr.equals(coms[n])) {
+						sy = 0;
+						conCat();
+						for (n = 0; n < coms.length; n++) {
+							if (string.equals(coms[n])) {
+								sit = n;
+							}
+						}
+					}
+				}
+				if (sy != 0)
+					k--;
+			}else {
+				if (k<targetString.size()) {
+					getChar();
+				}
+				
+			}
+			
+			
+
+			switch (symble) {
+			case 0:
+				myresult.add(string);
+				break;
+			case 1:
+				myresult.add(string);
+				// myresult.add("\n");
+				break;
+			case 2:
+				myresult.add(string);
+				break;
+			}
+		}
+		while (k < targetString.size()) {
+			string = " ";
+			semanticAnalysis();
 
 		}
 
 	}
-
-	// if ((tempChar >= 'a' && tempChar <= 'z')
-	// || (tempChar >= 'A' && tempChar <= 'Z')) {
-	// if (otherString != "") {
-	// if (isBoundary(otherString) || isOperator(otherString)) {
-	// }
-	// result += count + "\n";
-	// } else {
-	// result += otherString + "\t\t" + count + "\n";
-	// }
-	// otherString = "";
-	// }
-	// tempWord += tempChar;
-	// } else if ((tempChar >= '0' && tempChar <= '9') || tempChar == '.') {
-	// if (otherString != "") {
-	// if (isBoundary(otherString) || isOperator(otherString)) {
-	// result += count + "\n";
-	// } else {
-	// result += otherString + "\t\t" + count + "\n";
-	// }
-	// otherString = "";
-	// }
-	// tempWord += tempChar;
-	// } else if (tempChar == ' ') {
-	// isDigit(count);
-	// if (otherString != "") {
-	// if (isBoundary(otherString) || isOperator(otherString)) {
-	// result += count + "\n";
-	// } else {
-	// result += otherString + "\t\t" + count + "\n";
-	// }
-	// otherString = "";
-	// }
-	// tempWord = "";
-	// } else {
-	// isDigit(count);
-	// String otherTmp = otherString;
-	// otherString += tempChar;
-	// if (isContained(otherString) && otherString.length() > 1) {
-	// if (isOperator(otherString)) {
-	// result += count + "\n";
-	// }
-	// otherString = "";
-	// } else if (!isContained(otherString) && otherString.length() > 1) {
-	// if (otherTmp != "") {
-	// if (isBoundary(otherTmp) || isOperator(otherTmp)) {
-	// result += count + "\n";
-	// } else {
-	// result += otherTmp + "\t\t" + count + "\n";
-	// }
-	// }
-	// if (isBoundary(tempChar + "") || isOperator(tempChar + "")) {
-	// result += count + "\n";
-	// } else {
-	// result += tempChar + "" + "\t\t" + count + "\n";
-	// }
-	// otherString = "";
-	// } else if (!iscontained(tempChar + "")) {
-	// if (isBoundary(tempChar + "")) {
-	// result += count + "\n";
-	// } else {
-	// result += tempChar + "\t\t" + count + "\n";
-	// }
-	// otherString = "";
-	// }
-	// tempWord = "";
-	// }
 
 }

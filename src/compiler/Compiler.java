@@ -17,6 +17,7 @@ import compiler.graph.Node;
  */
 public class Compiler {
 	private boolean finished = false;
+	private boolean lineFinished = false;
 	private boolean interrupted = false;
 	ArrayList<Instruction> symbols;
 	private SKMachine sk;
@@ -94,6 +95,8 @@ public class Compiler {
 			sk.setGraph(graph);
 		}
 		
+		lineFinished = false;
+		
 		currentInstructionIndex++;
 		return true;
 	}
@@ -101,8 +104,8 @@ public class Compiler {
 	
 	// réduit une étape
 	private synchronized void step() {
-		if(!finished || registerNextInstruction()) {
-			finished = !sk.step();
+		if(!finished && lineFinished || registerNextInstruction()) {
+			lineFinished = !sk.step();
 		}
 	}
 	
@@ -127,7 +130,7 @@ public class Compiler {
 	 * @return false si aucune étape n'a pu être effectué et que la réduction est donc finie, true sinon
 	 */
 	public boolean reduceStep() {
-		if(!finished || registerNextInstruction()) {
+		if(!finished) {
 			step();
 		
 			sendResult();

@@ -2,11 +2,8 @@ package graphicInterface;
 
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,6 +12,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -22,9 +22,15 @@ import javax.swing.border.Border;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 
+import compiler.Compiler;
+import compiler.CompilerCallback;
+import compiler.CompilerException;
 
-public class MainWindow extends JFrame{
 
+public class MainWindow extends JFrame implements CompilerCallback{
+
+	private Compiler compiler;
+	
 	private String filename = null;
 	private String dir = null;
 
@@ -59,15 +65,14 @@ public class MainWindow extends JFrame{
 	private JMenuItem iHelp = null;
 
 
-
 	private JToolBar toolBar = null;
-	private Image createImage = Toolkit.getDefaultToolkit().getImage(getClass().getResource("icons/Create.png"));
 	private ArrayList<String> combinators;
 
 	/**
 	 * Constructeur de la classe Fenetre
 	 */
 	public MainWindow(){
+
 		combinators = new ArrayList<String>();
 		combinators.add(" B := S (K S) K");
 		combinators.add("W := S S (K I)");
@@ -78,7 +83,7 @@ public class MainWindow extends JFrame{
 
 		open = new JButton(new ImageIcon("icons/open.png"));
 		open.setToolTipText("Open an existing file");
-		ControleurOpen cOpen = new ControleurOpen();
+		open.addActionListener(new ControleurOpen());
 
 		save = new JButton(new ImageIcon("icons/save.png"));
 		save.setToolTipText("Save the current file");
@@ -94,12 +99,15 @@ public class MainWindow extends JFrame{
 
 		nextStep = new JButton(new ImageIcon("icons/next.png"));
 		nextStep.setToolTipText("Compile next instruction");
+		nextStep.addActionListener(new ControleurToNextStep());
 
 		nextLine = new JButton(new ImageIcon("icons/next_line.png"));
 		nextLine.setToolTipText("Compile next line");
+		nextLine.addActionListener(new ControleurToNextInstruction());
 
 		toEnd = new JButton(new ImageIcon("icons/to_end.png"));
 		toEnd.setToolTipText("Compile the rest of the code");
+		toEnd.addActionListener(new ControleurCompileAll());
 
 		stop = new JButton(new ImageIcon("icons/stop.png"));	
 		stop.setToolTipText("Interrupt compilation");
@@ -223,21 +231,8 @@ public class MainWindow extends JFrame{
 		setVisible(true);
 	}
 
-	/**
-	 * Méthode permettant de rajouter du texte à la zone de texte
-	 * @param texte
-	 * @throws BadLocationException 
-	 */
-	public void ecrire(String texte) throws BadLocationException{
-		editor.appendText(texte + newline);
-	}
-
 	public Editor getEditor(){
 		return editor;
-	}
-
-	public void compile(String code){
-		
 	}
 	
 	public void startCompilationStepByStep(){
@@ -250,18 +245,41 @@ public class MainWindow extends JFrame{
 		iToEnd.setEnabled(true);
 		iStop.setEnabled(true);
 		editor.disableEdition();
-		//et le reste
+		
+		String code = editor.getCleanedText();
+		Reader reader = new StringReader(code);
+		compiler = new Compiler(reader,this);
 	}
 
 	public void startCompilation(){
 		editor.disableEdition();
 		stop.setEnabled(true);
 		iStop.setEnabled(true);
-		//compile();
-		//et le reste
+		
+		String code = editor.getCleanedText();
+		Reader reader = new StringReader(code);
+		compiler = new Compiler(reader,this);
+		compiler.reduceAll();
+	}
+	
+	public void toNextStep() {
+		compiler.reduceStep();
+
+	}
+	
+	public void toNextInstruction() {
+		compiler.reduceInstruction();
+	}
+	
+	public void toEnd() {
+		compiler.reduceAll();
+		editor.enableEdition();
+		stop.setEnabled(false);
+		iStop.setEnabled(false);
 	}
 
 	public void stopCompilation(){
+		
 		editor.enableEdition();
 		nextStep.setEnabled(false);
 		nextLine.setEnabled(false);
@@ -271,35 +289,56 @@ public class MainWindow extends JFrame{
 		iNextLine.setEnabled(false);
 		iToEnd.setEnabled(false);
 		iStop.setEnabled(false);
-		//compile();
+		
+		compiler = new Compiler(new StringReader(""),this);
+		compiler.stopReduction();
+		
+
 	}
+	
 
 	public class ControleurCompileAll implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			startCompilation();
-
 		}
 
 	}
 
 	public class ControleurCompileStepByStep implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			startCompilationStepByStep();
-
 		}
 
 	}
+	
+	public class ControleurToNextStep implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			toNextStep();
+		}
+	}
+	
+	public class ControleurToNextInstruction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			toNextInstruction();
+		}
+	}
+	
+	public class ControleurToEnd implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			toEnd();
+		}
+	}
+
 
 	public class ControleurStop implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			stopCompilation();
-
 		}
 
 	}
@@ -346,6 +385,14 @@ public class MainWindow extends JFrame{
 			filename = null;
 			dir = null;
 			editor.setText(null);
+			
+			test += "bla";
+			try {
+				testReader.reset();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 	}
@@ -385,6 +432,26 @@ public class MainWindow extends JFrame{
 			} catch (IOException e) {
 				e.printStackTrace();
 			} 		
+		}
+	}
+
+	@Override
+	public void onResult(String reducedGraph, int line, int position,
+			boolean finished) {
+		try {
+			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,0);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onFailure(CompilerException e) {
+		int line = e.getLine();
+		try {
+			editor.insertError("Erreur ligne "+line+" "+e.getMessage(),0);
+		} catch (BadLocationException e1) {
+			e1.printStackTrace();
 		}
 	}
 

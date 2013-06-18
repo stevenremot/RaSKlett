@@ -1,6 +1,8 @@
 package compiler.parser;
 
 
+import Instruction;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -107,6 +109,13 @@ public class LexicalAnalyser {
 			throw new CompilerException("Could not close buffer", lineCount, 0);
 		}
 
+	}
+	public ArrayList<Instruction> getResInstruArrayList() {
+		return resInstruArrayList;
+	}
+
+	public void setResInstruArrayList(ArrayList<Instruction> resInstruArrayList) {
+		this.resInstruArrayList = resInstruArrayList;
 	}
 
 }
