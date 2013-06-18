@@ -22,7 +22,7 @@ public abstract class NumberOperator implements Combinator {
 	 * @param n2
 	 * @return
 	 */
-	protected abstract int doOperation(int n1, int n2);
+	protected abstract Combinator doOperation(int n1, int n2);
 	
 	public Node getGraph() {
 		return null;
@@ -64,7 +64,7 @@ public abstract class NumberOperator implements Combinator {
 		
 		int n2 = ((Number) c).getValue();
 		
-		Number n = new Number(doOperation(n1, n2));
+		Combinator n = doOperation(n1, n2);
 		
 		node2.setFunction(NodeFieldFactory.create(new I()));
 		node2.setArgument(NodeFieldFactory.create(n));

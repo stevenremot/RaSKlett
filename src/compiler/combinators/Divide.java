@@ -8,8 +8,8 @@ public class Divide extends NumberOperator {
 	}
 
 	@Override
-	protected int doOperation(int n1, int n2) {
-		return n1 / n2;
+	protected Combinator doOperation(int n1, int n2) {
+		return new Number(n1 / n2);
 	}
 
 }

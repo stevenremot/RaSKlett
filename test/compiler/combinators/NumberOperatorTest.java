@@ -20,8 +20,8 @@ public class NumberOperatorTest {
 			}
 
 			@Override
-			protected int doOperation(int n1, int n2) {
-				return 0;
+			protected Combinator doOperation(int n1, int n2) {
+				return null;
 			}
 			
 			public void test() throws CompilerException {
@@ -44,8 +44,8 @@ public class NumberOperatorTest {
 			}
 
 			@Override
-			protected int doOperation(int n1, int n2) {
-				return n1 + n2;
+			protected Combinator doOperation(int n1, int n2) {
+				return null;
 			}
 			
 			public void test() throws CompilerException {
@@ -100,8 +100,8 @@ public class NumberOperatorTest {
 			}
 
 			@Override
-			protected int doOperation(int n1, int n2) {
-				return 0;
+			protected Combinator doOperation(int n1, int n2) {
+				return null;
 			}
 		}
 		
