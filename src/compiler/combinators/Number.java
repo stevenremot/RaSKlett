@@ -22,6 +22,10 @@ public class Number implements Combinator {
 	public Node getGraph() {
 		return null;
 	}
+	
+	public int getValue() {
+		return value;
+	}
 
 	@Override
 	public boolean applyReduction(Registry registry) throws CompilerException {

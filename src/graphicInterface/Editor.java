@@ -34,7 +34,10 @@ public class Editor extends JTextPane {
 		StyleConstants.setForeground(defaut, Color.BLACK);
 	    StyleConstants.setForeground(error, Color.RED);
 	    StyleConstants.setForeground(result, Color.GREEN);
-	    doc = (StyledDocument) getDocument();
+
+	   doc = (StyledDocument) getDocument();
+	   doc.setParagraphAttributes(0, 1, defaut, true);
+
 	}
 
 	public void appendText(String s) throws BadLocationException{
@@ -56,7 +59,7 @@ public class Editor extends JTextPane {
 		if(getText().length() > 0)
 			doc.insertString(position, "\n"+s , error);
 		else
-			doc.insertString(doc.getLength(), s, defaut);
+			doc.insertString(doc.getLength(), s, error);
 		
 	}
 	
@@ -64,7 +67,7 @@ public class Editor extends JTextPane {
 		if(getText().length() > 0)
 			doc.insertString(position, "\n"+s, result);
 		else
-			doc.insertString(doc.getLength(), s, defaut);
+			doc.insertString(doc.getLength(), s, result);
 	}
 	
 	public void disableEdition(){
@@ -81,20 +84,32 @@ public class Editor extends JTextPane {
 	 */
 	public String getCleanedText() {
 		String text = "";
-		int posInit = getCaretPosition();
-		for(int pos = 0; pos < getText().length(); pos++) {
-			AttributeSet attr = getCharacterAttributes();
-		    Enumeration<?> e = attr.getAttributeNames();
-		    while (e.hasMoreElements()) {
-		      Object name = e.nextElement();
-		      Object value = attr.getAttribute(name);
-		      if(value == Color.BLACK) {
-					text += getText().charAt(pos);
-		      }
-		    }
-			moveCaretPosition(pos);
+//		int posInit = getCaretPosition();
+		String textInit = getText();
+		String[] lines = textInit.split("\n");
+		for(int i = 0; i < lines.length; i++) {
+			if(!(lines[i].indexOf(">>>") == 0 || lines[i].indexOf(">>>") == 0))
+				if(i == 0)
+					text += lines[i];
+				else
+					text += "\n" + lines[i];
 		}
-		moveCaretPosition(posInit);
+//		for(int pos = 0; pos < getText().length(); pos++) {
+//			AttributeSet attr = getCharacterAttributes();
+//			if(doc.getForeground(attr) == Color.BLACK)
+//				text += getText().charAt(pos);
+//		    Enumeration<?> e = attr.getAttributeNames();
+//		    while (e.hasMoreElements()) {
+//		      Object name = e.nextElement();
+//		      Object value = attr.getAttribute(name);
+//		      System.out.println(value + " "+ name);
+//		      if(value == Color.BLACK) {
+//					text += getText().charAt(pos);
+//		      }
+//		    }
+//			moveCaretPosition(pos);
+//		}
+//		moveCaretPosition(posInit);
 		return text;
 	}
 	
