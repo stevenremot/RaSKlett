@@ -215,8 +215,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		JScrollPane panneauTexte = new JScrollPane(editor);
 		add(panneauTexte, BorderLayout.CENTER);
 		
-		//TextLineNumbers tln = new TextLineNumbers(editor);
-		//panneauTexte.setRowHeaderView( tln );
+		TextLineNumbers tln = new TextLineNumbers(editor);
+		panneauTexte.setRowHeaderView( tln );
 
 
 		JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
