@@ -52,6 +52,12 @@ public class CombinatorManager {
 			addCombinator(new Minus());
 			addCombinator(new Times());
 			addCombinator(new Divide());
+			addCombinator(new Equals());
+			addCombinator(new NotEquals());
+			addCombinator(new LessThan());
+			addCombinator(new LessThanOrEquals());
+			addCombinator(new GreaterThan());
+			addCombinator(new GreaterThenOrEquals());
 		}
 		
 	}
