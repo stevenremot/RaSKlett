@@ -35,7 +35,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private String dir = null;
 
 	private static final long serialVersionUID = 1L;
-	private Editor editor = null;
+	private static Editor editor = null;
 	private JButton create = null;
 	private JButton open = null;
 	private JButton save = null;
@@ -215,8 +215,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		JScrollPane panneauTexte = new JScrollPane(editor);
 		add(panneauTexte, BorderLayout.CENTER);
 		
-		//TextLineNumbers tln = new TextLineNumbers(editor);
-		//panneauTexte.setRowHeaderView( tln );
+		TextLineNumbers tln = new TextLineNumbers(editor);
+		panneauTexte.setRowHeaderView( tln );
 
 
 		JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
@@ -537,16 +537,21 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 	}
 
-	public static class PreferencesDialog extends JPanel{
+	public static class PreferencesDialog extends JPanel implements ActionListener{
 		
 		private ImageIcon textPreferences = null;
 		private ImageIcon combinatorPreferences = null;
 	    
 	    private JComboBox sizeList;
 	    private JCheckBox lineNumbers;
-
+	    
+	    private static JFrame frame;
 		
 		private Preferences preferences = Preferences.userRoot();
+		
+		final String apply = "Apply";
+		final String restore = "Restore";
+		final String close = "Close";
 
 
 		/**
@@ -564,9 +569,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			
 			JPanel textPanel = new JPanel(new GridLayout(0, 1));		
 		    
-			Object[] numbers = {6, 7, 8, 9, 10, 11, 12, 14, 16, 18};
+			Object[] numbers = {12, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18};
 			sizeList = new JComboBox(numbers);
 			sizeList.setEditable(true);
+			sizeList.setSelectedItem(12);
 			sizeList.setMaximumSize(new Dimension(100,10));
 			
 			JPanel sizePanel = new JPanel(new GridLayout(0, 1));
@@ -600,8 +606,14 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	        tabbedPane.setBorder(new EmptyBorder(3, 3, 3, 3));
 
 	        JButton apply = new JButton("Apply");
-	        apply.addActionListener(new ControleurApply());
+	        apply.setActionCommand("apply");
+	        apply.addActionListener(this);
 	        add(apply);
+	        
+	        JButton ok = new JButton("OK");
+	        ok.setActionCommand("close");
+	        ok.addActionListener(this);
+	        add(ok);
 		    	    
 		}
 	    /**
@@ -611,7 +623,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	     */
 	    private static void createAndShowGUI() {
 	        //Create and set up the window.
-	        JFrame frame = new JFrame("TabbedPaneDemo");
+	        frame = new JFrame("TabbedPaneDemo");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	         
 	        //Add content to the window.
@@ -640,8 +652,24 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			public void actionPerformed(ActionEvent arg0) {
 				preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
 				preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
+				editor.update();
 			}
 
+		}
+		
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if("apply".equals(e.getActionCommand())) {
+		        System.out.println("apply button selected");
+		        preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
+				preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
+				editor.update();
+			    } else if ("close".equals(e.getActionCommand())) {
+			      System.out.println("upgrade button selected");
+			      frame.dispose();
+			    }
 		}
 	}
 }

@@ -25,9 +25,10 @@ public class Editor extends JTextPane {
 	
 	public Editor(){
 		super();
-	    StyleConstants.setFontSize(defaut, preferences.getInt("textSize", 11));
+	    StyleConstants.setFontSize(defaut,  preferences.getInt("textSize", 11));
 	    StyleConstants.setFontSize(error, preferences.getInt("textSize", 11));
 	    StyleConstants.setFontSize(result, preferences.getInt("textSize", 11));
+		
 		StyleConstants.setForeground(defaut, Color.BLACK);
 	    StyleConstants.setForeground(error, Color.RED);
 	    StyleConstants.setForeground(result, Color.GREEN);
@@ -108,6 +109,13 @@ public class Editor extends JTextPane {
 //		}
 //		moveCaretPosition(posInit);
 		return text;
+	}
+	
+	public void update(){
+		  StyleConstants.setFontSize(defaut,  preferences.getInt("textSize", 11));
+		  StyleConstants.setFontSize(error, preferences.getInt("textSize", 11));
+		  StyleConstants.setFontSize(result, preferences.getInt("textSize", 11));
+
 	}
 	
 
