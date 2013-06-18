@@ -13,25 +13,27 @@ public class PlusTest {
 
 	@Test
 	public void testPlusWorks() throws CompilerException {
-		Combinator plus = new Plus(), a = new DummyCombinator("A");
+		Combinator plus = new Plus(), two = new Number(2);
 		
 		Node n = new Node(
 				NodeFieldFactory.create(plus),
-				NodeFieldFactory.create(a));
+				NodeFieldFactory.create(two));
 		
 		Registry reg = new Registry();
 		reg.setNode(n);
 		
+		assertFalse(plus.applyReduction(reg));
+		
+		Node n2 = new Node(
+				NodeFieldFactory.create(n),
+				NodeFieldFactory.create(two));
+		
 		assertTrue(plus.applyReduction(reg));
 		
-		assertEquals(n, reg.getNode());
-		assertEquals(a, n.getFunction().getCombinator());
+		assertEquals(n2, reg.getNode());
 		
-		Node sb = n.getArgument().getNode();
-		
-		assertNotNull(sb);
-		assertEquals("S", sb.getFunction().getCombinator().getName());
-		assertEquals("B", sb.getArgument().getCombinator().getName());
+		assertEquals("I", n2.getFunction().getCombinator().getName());
+		assertEquals("4", n2.getArgument().getCombinator().getName());
 	}
 
 }

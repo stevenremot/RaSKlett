@@ -107,6 +107,5 @@ public class NumberOperatorTest {
 		
 		(new Test()).test();
 	}
-	
 
 }
