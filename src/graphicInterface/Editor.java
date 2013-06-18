@@ -83,11 +83,20 @@ public class Editor extends JTextPane {
 	 */
 	public String getCleanedText() {
 		String text = "";
-		int posInit = getCaretPosition();
-		for(int pos = 0; pos < getText().length(); pos++) {
-			AttributeSet attr = getCharacterAttributes();
-			if(doc.getForeground(attr) == Color.BLACK)
-				text += getText().charAt(pos);
+//		int posInit = getCaretPosition();
+		String textInit = getText();
+		String[] lines = textInit.split("\n");
+		for(int i = 0; i < lines.length; i++) {
+			if(!(lines[i].indexOf(">>>") == 0 || lines[i].indexOf(">>>") == 0))
+				if(i == 0)
+					text += lines[i];
+				else
+					text += "\n" + lines[i];
+		}
+//		for(int pos = 0; pos < getText().length(); pos++) {
+//			AttributeSet attr = getCharacterAttributes();
+//			if(doc.getForeground(attr) == Color.BLACK)
+//				text += getText().charAt(pos);
 //		    Enumeration<?> e = attr.getAttributeNames();
 //		    while (e.hasMoreElements()) {
 //		      Object name = e.nextElement();
@@ -97,9 +106,9 @@ public class Editor extends JTextPane {
 //					text += getText().charAt(pos);
 //		      }
 //		    }
-			moveCaretPosition(pos);
-		}
-		moveCaretPosition(posInit);
+//			moveCaretPosition(pos);
+//		}
+//		moveCaretPosition(posInit);
 		return text;
 	}
 	

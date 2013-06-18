@@ -215,8 +215,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		JScrollPane panneauTexte = new JScrollPane(editor);
 		add(panneauTexte, BorderLayout.CENTER);
 		
-		TextLineNumbers tln = new TextLineNumbers(editor);
-		panneauTexte.setRowHeaderView( tln );
+		//TextLineNumbers tln = new TextLineNumbers(editor);
+		//panneauTexte.setRowHeaderView( tln );
 
 
 		JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
@@ -270,6 +270,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		iStop.setEnabled(true);
 		
 		String code = editor.getCleanedText();
+		System.out.println("code : "+code);
 		Reader reader = new StringReader(code);
 		compiler = new Compiler(reader,this);
 		compiler.reduceAll();
@@ -415,7 +416,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 						editor.setText(null);
 						editor.insertText(text, 0);
 					} catch (BadLocationException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					filename = file.getName();
@@ -437,26 +437,26 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			filename = null;
 			dir = null;
 			editor.setText(null);
-			try {
-				String[] s = editor.getCleanedText().split("\n");
-				int n = s.length;
-				System.out.println("nb lignes : "+n);
-				for(int i = 0; i < n ; i ++) {
-					if(s[i].length() > 0) {
-						int k = s[i].split(";").length;
-						System.out.println("nb instruct ligne "+i+ " : "+k);
-						
-						for(int j = 0; j < k; j++) {
-							int pos = getPos(i,j);
-							editor.insertResult("Résultat ligne "+i+ " instruction "+j +";",pos +offset -2 +i);
-						}
-						offset += k;
-					}
-					
-				}		
-			} catch (BadLocationException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				String[] s = editor.getCleanedText().split("\n");
+//				int n = s.length;
+//				System.out.println("nb lignes : "+n);
+//				for(int i = 0; i < n ; i ++) {
+//					if(s[i].length() > 0) {
+//						int k = s[i].split(";").length;
+//						System.out.println("nb instruct ligne "+i+ " : "+k);
+//						
+//						for(int j = 0; j < k; j++) {
+//							int pos = getPos(i,j);
+//							editor.insertResult("Résultat ligne "+i+ " instruction "+j +";",pos +offset -2 +i);
+//						}
+//						offset += k;
+//					}
+//					
+//				}		
+//			} catch (BadLocationException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 	}
@@ -501,7 +501,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	
 	public int getPos(int line, int position) {
 		String s = editor.getText();
-		System.out.println(s);
 		String[] instructions = s.split("\n");
 		int pos = 1;
 		System.out.println(line + offset + position);
@@ -520,7 +519,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			System.out.println(line+" , "+position);
 			int pos = getPos(line ,position);
 			System.out.println(reducedGraph);
-			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
+			editor.insertResult(">>> Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
 			offset++;
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -531,7 +530,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void onFailure(CompilerException e) {
 		int line = e.getLine();
 		try {
-			editor.insertError("Erreur ligne "+line+" " +e.getMessage(),line + offset );
+			editor.insertError("!!! Erreur ligne "+line+" " +e.getMessage(),line + offset );
 			offset++;
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
@@ -556,7 +555,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		private static final long serialVersionUID = 5325511632318062715L;
 
 		public PreferencesDialog() {
-			// TODO Auto-generated constructor stub
 			setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 			JTabbedPane tabbedPane = new JTabbedPane();
 			
