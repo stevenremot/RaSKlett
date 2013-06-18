@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import compiler.CompilerException;
 import compiler.graph.Node;
 import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
@@ -11,7 +12,7 @@ import compiler.reducer.Registry;
 public class KTest {
 	
 	@Test
-	public void testKReducesCorrectlyWithXAtomic() {
+	public void testKReducesCorrectlyWithXAtomic() throws CompilerException {
 		Combinator k = new K(), x = new DummyCombinator("X"), y = new DummyCombinator("Y");
 		
 		Node node1 = new Node(NodeFieldFactory.create(k), NodeFieldFactory.create(x));
@@ -33,7 +34,7 @@ public class KTest {
 	}
 	
 	@Test
-	public void testKReducesCorrectlyWithXNonAtomic() {
+	public void testKReducesCorrectlyWithXNonAtomic() throws CompilerException {
 		Combinator k = new K(), p = new DummyCombinator("P"),q = new DummyCombinator("Q"), y = new DummyCombinator("Y");
 		
 		Node node0 = new Node(NodeFieldFactory.create(p), NodeFieldFactory.create(q));
@@ -55,7 +56,7 @@ public class KTest {
 	}
 	
 	@Test
-	public void testKKeepsNextNode() {
+	public void testKKeepsNextNode() throws CompilerException {
 		Combinator k = new K(), x = new DummyCombinator("X"), y = new DummyCombinator("Y"), z = new DummyCombinator("Z");
 		
 		Node node1 = new Node(NodeFieldFactory.create(k), NodeFieldFactory.create(x));
@@ -74,7 +75,7 @@ public class KTest {
 	}
 	
 	@Test
-	public void testKStopsWith1Argument() {
+	public void testKStopsWith1Argument() throws CompilerException {
 		Combinator k = new K(), x = new DummyCombinator("X");
 		
 		Node node1 =  new Node(NodeFieldFactory.create(k), NodeFieldFactory.create(x));

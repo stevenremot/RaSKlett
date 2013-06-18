@@ -27,7 +27,11 @@ public class LambdaFactory implements CombinatorFactory {
 		if(mat.find()) {
 			int level = ConfigManager.getInstance().getDefaultAbstractionLevel();
 			if(mat.groupCount() > 0) {
-				level = mat.group(1).length();
+				int len = mat.group(1).length();
+				
+				if(len > 0) {
+					level = len;
+				}
 			}
 			
 			return new Lambda(level);

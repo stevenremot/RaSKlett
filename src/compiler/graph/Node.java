@@ -48,5 +48,19 @@ public class Node {
 	public void setNextNode(Node node){
 		nextNode = node;
 	}
+	
+	public Node getLastNode(){
+		Node node = this;
+		while(node.getNextNode() != null)
+			node = node.getNextNode();
+		return node;
+	}
+	
+	public Node getRoot(){
+		Node node = this;
+		while(node.getFunction().getNode() != null)
+			node = node.getFunction().getNode();
+		return node;
+	}
 
 }

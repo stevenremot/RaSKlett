@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import compiler.CompilerException;
 import compiler.graph.Node;
 import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
@@ -14,7 +15,7 @@ import compiler.reducer.Registry;
 public class WTest {
 	
 	@Test
-	public void testWReducesCorrectly() {
+	public void testWReducesCorrectly() throws CompilerException {
 		Combinator w = new W(), x = new DummyCombinator("X"), f = new DummyCombinator("F");
 		
 		Node node1 = new Node(NodeFieldFactory.create(w), NodeFieldFactory.create(f));
@@ -38,7 +39,7 @@ public class WTest {
 	
 	
 	@Test
-	public void testKKeepsNextNode() {
+	public void testKKeepsNextNode() throws CompilerException {
 		Combinator w = new W(), x = new DummyCombinator("X"), y = new DummyCombinator("Y"), f = new DummyCombinator("F");
 		
 		Node node1 = new Node(NodeFieldFactory.create(w), NodeFieldFactory.create(f));
@@ -57,7 +58,7 @@ public class WTest {
 	}
 	
 	@Test
-	public void testKStopsWith1Argument() {
+	public void testKStopsWith1Argument() throws CompilerException {
 		Combinator w = new W(), f = new DummyCombinator("F");
 		
 		Node node1 =  new Node(NodeFieldFactory.create(w), NodeFieldFactory.create(f));

@@ -14,18 +14,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
 
 import compiler.Compiler;
 import compiler.CompilerCallback;
 import compiler.CompilerException;
-
 
 public class MainWindow extends JFrame implements CompilerCallback{
 
@@ -34,9 +34,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private String filename = null;
 	private String dir = null;
 
-	private final static String newline = "\n";
 	private static final long serialVersionUID = 1L;
-	private Editor editor = null;
+	private static Editor editor = null;
 	private JButton create = null;
 	private JButton open = null;
 	private JButton save = null;
@@ -67,6 +66,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	private JToolBar toolBar = null;
 	private ArrayList<String> combinators;
+	
+	private int offset = 0;
 
 	/**
 	 * Constructeur de la classe Fenetre
@@ -192,6 +193,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		iCombinators = new JMenuItem("Combinators");
 		iPreferences = new JMenuItem("Preferences");
+		iPreferences.addActionListener(new ControleurPreferences());
 
 		tools.add(iCombinators);
 		tools.add(iPreferences);	
@@ -209,8 +211,13 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		setJMenuBar(menuBar);
 
 		editor.setEditable(true);
+		
 		JScrollPane panneauTexte = new JScrollPane(editor);
 		add(panneauTexte, BorderLayout.CENTER);
+		
+		TextLineNumbers tln = new TextLineNumbers(editor);
+		panneauTexte.setRowHeaderView( tln );
+
 
 		JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
 		combinatorPanel.setPreferredSize(new Dimension(150,0));
@@ -224,6 +231,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		combinatorPanel.add(test);
 		add(combinatorPanel, BorderLayout.WEST);
 
+		
+
+		
+		
 		setPreferredSize(new Dimension(800, 600));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("RaSKlett");
@@ -236,6 +247,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	
 	public void startCompilationStepByStep(){
+		editor.setText(editor.getCleanedText());
 		nextStep.setEnabled(true);
 		nextLine.setEnabled(true);
 		toEnd.setEnabled(true);
@@ -252,18 +264,22 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
 	public void startCompilation(){
+		editor.setText(editor.getCleanedText());
 		editor.disableEdition();
 		stop.setEnabled(true);
 		iStop.setEnabled(true);
 		
 		String code = editor.getCleanedText();
+		System.out.println("code : "+code);
 		Reader reader = new StringReader(code);
 		compiler = new Compiler(reader,this);
 		compiler.reduceAll();
 	}
 	
 	public void toNextStep() {
+		enableCompilation(false);
 		compiler.reduceStep();
+		enableCompilation(true);
 
 	}
 	
@@ -281,19 +297,39 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void stopCompilation(){
 		
 		editor.enableEdition();
-		nextStep.setEnabled(false);
-		nextLine.setEnabled(false);
-		toEnd.setEnabled(false);
-		stop.setEnabled(false);
-		iNextStep.setEnabled(false);
-		iNextLine.setEnabled(false);
-		iToEnd.setEnabled(false);
-		iStop.setEnabled(false);
+		
+//		nextStep.setEnabled(false);
+//		nextLine.setEnabled(false);
+//		toEnd.setEnabled(false);
+//		stop.setEnabled(false);
+//		iNextStep.setEnabled(false);
+//		iNextLine.setEnabled(false);
+//		iToEnd.setEnabled(false);
+//		iStop.setEnabled(false);
 		
 		compiler = new Compiler(new StringReader(""),this);
 		compiler.stopReduction();
+		enableCompilation(true);
 		
 
+	}
+	
+	public void enableCompilation(boolean b)
+	{
+		if(compileStepByStep.isEnabled()) {
+			nextStep.setEnabled(b);
+			nextLine.setEnabled(b);
+			toEnd.setEnabled(b);
+			iNextStep.setEnabled(b);
+			iNextLine.setEnabled(b);
+			iToEnd.setEnabled(b);
+		}
+		iCompileAll.setEnabled(b);
+		compileAll.setEnabled(b);
+		stop.setEnabled(!b);
+		iStop.setEnabled(!b);
+		
+		
 	}
 	
 
@@ -343,6 +379,16 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	}
 
+	public class ControleurPreferences implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			PreferencesDialog dialog = new PreferencesDialog();
+	        dialog.createAndShowGUI();
+
+		}
+
+	}
 	/**
 	 * @brief Ouvre une boîte de dialogue pour sélectionner le fichier à ouvrir.
 	 * @author lagrange
@@ -365,7 +411,13 @@ public class MainWindow extends JFrame implements CompilerCallback{
 					reader.read(buffer);
 					reader.close();
 					String text = new String(buffer);
-					editor.setText(text);
+					//editor.setText(text);
+					try {
+						editor.setText(null);
+						editor.insertText(text, 0);
+					} catch (BadLocationException e) {
+						e.printStackTrace();
+					}
 					filename = file.getName();
 					dir = file.getPath();
 				} catch (FileNotFoundException e) {
@@ -385,14 +437,26 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			filename = null;
 			dir = null;
 			editor.setText(null);
-			
-			test += "bla";
-			try {
-				testReader.reset();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+//			try {
+//				String[] s = editor.getCleanedText().split("\n");
+//				int n = s.length;
+//				System.out.println("nb lignes : "+n);
+//				for(int i = 0; i < n ; i ++) {
+//					if(s[i].length() > 0) {
+//						int k = s[i].split(";").length;
+//						System.out.println("nb instruct ligne "+i+ " : "+k);
+//						
+//						for(int j = 0; j < k; j++) {
+//							int pos = getPos(i,j);
+//							editor.insertResult("Résultat ligne "+i+ " instruction "+j +";",pos +offset -2 +i);
+//						}
+//						offset += k;
+//					}
+//					
+//				}		
+//			} catch (BadLocationException e) {
+//				e.printStackTrace();
+//			}
 		}
 
 	}
@@ -434,12 +498,29 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			} 		
 		}
 	}
+	
+	public int getPos(int line, int position) {
+		String s = editor.getText();
+		String[] instructions = s.split("\n");
+		int pos = 1;
+		System.out.println(line + offset + position);
+		for(int i = 0; i < line + offset + position +1; i++) {
+			System.out.println("instructions : "+instructions[i]);
+			pos += instructions[i].length();
+		}
+		System.out.println(pos);
+		return pos+position;
+	}
 
 	@Override
 	public void onResult(String reducedGraph, int line, int position,
 			boolean finished) {
 		try {
-			editor.insertResult("Résultat de la ligne "+line+" : "+reducedGraph,0);
+			System.out.println(line+" , "+position);
+			int pos = getPos(line ,position);
+			System.out.println(reducedGraph);
+			editor.insertResult(">>> Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
+			offset++;
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -449,10 +530,146 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void onFailure(CompilerException e) {
 		int line = e.getLine();
 		try {
-			editor.insertError("Erreur ligne "+line+" "+e.getMessage(),0);
+			editor.insertError("!!! Erreur ligne "+line+" " +e.getMessage(),line + offset );
+			offset++;
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
 	}
 
+	public static class PreferencesDialog extends JPanel implements ActionListener{
+		
+		private ImageIcon textPreferences = null;
+		private ImageIcon combinatorPreferences = null;
+	    
+	    private JComboBox sizeList;
+	    private JCheckBox lineNumbers;
+	    
+	    private static JFrame frame;
+		
+		private Preferences preferences = Preferences.userRoot();
+		
+		final String apply = "Apply";
+		final String restore = "Restore";
+		final String close = "Close";
+
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5325511632318062715L;
+
+		public PreferencesDialog() {
+			setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+			JTabbedPane tabbedPane = new JTabbedPane();
+			
+			textPreferences = new ImageIcon("icons/textPreferences.png");
+			combinatorPreferences = new ImageIcon("icons/combinators.png");
+			
+			
+			JPanel textPanel = new JPanel(new GridLayout(0, 1));		
+		    
+			Object[] numbers = {12, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18};
+			sizeList = new JComboBox(numbers);
+			sizeList.setEditable(true);
+			sizeList.setSelectedItem(12);
+			sizeList.setMaximumSize(new Dimension(100,10));
+			
+			JPanel sizePanel = new JPanel(new GridLayout(0, 1));
+			sizePanel.add(new JLabel("Change text size"));
+			sizePanel.add(sizeList);
+			textPanel.add(sizePanel);
+			
+			lineNumbers = new JCheckBox("Add line numbers");
+			textPanel.add(lineNumbers);
+			
+			textPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+			
+		    tabbedPane.addTab("Text preferences", textPreferences, textPanel,
+	                "Editor's text preferences");
+		    
+		    
+			JPanel combinatorsPanel = new JPanel(new GridLayout(1, 1));
+			combinatorsPanel.setLayout(new BoxLayout(combinatorsPanel, BoxLayout.PAGE_AXIS));
+			JLabel availableCombinators = new JLabel("Available combinators");
+			combinatorsPanel.add(availableCombinators);
+			
+			
+			tabbedPane.addTab("Available combinators", combinatorPreferences, combinatorsPanel,
+		            "Natively available combinators");
+			
+	        //Add the tabbed pane to this panel.
+	        add(tabbedPane);
+	         
+	        //The following line enables to use scrolling tabs.
+	        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);	
+	        tabbedPane.setBorder(new EmptyBorder(3, 3, 3, 3));
+
+	        JButton apply = new JButton("Apply");
+	        apply.setActionCommand("apply");
+	        apply.addActionListener(this);
+	        add(apply);
+	        
+	        JButton ok = new JButton("OK");
+	        ok.setActionCommand("close");
+	        ok.addActionListener(this);
+	        add(ok);
+		    	    
+		}
+	    /**
+	     * Create the GUI and show it.  For thread safety,
+	     * this method should be invoked from
+	     * the event dispatch thread.
+	     */
+	    private static void createAndShowGUI() {
+	        //Create and set up the window.
+	        frame = new JFrame("TabbedPaneDemo");
+	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	         
+	        //Add content to the window.
+	        frame.add(new PreferencesDialog(), BorderLayout.CENTER);
+	        frame.setPreferredSize(new Dimension(400,250)) ;
+	        //Display the window.
+	        frame.pack();
+	        frame.setVisible(true);
+	    }
+	    /* 
+	    public static void main(String[] args) {
+	        //Schedule a job for the event dispatch thread:
+	        //creating and showing this application's GUI.
+	        SwingUtilities.invokeLater(new Runnable() {
+	            public void run() {
+	                //Turn off metal's use of bold fonts
+	        UIManager.put("swing.boldMetal", Boolean.FALSE);
+	        createAndShowGUI();
+	            }
+	        });
+	    }
+	    */
+		public class ControleurApply implements ActionListener {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
+				preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
+				editor.update();
+			}
+
+		}
+		
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if("apply".equals(e.getActionCommand())) {
+		        System.out.println("apply button selected");
+		        preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
+				preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
+				editor.update();
+			    } else if ("close".equals(e.getActionCommand())) {
+			      System.out.println("upgrade button selected");
+			      frame.dispose();
+			    }
+		}
+	}
 }

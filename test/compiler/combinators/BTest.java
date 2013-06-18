@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import compiler.CompilerException;
 import compiler.graph.Node;
 import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
@@ -14,7 +15,7 @@ import compiler.reducer.Registry;
 public class BTest {
 	
 	@Test
-	public void testBReducesCorrectly() {
+	public void testBReducesCorrectly() throws CompilerException {
 		Combinator b = new B(), x = new DummyCombinator("X"), f = new DummyCombinator("F"),
 			g = new DummyCombinator("G");
 		
@@ -40,7 +41,7 @@ public class BTest {
 	}
 	
 	@Test
-	public void testBKeepsNextNode() {
+	public void testBKeepsNextNode() throws CompilerException {
 		Combinator b = new B(), x = new DummyCombinator("X"), f = new DummyCombinator("F"),
 				g = new DummyCombinator("G"), y = new DummyCombinator("Y");
 		
@@ -59,7 +60,7 @@ public class BTest {
 		assertEquals(node4, n);
 	}
 	
-	public void testBStopsWith1Argument() {
+	public void testBStopsWith1Argument() throws CompilerException {
 		Combinator b = new B(), f = new DummyCombinator("F");
 		
 		Node node1 =  new Node(NodeFieldFactory.create(b), NodeFieldFactory.create(f));
@@ -72,7 +73,7 @@ public class BTest {
 		
 	}
 	
-	public void testBStopsWith2Arguments() {
+	public void testBStopsWith2Arguments() throws CompilerException {
 		Combinator b = new B(), f = new DummyCombinator("F"),
 				g = new DummyCombinator("G");
 		
