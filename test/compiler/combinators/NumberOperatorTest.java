@@ -25,7 +25,7 @@ public class NumberOperatorTest {
 				NodeFieldFactory.create(new K()),
 				NodeFieldFactory.create(new Number(5)));
 		
-		Node node2 = new Node(
+		new Node(
 				NodeFieldFactory.create(node1),
 				NodeFieldFactory.create(new I()));
 		
