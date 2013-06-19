@@ -41,6 +41,12 @@ public class Abstracter {
 		
 	}
 	
+	
+	/**
+	 * @brief cherche des abstracters dans le graphe à partir de la fin de l'expression (associativité à gauche) et réalise les abstractions correspondantes
+	 * @param expression
+	 * @return graphe après abstraction
+	 */
 	public Node findAbstracter(Node expression){
 		
 		Node lastNode = expression.getLastNode();
@@ -105,7 +111,7 @@ public class Abstracter {
 		}		
 		
 		Node lastNode = root.getLastNode();
-		
+		Node currentNode = lastNode;
 		// un seul combinateur
 		if(lastNode.equals(root)){
 			
@@ -116,8 +122,33 @@ public class Abstracter {
 			
 		}
 		
+		if(level >= 2 && lastNode.getArgument().getCombinator().equals(var)){
+			
+			currentNode = searchVariable(lastNode,var);		
+		
+			if(currentNode == null){
+				
+				if(root.getNextNode().equals(lastNode))
+					return new Node(NodeFieldFactory.create(cmanager.get("I")), NodeFieldFactory.create(root.getArgument().getCombinator()));
+				
+				root.getNextNode().setFunction(root.getArgument());
+				lastNode.getFunction().getNode().setNextNode(null);
+				return lastNode.getFunction().getNode();
+			}
+			
+			currentNode = currentNode.getNextNode();
+			
+			if(!currentNode.equals(lastNode)){
+				
+				lastNode.getFunction().getNode().setNextNode(null);
+				currentNode.getFunction().getNode().setNextNode(null);
+				currentNode.setFunction(NodeFieldFactory.create(abstraction(currentNode.getFunction().getNode(),level,var)));
+				return currentNode;
+			}
+				
+		}
 		// règle lambda+ x . P Q = S (lambda+ x . P) (lambda+ x . Q)
-		else if(lastNode.getFunction().getNode().equals(root)){
+		if(lastNode.getFunction().getNode().equals(root)){
 	
 			lastNode.setArgument(abstractNodeField(lastNode.getArgument(),level,var));
 			Node firstNode = new Node(nfS,abstractNodeField(root.getArgument(),level,var));
@@ -155,6 +186,37 @@ public class Abstracter {
 		else //cas des parenthèses
 			return NodeFieldFactory.create(abstraction(nf.getNode(),level,var));
 		
+	}
+	
+	
+	/**
+	 * @brief parcourt le graphe à l'envers jusqu'à ce que la variable soit trouvée.
+	 * Utile pour lambda+ et lambda++
+	 * @param start
+	 * @param var
+	 * @return premier Node contenant var. null si var n'a pas été trouvée
+	 */
+	public Node searchVariable(Node start, Var var){
+		
+		if(start.getFunction().getNode() == null)
+			return null;
+		
+		Node node = start.getFunction().getNode();
+	
+		do{
+			
+			if(node.getArgument().getNode() != null)
+				if(searchVariable(node.getArgument().getNode(),var) != null)
+					return node;
+			
+			if(node.getArgument().getCombinator().equals(var))
+				return node;
+					
+			node = node.getFunction().getNode();
+		}
+		while(node != null);
+		// ici rien n'a été trouvé
+		return null;
 	}
 
 }
