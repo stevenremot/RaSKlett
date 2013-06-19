@@ -38,7 +38,7 @@ public class Or implements Combinator {
 
 	@Override
 	public String getName() {
-		return "or";
+		return "||";
 	}
 
 }

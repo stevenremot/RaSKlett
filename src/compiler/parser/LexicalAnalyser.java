@@ -108,5 +108,12 @@ public class LexicalAnalyser {
 		}
 
 	}
+	public ArrayList<Instruction> getResInstruArrayList() {
+		return resInstruArrayList;
+	}
+
+	public void setResInstruArrayList(ArrayList<Instruction> resInstruArrayList) {
+		this.resInstruArrayList = resInstruArrayList;
+	}
 
 }
