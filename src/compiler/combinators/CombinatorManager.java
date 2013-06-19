@@ -46,6 +46,26 @@ public class CombinatorManager {
 			addCombinator(new Not());
 		}
 		
+		if(conf.isEnabled(ConfigManager.NUMBERS)) {
+			addFactory(new NumberFactory());
+			addCombinator(new Plus());
+			addCombinator(new Minus());
+			addCombinator(new Times());
+			addCombinator(new Divide());
+			addCombinator(new Equals());
+			addCombinator(new NotEquals());
+			addCombinator(new LessThan());
+			addCombinator(new LessThanOrEquals());
+			addCombinator(new GreaterThan());
+			addCombinator(new GreaterThenOrEquals());
+		}
+		
+		if(conf.isEnabled(ConfigManager.LISTS)) {
+			addCombinator(new Vector());
+			addCombinator(new Head());
+			addCombinator(new Tail());
+		}
+		
 	}
 	
 	/**

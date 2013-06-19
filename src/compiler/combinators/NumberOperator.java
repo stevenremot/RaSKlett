@@ -3,6 +3,7 @@ package compiler.combinators;
 import compiler.CompilerException;
 import compiler.graph.Node;
 import compiler.graph.NodeField;
+import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
 
 /**
@@ -13,7 +14,65 @@ import compiler.reducer.Registry;
  * @author remot
  *
  */
-public final class NumberOperator {
+public abstract class NumberOperator implements Combinator {
+	
+	/**
+	 * Les opérateurs doivent définir cette méthode pour appliquer l'opération
+	 * @param n1
+	 * @param n2
+	 * @return
+	 */
+	protected abstract Combinator doOperation(int n1, int n2);
+	
+	public Node getGraph() {
+		return null;
+	}
+	
+	public boolean applyReduction(Registry registry) throws CompilerException {
+		Node node1 = registry.getNode();
+		
+		Node node2 = node1.getNextNode();
+		
+		if(node2 == null) {
+			return false;
+		}
+		
+		Combinator c = ensureIsNumber(node1.getArgument());
+		
+		if(c == null) {
+			throw new CompilerException("La première opérande de + n'est pas un nombre");
+		}
+		
+		if(c.getGraph() != null) {
+			node1.setArgument(NodeFieldFactory.create(c.getGraph()));
+			return true;
+		}
+		
+		int n1 = ((Number) c).getValue();
+		
+		c = ensureIsNumber(node2.getArgument());
+		
+		if(c == null) {
+			throw new CompilerException("La première opérande de + n'est pas un nombre");
+
+		}
+		
+		if(c.getGraph() != null) {
+			node2.setArgument(NodeFieldFactory.create(c.getGraph()));
+			return true;
+		}
+		
+		int n2 = ((Number) c).getValue();
+		
+		Combinator n = doOperation(n1, n2);
+		
+		node2.setFunction(NodeFieldFactory.create(new I()));
+		node2.setArgument(NodeFieldFactory.create(n));
+		
+		registry.setNode(node2);
+		
+		return true;
+	}
 	
 	/**
 	 * Effectue le traitement sur une opérande, et retourne le combinateur correspondany
@@ -22,7 +81,7 @@ public final class NumberOperator {
 	 * @return le Number correspondant, ou un Combinator anonyme contenant un graphe de l'expression qui a été réduite, ou null si il ne peut y avoir de nombre 
 	 * @throws CompilerException 
 	 */
-	public static Combinator ensureIsNumber(NodeField nf) throws CompilerException {
+	protected Combinator ensureIsNumber(NodeField nf) throws CompilerException {
 		if(nf.getCombinator() != null) {
 			try {
 				Number n = (Number) nf.getCombinator();

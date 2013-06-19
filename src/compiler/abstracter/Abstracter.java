@@ -41,6 +41,54 @@ public class Abstracter {
 		
 	}
 	
+	public Node findAbstracter(Node expression){
+		
+		Node lastNode = expression.getLastNode();
+		
+		Node node = lastNode;
+		
+		while(node.getFunction().getNode() != null){
+			
+			if(node.getArgument().getNode() != null){
+			
+				Node abstractedArgument = findAbstracter(node.getArgument().getNode()); 
+				node.setArgument(NodeFieldFactory.create(abstractedArgument));
+				
+			}
+			
+			else if(node.getArgument().getCombinator() instanceof Var && node.getFunction().getNode().getArgument().getCombinator() instanceof Lambda){
+				
+				Var var = (Var) node.getArgument().getCombinator();
+				Lambda lambda = (Lambda) node.getFunction().getNode().getArgument().getCombinator();
+				// on coupe la connection au reste du graphe
+				node.getNextNode().setFunction(new NodeNodeField(null));
+				Node abstractedSubGraph = abstraction(node.getNextNode(), lambda.getLevel(), var);
+				
+				node = node.getFunction().getNode();
+				node.setArgument(abstractedSubGraph.getFunction());
+				abstractedSubGraph.setFunction(NodeFieldFactory.create(node));
+				node.setNextNode(abstractedSubGraph);
+				
+			}
+			
+			node = node.getFunction().getNode();
+		}
+		
+		// racine
+		if(node.getFunction().getCombinator() instanceof Lambda && node.getArgument().getCombinator() instanceof Var){
+			
+			Var var = (Var) node.getArgument().getCombinator();
+			Lambda lambda = (Lambda) node.getFunction().getCombinator();
+			// on coupe la connection au reste du graphe
+			node.getNextNode().setFunction(new NodeNodeField(null));
+			Node abstractedGraph = abstraction(node.getNextNode(), lambda.getLevel(), var);
+			node = abstractedGraph;
+		}
+		
+		return node.getLastNode();
+		
+	}
+	
 	public Node abstraction(Node expression, int level, Var var){
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
@@ -54,20 +102,21 @@ public class Abstracter {
 			root.setFunction(NodeFieldFactory.create(newRoot));
 			newRoot.setNextNode(root);
 			root = newRoot;
-		}
-			
-		
+		}		
 		
 		Node lastNode = root.getLastNode();
 		
-		// cas particuliers
+		// un seul combinateur
 		if(lastNode.equals(root)){
 			
-			// pas possible
-			return null;
+			if(root.getArgument().getCombinator().equals(var))
+				return new Node(NodeFieldFactory.create(cmanager.get("I")),NodeFieldFactory.create(cmanager.get("I")));
+			else
+				return new Node(NodeFieldFactory.create(cmanager.get("K")),NodeFieldFactory.create(root.getArgument().getCombinator()));
 			
 		}
 		
+		// règle lambda+ x . P Q = S (lambda+ x . P) (lambda+ x . Q)
 		else if(lastNode.getFunction().getNode().equals(root)){
 	
 			lastNode.setArgument(abstractNodeField(lastNode.getArgument(),level,var));
@@ -80,6 +129,7 @@ public class Abstracter {
 		}
 		
 		else{
+			
 			lastNode.getFunction().getNode().setNextNode(null);
 			Node firstNode = new Node(nfS,abstractNodeField(lastNode.getFunction(),level,var));
 			lastNode.setArgument(abstractNodeField(lastNode.getArgument(),level,var));
