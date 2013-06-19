@@ -122,7 +122,7 @@ public class Abstracter {
 			
 		}
 		
-		if(level >= 2 && lastNode.getArgument().getCombinator().equals(var)){
+		if(level >= 2 && lastNode.getArgument().getCombinator() != null && lastNode.getArgument().getCombinator().equals(var)){
 			
 			currentNode = searchVariable(lastNode,var);		
 		
@@ -183,8 +183,14 @@ public class Abstracter {
 			else
 				return NodeFieldFactory.create(new Node(NodeFieldFactory.create(cmanager.get("K")),NodeFieldFactory.create(nf.getCombinator())));
 		}
-		else //cas des parenthèses
-			return NodeFieldFactory.create(abstraction(nf.getNode(),level,var));
+		else {//cas des parenthèses
+			Node node = abstraction(nf.getNode(),level,var);
+			if(node.getFunction().getCombinator() != null && node.getFunction().getCombinator().equals(cmanager.get("I")))
+				return NodeFieldFactory.create(node.getArgument().getCombinator());
+			else
+				return NodeFieldFactory.create(node);
+			
+		}
 		
 	}
 	
