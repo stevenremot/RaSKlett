@@ -37,8 +37,7 @@ public class Not implements Combinator {
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "!";
 	}
 
 }

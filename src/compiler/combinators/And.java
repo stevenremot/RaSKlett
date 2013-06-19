@@ -40,7 +40,7 @@ public class And implements Combinator {
 
 	@Override
 	public String getName() {
-		return "and";
+		return "&&";
 	}
 
 }
