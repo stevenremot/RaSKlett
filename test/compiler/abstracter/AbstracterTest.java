@@ -143,13 +143,13 @@ public class AbstracterTest {
 		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(var));
 		
 		Abstracter ab = new Abstracter(root,1);
-		Node result = ab.searchVariable(fourth,var);
+		Node result = ab.searchVariable(third,var);
 		assertEquals(result,second);
 		
 		Node childRoot = new Node(new NodeNodeField(null), NodeFieldFactory.create(var));
 		Node child = new Node(NodeFieldFactory.create(childRoot), NodeFieldFactory.create(K));
 		second.setArgument(NodeFieldFactory.create(child));
-		result = ab.searchVariable(fourth,var);
+		result = ab.searchVariable(third,var);
 		assertEquals(result,second);
 	}
 	
