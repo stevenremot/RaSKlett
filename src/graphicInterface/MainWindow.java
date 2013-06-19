@@ -4,6 +4,7 @@ package graphicInterface;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -22,6 +23,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledEditorKit;
 
 import compiler.Compiler;
 import compiler.CompilerCallback;
@@ -63,6 +65,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JMenuItem iPreferences = null;
 	private JMenuItem iHelp = null;
 
+	private static JScrollPane panneauTexte ;
+	private static TextLineNumbers tln ;
+	private static Preferences preferences = Preferences.userRoot();
 
 	private JToolBar toolBar = null;
 	private ArrayList<String> combinators;
@@ -212,12 +217,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		editor.setEditable(true);
 		
-		JScrollPane panneauTexte = new JScrollPane(editor);
+		panneauTexte = new JScrollPane(editor);
 		add(panneauTexte, BorderLayout.CENTER);
 		
-		TextLineNumbers tln = new TextLineNumbers(editor);
-		panneauTexte.setRowHeaderView( tln );
-
+		tln = new TextLineNumbers(editor);
+		if (Boolean.valueOf(preferences.get("lineNumbers", "true"))) panneauTexte.setRowHeaderView( tln );
 
 		JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
 		combinatorPanel.setPreferredSize(new Dimension(150,0));
@@ -234,11 +238,12 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 
 		
-		
+		setIconImage((new ImageIcon("icons/cheese.png")).getImage());
 		setPreferredSize(new Dimension(800, 600));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("RaSKlett");
 		pack();
+		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 
@@ -543,11 +548,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		private ImageIcon combinatorPreferences = null;
 	    
 	    private JComboBox sizeList;
+	    private JComboBox fontList;
 	    private JCheckBox lineNumbers;
 	    
 	    private static JFrame frame;
 		
-		private Preferences preferences = Preferences.userRoot();
 		
 		final String apply = "Apply";
 		final String restore = "Restore";
@@ -566,13 +571,12 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			textPreferences = new ImageIcon("icons/textPreferences.png");
 			combinatorPreferences = new ImageIcon("icons/combinators.png");
 			
-			
 			JPanel textPanel = new JPanel(new GridLayout(0, 1));		
 		    
-			Object[] numbers = {12, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18};
+			Object[] numbers = {6, 8, 9, 10, 11, 12, 14, 16, 18, 20};
 			sizeList = new JComboBox(numbers);
 			sizeList.setEditable(true);
-			sizeList.setSelectedItem(12);
+			sizeList.setSelectedItem(preferences.getInt("textSize", 12));
 			sizeList.setMaximumSize(new Dimension(100,10));
 			
 			JPanel sizePanel = new JPanel(new GridLayout(0, 1));
@@ -580,7 +584,19 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			sizePanel.add(sizeList);
 			textPanel.add(sizePanel);
 			
+			Object[] fonts = {"Arial", "Calibri", "Comic Sans", "Courier", "Georgia", "Helvetica", "Script", "Times New Roman", "Verdana"};
+			fontList = new JComboBox(fonts);
+			fontList.setEditable(true);
+			fontList.setSelectedItem(preferences.get("textFont", "Calibri"));
+			fontList.setMaximumSize(new Dimension(100,10));
+			
+			JPanel fontPanel = new JPanel(new GridLayout(0, 1));
+			fontPanel.add(new JLabel("Change text font"));
+			fontPanel.add(fontList);
+			textPanel.add(fontPanel);
+			
 			lineNumbers = new JCheckBox("Add line numbers");
+			if (Boolean.valueOf(preferences.get("lineNumbers", "true"))) lineNumbers.setSelected(true);
 			textPanel.add(lineNumbers);
 			
 			textPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -604,16 +620,21 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	        //The following line enables to use scrolling tabs.
 	        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);	
 	        tabbedPane.setBorder(new EmptyBorder(3, 3, 3, 3));
+	        
+	        JPanel buttonsPanel = new JPanel();
+	        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
 
 	        JButton apply = new JButton("Apply");
 	        apply.setActionCommand("apply");
 	        apply.addActionListener(this);
-	        add(apply);
+	        buttonsPanel.add(apply);
 	        
 	        JButton ok = new JButton("OK");
 	        ok.setActionCommand("close");
 	        ok.addActionListener(this);
-	        add(ok);
+	        buttonsPanel.add(ok);
+	        
+	        add(buttonsPanel);
 		    	    
 		}
 	    /**
@@ -624,13 +645,17 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	    private static void createAndShowGUI() {
 	        //Create and set up the window.
 	        frame = new JFrame("TabbedPaneDemo");
-	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	        frame.setIconImage((new ImageIcon("icons/cheese.png")).getImage());
+
 	         
 	        //Add content to the window.
 	        frame.add(new PreferencesDialog(), BorderLayout.CENTER);
 	        frame.setPreferredSize(new Dimension(400,250)) ;
+	        
 	        //Display the window.
 	        frame.pack();
+	        frame.setLocationRelativeTo(null);
 	        frame.setVisible(true);
 	    }
 	    /* 
@@ -646,6 +671,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	        });
 	    }
 	    */
+	    /*
 		public class ControleurApply implements ActionListener {
 
 			@Override
@@ -656,20 +682,22 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			}
 
 		}
-		
+		*/
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if("apply".equals(e.getActionCommand())) {
-		        System.out.println("apply button selected");
 		        preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
-				preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
+				preferences.put("textFont", (String) fontList.getSelectedItem());
+		        preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
+				if (lineNumbers.isSelected()) panneauTexte.setRowHeaderView( tln ) ;
+				else panneauTexte.setRowHeaderView( null ) ;
 				editor.update();
-			    } else if ("close".equals(e.getActionCommand())) {
-			      System.out.println("upgrade button selected");
+				
+			} else if ("close".equals(e.getActionCommand())) {
 			      frame.dispose();
-			    }
+		    }
 		}
 	}
 }
