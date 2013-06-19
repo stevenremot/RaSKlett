@@ -1,6 +1,6 @@
 package graphicInterface;
 
-import java.awt.GridLayout;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 
+import compiler.config.ConfigManager;
+
 public class CombinatorPanel extends JPanel{
 	
 	/**
@@ -20,6 +22,8 @@ public class CombinatorPanel extends JPanel{
 	private JTextArea text;
 	private JButton button;
 	private boolean enabled;
+	private ConfigManager manager;
+	private String name;
 	
 	/**
 	 * @brief Le constructeur de CombinatorPanel
@@ -28,51 +32,49 @@ public class CombinatorPanel extends JPanel{
 	 * @param enabled les combinateurs sont natifs par défaut si enabled vaut true
 	 */
 	public CombinatorPanel(ArrayList<String> combinators, String category, boolean enabled) {
-		super(new GridLayout(0,1));
+		super();
+		
 		text = new JTextArea();
+		manager = ConfigManager.getInstance();
 		this.enabled = enabled;
 		Border border = BorderFactory.createTitledBorder(category);
+		name = category;
         setBorder(border);  
 		for(String c: combinators)
 		{
-			text.append("\n" + c);
+			//pour ne pas avoir un saut de ligne dès le début
+			if(combinators.indexOf(c) != 0)
+				text.append("\n" + c);
+			else
+				text.append(c);
 		}
 		button = new JButton();
 		button.addActionListener(new ButtonListener());
 		if(!this.enabled) {
 			text.setEnabled(false);
-			button.setText("Activer");
+			button.setText("Enable");
 		}
 		else
-			button.setText("Désactiver");
-		add(text);
-		add(button);
-
-	}
-	
-	/**
-	 * @brief Pour rendre natifs les combinateurs du composant.
-	 * @param b Active les combinateurs si b vaut true, les désactive sinon.
-	 */
-	public void toggleCombinators(boolean b) {
-		System.out.println("toggle combinators");
+			button.setText("Disable");
+		setLayout(new BorderLayout());
+		add(text,BorderLayout.CENTER);
+		add(button,BorderLayout.SOUTH);
+		
+		
 	}
 	
 	class ButtonListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			toggleCombinators(enabled);
+			manager.toggle(name, enabled);
 			enabled = !enabled;
 			text.setEnabled(enabled);
 			if(enabled) {
-				button.setText("Désactiver");
+				button.setText("Disable");
 			}
 			else
-				button.setText("Activer");
+				button.setText("Enable");
 		}
-		
 	}
-	
-
 }

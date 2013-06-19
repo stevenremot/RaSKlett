@@ -15,9 +15,9 @@ public class SemanticalAnalyserTest {
 		i.addInstruction("A");
 		i.addInstruction(")");
 		
-		SemanticalAnalyser sem = new SemanticalAnalyser();
+		SemanticalAnalyser sem = new SemanticalAnalyser(i);
 		
-		sem.semanticAnalysis(i);
+		sem.semanticAnalysis();
 		
 		LinkedList<String> result = sem.myresult;
 		
@@ -41,9 +41,9 @@ public class SemanticalAnalyserTest {
 		i.addInstruction("a");
 		i.addInstruction("a");
 		
-		SemanticalAnalyser sem = new SemanticalAnalyser();
+		SemanticalAnalyser sem = new SemanticalAnalyser(i);
 		
-		sem.semanticAnalysis(i);
+		sem.semanticAnalysis();
 		
 		LinkedList<String> result = sem.myresult;
 		
@@ -59,9 +59,9 @@ public class SemanticalAnalyserTest {
 		i.addInstruction("=");
 		i.addInstruction("B");
 		
-		SemanticalAnalyser sem = new SemanticalAnalyser();
+		SemanticalAnalyser sem = new SemanticalAnalyser(i);
 		
-		sem.semanticAnalysis(i);
+		sem.semanticAnalysis();
 		
 		LinkedList<String> result = sem.myresult;
 		
@@ -78,9 +78,9 @@ public class SemanticalAnalyserTest {
 		i.addInstruction(" ");
 		i.addInstruction("B");
 		
-		SemanticalAnalyser sem = new SemanticalAnalyser();
+		SemanticalAnalyser sem = new SemanticalAnalyser(i);
 		
-		sem.semanticAnalysis(i);
+		sem.semanticAnalysis();
 		
 		LinkedList<String> result = sem.myresult;
 		
@@ -98,9 +98,9 @@ public class SemanticalAnalyserTest {
 		i.addInstruction(";");
 		i.addInstruction(";");
 		
-		SemanticalAnalyser sem = new SemanticalAnalyser();
+		SemanticalAnalyser sem = new SemanticalAnalyser(i);
 		
-		sem.semanticAnalysis(i);
+		sem.semanticAnalysis();
 		
 		LinkedList<String> result = sem.myresult;
 		
@@ -125,9 +125,9 @@ public class SemanticalAnalyserTest {
 		i.addInstruction(".");
 		i.addInstruction("A");
 		
-		SemanticalAnalyser sem = new SemanticalAnalyser();
+		SemanticalAnalyser sem = new SemanticalAnalyser(i);
 		
-		sem.semanticAnalysis(i);
+		sem.semanticAnalysis();
 		
 		LinkedList<String> result = sem.myresult;
 		

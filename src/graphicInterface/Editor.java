@@ -1,13 +1,11 @@
 package graphicInterface;
 
 import java.awt.Color;
-import java.util.Enumeration;
 import java.util.prefs.Preferences;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -88,7 +86,9 @@ public class Editor extends JTextPane {
 		String textInit = getText();
 		String[] lines = textInit.split("\n");
 		for(int i = 0; i < lines.length; i++) {
-			if(!(lines[i].indexOf(">>>") == 0 || lines[i].indexOf(">>>") == 0))
+			// Chaque message de résultat de compilation débute par ">>>" et chaque erreur par "!!!".
+			// Pour obtenir les instructions, on élimine les lignes qui commencent ainsi.
+			if(!(lines[i].indexOf(">>>") == 0 || lines[i].indexOf("!!!") == 0))
 				if(i == 0)
 					text += lines[i];
 				else

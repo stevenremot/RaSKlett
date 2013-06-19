@@ -112,7 +112,6 @@ public class AbstracterTest {
 
 	@Test
 	public void twoAbstractersTest(){
-	
 		Lambda lambdaPlus = new Lambda(1);
 		Var var = new Var("$x");
 		Var var2 = new Var("$y");
