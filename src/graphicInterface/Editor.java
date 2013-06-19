@@ -86,7 +86,9 @@ public class Editor extends JTextPane {
 		String textInit = getText();
 		String[] lines = textInit.split("\n");
 		for(int i = 0; i < lines.length; i++) {
-			if(!(lines[i].indexOf(">>>") == 0 || lines[i].indexOf(">>>") == 0))
+			// Chaque message de résultat de compilation débute par ">>>" et chaque erreur par "!!!".
+			// Pour obtenir les instructions, on élimine les lignes qui commencent ainsi.
+			if(!(lines[i].indexOf(">>>") == 0 || lines[i].indexOf("!!!") == 0))
 				if(i == 0)
 					text += lines[i];
 				else
