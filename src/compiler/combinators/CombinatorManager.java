@@ -31,7 +31,8 @@ public class CombinatorManager {
 			addCombinator(new Definition());
 
 			addFactory(new LambdaFactory());
-
+			addFactory(new LazyCallFactory());
+			
 			if(conf.isEnabled(ConfigManager.BASIC_COMBINATORS)) {
 				addCombinator(new B());
 				addCombinator(new C());
