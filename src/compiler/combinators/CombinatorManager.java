@@ -27,6 +27,7 @@ public class CombinatorManager {
 		try {
 			addCombinator(new S());
 			addCombinator(new K());
+			addCombinator(new I());
 
 			addCombinator(new Definition());
 

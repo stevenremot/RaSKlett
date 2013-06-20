@@ -20,15 +20,11 @@ public class Parser {
 	public static ArrayList<Instruction> parse(Reader input) throws CompilerException {
 		LexicalAnalyser lA = new LexicalAnalyser(input);
 
-		ArrayList<Instruction>symbols = lA.getSymbols(); 
+		ArrayList<Instruction> symbols = lA.getSymbols(); 
 		
-		for(Instruction instruction : symbols){
-			SemanticalAnalyser sA=new SemanticalAnalyser(instruction);
-			
-			instruction.setInstruction(new ArrayList<String>(sA.myresult));
-		}
+		SyntaxicalAnalyser sA = new SyntaxicalAnalyser(symbols);
 		
-		return symbols;
+		return sA.getInstructions();
 
 	}
 }

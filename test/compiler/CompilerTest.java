@@ -60,7 +60,7 @@ public class CompilerTest {
 		CompilerCallback callback = new CompilerCallback() {
 			public void onResult(String result, int line, int position, boolean finished) {
 				assertFalse(finished);
-				assertEquals("K", result);
+				assertEquals("I K", result);
 			}
 			
 			public void onFailure(CompilerException e) {

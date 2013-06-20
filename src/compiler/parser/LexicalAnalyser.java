@@ -102,10 +102,8 @@ class LexicalAnalyser {
 	
 	private void registerOperator() throws CompilerException {
 		currentSymbol = "";
-		String oldOp = "";
 		
 		do {
-			oldOp = currentSymbol;
 			currentSymbol += (char) currentChar;
 			
 			ArrayList<String> candidates = new ArrayList<String>();
