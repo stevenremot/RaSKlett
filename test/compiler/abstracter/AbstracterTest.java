@@ -226,4 +226,27 @@ public class AbstracterTest {
 		assertEquals(ret,"S ( K S ) K");
 		
 	}
+	
+	@Test
+	public void lambda3PlusTest(){
+		
+		// lambda+++x . x S K
+		Lambda lambda = new Lambda(3);
+		Var var = new Var("$x");
+		Combinator S = new DummyCombinator("S"); 
+		Combinator K = new DummyCombinator("K");
+		
+		Node root = new Node(NodeFieldFactory.create(lambda), NodeFieldFactory.create(var));
+		Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(var));		
+		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(S));
+		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(K));
+		
+		Abstracter ab = new Abstracter(root,1);
+		Node result = ab.findAbstracter(fourth);
+		String ret = GraphSerializer.serialize(result);
+		assertEquals(ret,"I I K S K");
+		
+		
+	}
+	
 }

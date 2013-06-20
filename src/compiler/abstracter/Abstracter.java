@@ -133,6 +133,12 @@ public class Abstracter {
 				return root;
 			}
 			
+			Node nextNode = currentNode.getNextNode();
+			currentNode.setNextNode(null);
+			Node newNode = new Node(NodeFieldFactory.create(abstraction(currentNode,level,var)),NodeFieldFactory.create(cmanager.get("K")));
+			nextNode.setFunction(NodeFieldFactory.create(newNode));
+			return newNode;
+			
 		}
 		
 		
