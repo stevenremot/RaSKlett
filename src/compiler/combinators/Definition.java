@@ -62,7 +62,7 @@ public class Definition implements Combinator {
 
 			@Override
 			public Node getGraph() {
-				return graph;
+				return graph.copy();
 			}
 
 			@Override
