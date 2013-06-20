@@ -3,6 +3,7 @@ package compiler.combinators;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import compiler.CompilerException;
 import compiler.config.ConfigManager;
 
 /**
@@ -23,46 +24,50 @@ public class CombinatorManager {
 		
 		ConfigManager conf = ConfigManager.getInstance();
 		
-		addCombinator(new S());
-		addCombinator(new K());
-		addCombinator(new I());
-		
-		addCombinator(new Definition());
-		
-		addFactory(new LambdaFactory());
-		
-		if(conf.isEnabled(ConfigManager.BASIC_COMBINATORS)) {
-			addCombinator(new B());
-			addCombinator(new C());
-			addCombinator(new CStar());
-			addCombinator(new W());
+		try {
+			addCombinator(new S());
+			addCombinator(new K());
+
+			addCombinator(new Definition());
+
+			addFactory(new LambdaFactory());
+
+			if(conf.isEnabled(ConfigManager.BASIC_COMBINATORS)) {
+				addCombinator(new B());
+				addCombinator(new C());
+				addCombinator(new CStar());
+				addCombinator(new W());
+			}
+
+			if(conf.isEnabled(ConfigManager.BOOLEANS)) {
+				addCombinator(new True());
+				addCombinator(new False());
+				addCombinator(new And());
+				addCombinator(new Or());
+				addCombinator(new Not());
+			}
+
+			if(conf.isEnabled(ConfigManager.NUMBERS)) {
+				addFactory(new NumberFactory());
+				addCombinator(new Plus());
+				addCombinator(new Minus());
+				addCombinator(new Times());
+				addCombinator(new Divide());
+				addCombinator(new Equals());
+				addCombinator(new NotEquals());
+				addCombinator(new LessThan());
+				addCombinator(new LessThanOrEquals());
+				addCombinator(new GreaterThan());
+				addCombinator(new GreaterThenOrEquals());
+			}
+			if(conf.isEnabled(ConfigManager.LISTS)) {
+				addCombinator(new Vector());
+				addCombinator(new Head());
+				addCombinator(new Tail());
+			}
 		}
-		
-		if(conf.isEnabled(ConfigManager.BOOLEANS)) {
-			addCombinator(new True());
-			addCombinator(new False());
-			addCombinator(new And());
-			addCombinator(new Or());
-			addCombinator(new Not());
-		}
-		
-		if(conf.isEnabled(ConfigManager.NUMBERS)) {
-			addFactory(new NumberFactory());
-			addCombinator(new Plus());
-			addCombinator(new Minus());
-			addCombinator(new Times());
-			addCombinator(new Divide());
-			addCombinator(new Equals());
-			addCombinator(new NotEquals());
-			addCombinator(new LessThan());
-			addCombinator(new LessThanOrEquals());
-			addCombinator(new GreaterThan());
-			addCombinator(new GreaterThenOrEquals());
-		}
-		if(conf.isEnabled(ConfigManager.LISTS)) {
-			addCombinator(new Vector());
-			addCombinator(new Head());
-			addCombinator(new Tail());
+		catch(CompilerException e) {
+			
 		}
 	}
 	
@@ -97,7 +102,7 @@ public class CombinatorManager {
 			// et surtout tous les combinateurs avec ce nom partageront la même
 			// référence, ce qui est pratique pour tester l'égalité
 			if(comb != null) {
-				addCombinator(name, comb);
+				combinators.put(name, comb);
 			}
 		}
 		
@@ -129,8 +134,12 @@ public class CombinatorManager {
 	 * 
 	 * @param name
 	 * @param combinator
+	 * @throws CompilerException si le nom est déjà pris
 	 */
-	public void addCombinator(String name, Combinator combinator) {
+	public void addCombinator(String name, Combinator combinator) throws CompilerException {
+		if(get(name) != null) {
+			throw new CompilerException("Impossible de définir le combinateur '" + name + "': ce nom est déjà pris");
+		}
 		combinators.put(name, combinator);
 	}
 	
@@ -139,8 +148,9 @@ public class CombinatorManager {
 	 * 
 	 * @param name
 	 * @param combinator
+	 * @throws CompilerException si son nom est déjà pris
 	 */
-	public void addCombinator(Combinator combinator) {
+	public void addCombinator(Combinator combinator) throws CompilerException {
 		addCombinator(combinator.getName(), combinator);
 	}
 	
