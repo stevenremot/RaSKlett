@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 
+import compiler.CompilerException;
+
 /**
  * @breif Classe d'analyse lexicale
  * 
@@ -21,21 +23,21 @@ class LexicalAnalyser {
 	
 	private int currentLine, currentPos;
 	
-	private static String boundaries = "()[],;#";
+	private static String boundaries = "()[],;#.";
 	private static String spaces = " \t\n";
 	private static ArrayList<String> operators;
 	
 	static {
 		operators = new ArrayList<String>();
 		
-		String[] ops = {"+", "++", "+++", "++++", "-", "*", "/", "||", "&&", "!", "=", "!=", "<", ">", "<=", ">="};
+		String[] ops = {"+", "++", "+++", "++++", "-", "*", "/", "||", "&&", "!", "=", "!=", "<", ">", "<=", ">=", ":="};
 		
 		for(String op:ops) {
 			operators.add(op);
 		}
 	}
 	
-	public LexicalAnalyser(Reader input) {
+	public LexicalAnalyser(Reader input) throws CompilerException {
 		this.input = input;
 		currentInstruction = new Instruction();
 		result = new ArrayList<Instruction>();
@@ -98,17 +100,19 @@ class LexicalAnalyser {
 		return false;
 	}
 	
-	private boolean registerOperator() {
+	private void registerOperator() throws CompilerException {
 		currentSymbol = "";
-		
-		ArrayList<String> candidates = new ArrayList<String>(operators);
+		String oldOp = "";
 		
 		do {
+			oldOp = currentSymbol;
 			currentSymbol += (char) currentChar;
 			
-			for(String cand: candidates) {
-				if(!cand.startsWith(currentSymbol)) {
-					candidates.remove(cand);
+			ArrayList<String> candidates = new ArrayList<String>();
+			
+			for(String op: operators) {
+				if(op.startsWith(currentSymbol)) {
+					candidates.add(op);
 				}
 			}
 				
@@ -117,12 +121,20 @@ class LexicalAnalyser {
 			}
 			else if(candidates.size() == 1) {
 				registerSymbol();
-				return true;
+				nextChar();
+				return;
 			}
 				
-		} while(nextChar());
+		} while(nextChar() && !isSpace() && !isBoundary());
 		
-		return false;
+		for(String op: operators) {
+			if(currentSymbol.equals(op)) {
+				registerSymbol();
+				return;
+			}
+		}
+		
+		throw new CompilerException("Opérateur inconnu: " + currentSymbol, currentLine, currentPos);
 	}
 	
 	private void registerIdentifier() {
@@ -157,6 +169,7 @@ class LexicalAnalyser {
 		
 		currentSymbol = "" + (char)currentChar;
 		registerSymbol();
+		nextChar();
 	}
 	
 	private void skipSpaces() {
@@ -172,7 +185,7 @@ class LexicalAnalyser {
 		return spaces.contains("" + (char)currentChar);
 	}
 	
-	private void analyseNextSymbol() {
+	private void analyseNextSymbol() throws CompilerException {
 		skipSpaces();
 		
 		if(!isAtEnd()) {

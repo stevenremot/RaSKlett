@@ -138,4 +138,74 @@ public class LexicalAnalyserTest {
 		assertEquals("C", symbols.get(0));
 		assertEquals("D", symbols.get(1));
 	}
+	
+	@Test
+	public void testOperator() throws CompilerException {
+		StringReader input = new StringReader("A <= B");
+		
+		LexicalAnalyser lex = new LexicalAnalyser(input);
+		
+		ArrayList<Instruction> instructions = lex.getSymbols();
+		
+		assertEquals(1, instructions.size());
+		
+		Instruction ins = instructions.get(0);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(0, ins.getPosition());
+		
+		ArrayList<String> symbols = ins.getInstruction();
+		assertEquals(3, symbols.size());
+		assertEquals("A", symbols.get(0));
+		assertEquals("<=", symbols.get(1));
+		assertEquals("B", symbols.get(2));
+	}
+	
+	@Test
+	public void testLambda() throws CompilerException {
+		StringReader input = new StringReader("lambda++ x . a x");
+		
+		LexicalAnalyser lex = new LexicalAnalyser(input);
+		
+		ArrayList<Instruction> instructions = lex.getSymbols();
+		
+		assertEquals(1, instructions.size());
+		
+		Instruction ins = instructions.get(0);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(0, ins.getPosition());
+		
+		ArrayList<String> symbols = ins.getInstruction();
+		assertEquals(6, symbols.size());
+		assertEquals("lambda", symbols.get(0));
+		assertEquals("++", symbols.get(1));
+		assertEquals("x", symbols.get(2));
+		assertEquals(".", symbols.get(3));
+		assertEquals("a", symbols.get(4));
+		assertEquals("x", symbols.get(5));
+	}
+	
+	@Test
+	public void testBoundary() throws CompilerException {
+		StringReader input = new StringReader("A(B)");
+		
+		LexicalAnalyser lex = new LexicalAnalyser(input);
+		
+		ArrayList<Instruction> instructions = lex.getSymbols();
+		
+		assertEquals(1, instructions.size());
+		
+		Instruction ins = instructions.get(0);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(0, ins.getPosition());
+		
+		ArrayList<String> symbols = ins.getInstruction();
+		assertEquals(4, symbols.size());
+		assertEquals("A", symbols.get(0));
+		assertEquals("(", symbols.get(1));
+		assertEquals("B", symbols.get(2));
+		assertEquals(")", symbols.get(3));
+	}
 }
