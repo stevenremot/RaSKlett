@@ -39,6 +39,10 @@ public class LazyCall implements Combinator {
 			return false;
 		}
 		
+		if(f.getGraph() == null) {
+			throw new CompilerException("Appel récursif vers un combinateur natif impossible et incohérent");
+		}
+		
 		Node node = registry.getNode();
 		Node graph = f.getGraph();
 		node.setFunction(NodeFieldFactory.create(graph.getLastNode()));
