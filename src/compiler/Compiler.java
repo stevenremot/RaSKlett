@@ -108,7 +108,12 @@ public class Compiler {
 	// réduit une étape
 	private synchronized void step() throws CompilerException {
 		if(!finished && (!lineFinished || registerNextInstruction())) {
-			lineFinished = !sk.step();
+			if(sk != null) {
+				lineFinished = !sk.step();
+			}
+			else {
+				throw new CompilerException("Le compilateur a éét incorrectement initialisé suite à une erreur");
+			}
 		}
 	}
 	

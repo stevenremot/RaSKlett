@@ -555,6 +555,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			System.out.println(reducedGraph);
 			editor.insertResult(">>> Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
 			offset++;
+			
+			if(finished) {
+				stopCompilation();
+			}
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -566,6 +570,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		try {
 			editor.insertError("!!! Erreur ligne "+line+" " +e.getMessage(),line + offset );
 			offset++;
+			stopCompilation();
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
