@@ -436,6 +436,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 					String text = new String(buffer);
 					//editor.setText(text);
 					try {
+						// le texte dans le fichier n'est pas toujours dans le bon style.
+						// On utilise insertText pour écrire dans l'éditeur avec le style par défaut 
 						editor.setText(null);
 						editor.insertText(text, 0);
 					} catch (BadLocationException e) {

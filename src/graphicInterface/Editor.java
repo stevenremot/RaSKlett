@@ -78,7 +78,7 @@ public class Editor extends JTextPane {
 	
 	/**
 	 * @brief Méthode renvoyant les intructions écrites dans l'éditeur sans les erreurs et les résultats.  
-	 * @return
+	 * @return text : une string ne contenant que les instructions.
 	 */
 	public String getCleanedText() {
 		String text = "";
