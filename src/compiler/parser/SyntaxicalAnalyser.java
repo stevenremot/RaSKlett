@@ -17,6 +17,7 @@ import compiler.CompilerException;
  */
 public class SyntaxicalAnalyser {
 	ArrayList<Instruction> instructions;
+	ArrayList<Instruction> result;
 	
 	int currentInstructionIndex;
 	Instruction currentInstruction;
@@ -39,6 +40,7 @@ public class SyntaxicalAnalyser {
 	public SyntaxicalAnalyser(ArrayList<Instruction> instructions) throws CompilerException {
 		this.instructions = instructions;
 		currentInstructionIndex = -1;
+		result = new ArrayList<Instruction>();
 		
 		while(nextInstruction()) {
 			parseExpression();
@@ -46,7 +48,7 @@ public class SyntaxicalAnalyser {
 	}
 	
 	public ArrayList<Instruction> getInstructions() {
-		return instructions;
+		return result;
 	}
 	
 	private boolean isAtEndOfInstructions() {
@@ -54,6 +56,10 @@ public class SyntaxicalAnalyser {
 	}
 	
 	private boolean nextInstruction() {
+		if(currentInstruction != null && !currentInstruction.getInstruction().isEmpty()) {
+			result.add(currentInstruction);
+		}
+		
 		currentInstructionIndex++;
 		
 		if(isAtEndOfInstructions()) {
@@ -137,6 +143,8 @@ public class SyntaxicalAnalyser {
 		if(!isAtEndOfSymbols() && !currentSymbol.equals("#")) {
 			error("Symbole inattendu à la fin de l'expression: " + currentSymbol);
 		}
+		
+		currentInstruction.setInstruction(expr);
 	}
 	
 	private ArrayList<String> parseDefinition() throws CompilerException {
@@ -173,7 +181,8 @@ public class SyntaxicalAnalyser {
 		if(!definitionHead.isEmpty()) {
 			ArrayList<String> varNames = new ArrayList<String>();
 			
-			for(String var: definitionHead) {
+			while(!definitionHead.isEmpty()) {
+				String var = definitionHead.pop();
 				result.add("lambda");
 				result.add("$" + var);
 				varNames.add(var);
@@ -228,7 +237,17 @@ public class SyntaxicalAnalyser {
 		Pattern p = Pattern.compile("^[a-zA-Z_][a-zA-Z_0-9]*$");
 		Matcher m = p.matcher(currentSymbol);
 		
-		return m.find();
+		if(m.find()) {
+			return true;
+		}
+		
+		try {
+			Integer.parseInt(currentSymbol);
+			return true;
+		}
+		catch(NumberFormatException e) {
+			return false;
+		}
 	}
 	
 	private ArrayList<String> parseEvaluable() throws CompilerException {
@@ -304,19 +323,26 @@ public class SyntaxicalAnalyser {
 		
 		Stack<ArrayList<String>> elements = new Stack<ArrayList<String>>();
 		
-		while(!isAtEndOfSymbols() && !currentSymbol.equals("]")) {
+		while(!currentSymbol.equals("]") && nextSymbol()) {
 			elements.add(parseEvaluable());
 			
-			if(currentSymbol.equals(",")) {
-				nextSymbol();
+			if(!currentSymbol.equals(",") && !currentSymbol.equals("]")) {
+				error("Les éléments d'un vecteur doivent être séparés par une virgule");
 			}
+
 		}
 		
 		if(!currentSymbol.equals("]")) {
 			error("Vecteur non terminé, il faut ajouter ']'");
 		}
 		
-		for(ArrayList<String> element: elements) {
+		if(elements.size() == 1) {
+			error("Vecteur à un élément interdit.");
+		}
+		
+		while(!elements.isEmpty()) {
+			ArrayList<String> element = elements.pop();
+			
 			if(result.isEmpty()) {
 				result.addAll(element);
 			}
@@ -419,15 +445,19 @@ public class SyntaxicalAnalyser {
 			error("La condition d'un 'if' doit être suivie d'une clause then");
 		}
 		
+		nextSymbol();
+		
 		ArrayList<String> thenClause = parseEvaluable();
 		
 		result.add("(");
 		result.addAll(thenClause);
-		result.add("(");
+		result.add(")");
 		
 		if(!currentSymbol.equals("else")) {
 			error("La clause then d'un if doit être suivie d'une clause else");
 		}
+		
+		nextSymbol();
 		
 		ArrayList<String> elseClause = parseEvaluable();
 		
