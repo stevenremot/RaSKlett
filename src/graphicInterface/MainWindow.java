@@ -406,9 +406,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			PreferencesDialog dialog = new PreferencesDialog();
-	        dialog.createAndShowGUI();
-
+	        PreferencesDialog.createAndShowGUI();
 		}
 
 	}
@@ -581,7 +579,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		private ImageIcon textPreferences = null;
 		private ImageIcon combinatorPreferences = null;
 	    
-	    private JComboBox sizeList;
+	    private JComboBox<Integer> sizeList;
 	    private JCheckBox lineNumbers;
 	    
 	    private static JFrame frame;
@@ -608,8 +606,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			
 			JPanel textPanel = new JPanel(new GridLayout(0, 1));		
 		    
-			Object[] numbers = {12, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18};
-			sizeList = new JComboBox(numbers);
+			Integer[] numbers = {12, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18};
+			sizeList = new JComboBox<Integer>(numbers);
 			sizeList.setEditable(true);
 			sizeList.setSelectedItem(12);
 			sizeList.setMaximumSize(new Dimension(100,10));
@@ -699,7 +697,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
 			if("apply".equals(e.getActionCommand())) {
 		        System.out.println("apply button selected");
 		        preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
