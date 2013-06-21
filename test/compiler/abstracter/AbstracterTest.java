@@ -207,9 +207,32 @@ public class AbstracterTest {
 	}
 	
 	@Test
+	public void lambdaPlusPlusTest3(){
+		
+		// lambda++ x . K x K K x
+		Lambda lambda = new Lambda(2);
+		Var var = new Var("$x");
+		Combinator K = new DummyCombinator("K");
+		
+		Node root = new Node(NodeFieldFactory.create(lambda), NodeFieldFactory.create(var));
+		Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(K));
+		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(var));
+		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(K));
+		Node fifth = new Node(NodeFieldFactory.create(fourth), NodeFieldFactory.create(K));
+		Node sixth = new Node(NodeFieldFactory.create(fifth), NodeFieldFactory.create(var));
+		
+		Abstracter ab = new Abstracter(root,1);
+		Node result = ab.findAbstracter(sixth);
+		String ret = GraphSerializer.serialize(result);
+		assertEquals(ret,"S K ( K K )");
+		
+	}
+	
+	
+	@Test
 	public void lambdaPlusPlusParenthesisTest(){
 		
-		// lambda++ x . S K x K
+		// lambda++ x . S (K x)
 		Lambda lambda = new Lambda(2);
 		Var var = new Var("$x");
 		Combinator S = new DummyCombinator("S"); 
@@ -244,7 +267,29 @@ public class AbstracterTest {
 		Abstracter ab = new Abstracter(root,1);
 		Node result = ab.findAbstracter(fourth);
 		String ret = GraphSerializer.serialize(result);
-		assertEquals(ret,"I I K S K");
+		assertEquals(ret,"S I K ( S K )");
+		
+		
+	}
+
+@Test
+public void lambda3PlusTest2(){
+		
+		// lambda+++x . S S K
+		Lambda lambda = new Lambda(3);
+		Var var = new Var("$x");
+		Combinator S = new DummyCombinator("S");
+		Combinator K = new DummyCombinator("K");
+		
+		Node root = new Node(NodeFieldFactory.create(lambda), NodeFieldFactory.create(var));
+		Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(S));		
+		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(S));
+		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(K));
+	
+		Abstracter ab = new Abstracter(root,1);
+		Node result = ab.findAbstracter(fourth);
+		String ret = GraphSerializer.serialize(result);
+		assertEquals(ret,"K ( S S K )");
 		
 		
 	}

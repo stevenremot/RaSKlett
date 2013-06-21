@@ -129,14 +129,33 @@ public class Abstracter {
 			currentNode = searchVariable(lastNode,var);
 			
 			if(currentNode == null){
-				root.setFunction(NodeFieldFactory.create(cmanager.get("K")));
-				return root;
+				
+				if(root.getNextNode() == null){
+					root.setFunction(NodeFieldFactory.create(cmanager.get("K")));
+					return root;
+				}
+				
+				root.getNextNode().setFunction(root.getArgument());
+				root = root.getNextNode();
+				
+				Node newNode = new Node(NodeFieldFactory.create(cmanager.get("K")),NodeFieldFactory.create(lastNode));
+				return newNode;
 			}
 			
 			Node nextNode = currentNode.getNextNode();
 			currentNode.setNextNode(null);
-			Node newNode = new Node(NodeFieldFactory.create(abstraction(currentNode,level,var)),NodeFieldFactory.create(cmanager.get("K")));
-			nextNode.setFunction(NodeFieldFactory.create(newNode));
+			
+			Node newNode = new Node(nfS, abstractNodeField(NodeFieldFactory.create(currentNode),level,var));
+			 
+			Node kNode = new Node(NodeFieldFactory.create(newNode),NodeFieldFactory.create(cmanager.get("K")));
+			
+			if(nextNode.equals(lastNode))
+				nextNode.setFunction(NodeFieldFactory.create(kNode));
+			else{
+				nextNode.getNextNode().setFunction(nextNode.getArgument());
+				Node parNode = new Node(NodeFieldFactory.create(kNode),NodeFieldFactory.create(lastNode));
+			}
+			
 			return newNode;
 			
 		}
@@ -163,9 +182,20 @@ public class Abstracter {
 			if(!currentNode.equals(lastNode)){
 				
 				lastNode.getFunction().getNode().setNextNode(null);
+				lastNode = lastNode.getFunction().getNode();
 				currentNode.getFunction().getNode().setNextNode(null);
-				currentNode.setFunction(NodeFieldFactory.create(abstraction(currentNode.getFunction().getNode(),level,var)));
-				return currentNode;
+				Node newNode = new Node(nfS, abstractNodeField(currentNode.getFunction(),level,var));
+				
+				Node parNode;
+				if(currentNode.equals(lastNode))
+					parNode = new Node(NodeFieldFactory.create(newNode),NodeFieldFactory.create(currentNode.getArgument().getCombinator()));
+				else {
+					parNode = new Node(NodeFieldFactory.create(newNode));
+					currentNode.getNextNode().setFunction(currentNode.getArgument());
+					parNode.setArgument(NodeFieldFactory.create(lastNode));
+				}
+				
+				return newNode;
 			}
 				
 		}
@@ -244,6 +274,17 @@ public class Abstracter {
 		while(node != null);
 		// ici rien n'a été trouvé
 		return null;
+	}
+	
+	private void simplifyGraph(){
+		
+		CombinatorManager cmanager = CombinatorManager.getInstance();
+		Node root = abstractedGraph.getRoot();
+		
+		if(root.getFunction().getCombinator().equals(cmanager.get("I")) && root.getArgument().getCombinator() != null)
+			root.getNextNode().setFunction(NodeFieldFactory.create(root.getArgument().getCombinator()));
+			abstractedGraph = root.getNextNode();
+		
 	}
 
 }
