@@ -568,13 +568,14 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void onResult(String reducedGraph, int line, int position,
 			boolean finished) {
 		try {
-			int pos = getPos(line ,position);
-			int l = line + offset + 1;
-			System.out.println(reducedGraph);
-			editor.insertResult(">>> Résultat de la ligne "+ l +" : "+reducedGraph,pos + l-2);
-			offset++;
-			
-			if(finished) {
+			if(!finished) {
+				int pos = getPos(line ,position);
+				int l = line + offset + 1;
+				System.out.println(reducedGraph);
+				editor.insertResult(">>> Résultat de la ligne "+ l +" : "+reducedGraph,pos + l-2);
+				offset++;
+			}
+			else {
 				compileStepByStep.setEnabled(false);
 				stopCompilation();
 				compileStepByStep.setEnabled(true);
@@ -584,7 +585,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 	}
 
-<<<<<<< HEAD
 	@Override
 	public void onFailure(CompilerException e) {
 		int line = e.getLine();
@@ -599,21 +599,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 	}
 	
-=======
-	   public void onFailure(CompilerException e) {
-	     int line = e.getLine();
-	     int position = e.getPosition();
-         int pos = getPos(line ,position);
-	     try {
-	       editor.insertError("!!! Erreur ligne "+line+" " +e.getMessage(),pos - 1 + line + offset );
-	       offset++;
-	       
-	       stopCompilation();
-	     } catch (BadLocationException e1) {
-	       e1.printStackTrace();
-	     }
-	   }
->>>>>>> 4ca5c37d76b7219922167acde438075e26a2211c
 	public JScrollPane getPanneauText(){
 		return this.panneauTexte;
 	}
