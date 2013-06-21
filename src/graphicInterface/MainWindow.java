@@ -70,7 +70,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private static Preferences preferences = Preferences.userRoot();
 
 	private JToolBar toolBar = null;
-	private ArrayList<String> combinators;
 	
 	private int offset = 0;
 
@@ -79,9 +78,29 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	 */
 	public MainWindow(){
 
-		combinators = new ArrayList<String>();
-		combinators.add(" B := S (K S) K");
-		combinators.add("W := S S (K I)");
+		ArrayList<String> combinators = new ArrayList<String>();
+		combinators.add("B : B F G X = F ( G X )");
+		combinators.add("W : W F X = F X X");
+		combinators.add("C : C F X Y = F Y X");
+		combinators.add("CStar : CStar X Y = Y X");
+		
+		ArrayList<String> combinatorsBool = new ArrayList<String>();
+		combinatorsBool.add("true");
+		combinatorsBool.add("false");
+		combinatorsBool.add("and ");
+		combinatorsBool.add("or");
+		
+		ArrayList<String> combinatorsNumbers = new ArrayList<String>();
+		combinatorsNumbers.add("+  -  *  /");
+		combinatorsNumbers.add("=  !=");
+		combinatorsNumbers.add("<  <=  >  > =");
+		
+		ArrayList<String> combinatorsLists = new ArrayList<String>();
+		combinatorsLists.add("vecteur : [X,Y ... Z]");
+		combinatorsLists.add("head [X,Y,Z] -> X");
+		combinatorsLists.add("tail [X,Y,Z] -> [Y,Z]");
+
+
 		
 		create = new JButton(new ImageIcon("icons/create.png"));
 		create.setToolTipText("Open a new file");
@@ -224,15 +243,19 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		if (Boolean.valueOf(preferences.get("lineNumbers", "true"))) panneauTexte.setRowHeaderView( tln );
 
 		JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
-		combinatorPanel.setPreferredSize(new Dimension(150,0));
+		combinatorPanel.setPreferredSize(new Dimension(170,0));
 
 		Border border = BorderFactory.createTitledBorder("Native combinators");
 		combinatorPanel.setBorder(border);    
 
-		CombinatorPanel test = new CombinatorPanel(combinators, "test : ", false);
-		CombinatorPanel test2 = new CombinatorPanel(combinators, "test2 : ", true);
-		combinatorPanel.add(test2);
-		combinatorPanel.add(test);
+		CombinatorPanel basic = new CombinatorPanel(combinators, "basic-combinators : ", true);
+		CombinatorPanel bool = new CombinatorPanel(combinatorsBool, "booleans : ", false);
+		CombinatorPanel numbers = new CombinatorPanel(combinatorsNumbers, "numbers : ", false);
+		CombinatorPanel lists = new CombinatorPanel(combinatorsLists, "lists : ", false);
+		combinatorPanel.add(basic);
+		combinatorPanel.add(bool);
+		combinatorPanel.add(numbers);
+		combinatorPanel.add(lists);
 		add(combinatorPanel, BorderLayout.WEST);
 
 		
@@ -504,11 +527,20 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 	}
 	
+	/**
+	 * @brief Méthode calculant la position d'une erreur ou d'un résultat dans l'éditeur de texte après la compilation.
+	 * @param line la ligne de l'instruction correspondant à l'erreur ou au résultat.
+	 * @param position la  position de l'instruction au sein d'une ligne d'instructions. 
+	 * @return pos la position où l'on va insérer le texte
+	 */
 	public int getPos(int line, int position) {
 		String s = editor.getText();
+		// On transforme le code en un tableau de lignes.
 		String[] instructions = s.split("\n");
 		int pos = 1;
 		System.out.println(line + offset + position);
+		// line correspond au numéro de ligne AVANT l'insertion de résultats ou d'erreurs.
+		// L'offset prend en compte le décalage occasionné par les insertions précédentes de résultats de compilation.
 		for(int i = 0; i < line + offset + position +1; i++) {
 			System.out.println("instructions : "+instructions[i]);
 			pos += instructions[i].length();

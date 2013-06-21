@@ -59,13 +59,11 @@ public class CombinatorManager {
 			addCombinator(new GreaterThan());
 			addCombinator(new GreaterThenOrEquals());
 		}
-		
 		if(conf.isEnabled(ConfigManager.LISTS)) {
 			addCombinator(new Vector());
 			addCombinator(new Head());
 			addCombinator(new Tail());
 		}
-		
 	}
 	
 	/**

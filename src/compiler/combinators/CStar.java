@@ -29,7 +29,7 @@ public class CStar implements Combinator {
 
 	@Override
 	public String getName() {
-		return "C*";
+		return "CStar";
 	}
 
 }

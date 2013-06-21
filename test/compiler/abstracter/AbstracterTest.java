@@ -112,7 +112,118 @@ public class AbstracterTest {
 
 	@Test
 	public void twoAbstractersTest(){
+		Lambda lambdaPlus = new Lambda(1);
+		Var var = new Var("$x");
+		Var var2 = new Var("$y");
+		
+		Node root = new Node(NodeFieldFactory.create(lambdaPlus), NodeFieldFactory.create(var));
+		Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(lambdaPlus));
+		root.setNextNode(second);
+		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(var2));
+		second.setNextNode(third);
+		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(var));
+		third.setNextNode(fourth);
+		
+		Abstracter ab = new Abstracter(root,1);
+		Node result = ab.findAbstracter(root);
+		String ret = GraphSerializer.serialize(result);
+		
+		assertEquals(ret,"S ( K K ) I");
+	}
 	
+	@Test
+	public void searchVariableTest(){
+		
+		Combinator K = new DummyCombinator("K");
+		Var var = new Var("$x");
+		
+		Node root = new Node(NodeFieldFactory.create(K), NodeFieldFactory.create(K));
+		Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(var));
+		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(K));
+		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(var));
+		
+		Abstracter ab = new Abstracter(root,1);
+		Node result = ab.searchVariable(fourth,var);
+		assertEquals(result,second);
+		
+		Node childRoot = new Node(new NodeNodeField(null), NodeFieldFactory.create(var));
+		Node child = new Node(NodeFieldFactory.create(childRoot), NodeFieldFactory.create(K));
+		second.setArgument(NodeFieldFactory.create(child));
+		result = ab.searchVariable(fourth,var);
+		assertEquals(result,second);
+	}
+	
+	@Test
+	public void lambdaPlusPlusTest(){
+		
+		// lambda++ x . S K x
+		Lambda lambda = new Lambda(2);
+		Var var = new Var("$x");
+		Combinator S = new DummyCombinator("S"); 
+		Combinator K = new DummyCombinator("K");
+		
+		Node root = new Node(NodeFieldFactory.create(lambda), NodeFieldFactory.create(var));
+		Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(S));
+		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(K));
+		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(var));
+		
+		Abstracter ab = new Abstracter(root,1);
+		Node result = ab.findAbstracter(fourth);
+		String ret = GraphSerializer.serialize(result);
+		assertEquals(ret,"S K");
+		
+		// lambda++ x . S x
+		root = new Node(NodeFieldFactory.create(lambda), NodeFieldFactory.create(var));
+		second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(S));
+		third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(var));
+		third.setNextNode(null);
+
+		result = ab.findAbstracter(third);
+		ret = GraphSerializer.serialize(result);
+		assertEquals(ret,"I S");
+		
+	}
+	
+	@Test
+	public void lambdaPlusPlusTest2(){
+		
+		// lambda++ x . S K x K
+		Lambda lambda = new Lambda(2);
+		Var var = new Var("$x");
+		Combinator S = new DummyCombinator("S"); 
+		Combinator K = new DummyCombinator("K");
+		
+		Node root = new Node(NodeFieldFactory.create(lambda), NodeFieldFactory.create(var));
+		Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(S));
+		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(K));
+		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(var));
+		Node fifth = new Node(NodeFieldFactory.create(fourth), NodeFieldFactory.create(K));
+		
+		Abstracter ab = new Abstracter(root,1);
+		Node result = ab.findAbstracter(fifth);
+		String ret = GraphSerializer.serialize(result);
+		assertEquals(ret,"S ( S K ) ( K K )");
+		
+	}
+	
+	@Test
+	public void lambdaPlusPlusParenthesisTest(){
+		
+		// lambda++ x . S K x K
+		Lambda lambda = new Lambda(2);
+		Var var = new Var("$x");
+		Combinator S = new DummyCombinator("S"); 
+		Combinator K = new DummyCombinator("K");
+		
+		Node root = new Node(NodeFieldFactory.create(lambda), NodeFieldFactory.create(var));
+		Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(S));		
+		Node child = new Node(NodeFieldFactory.create(K), NodeFieldFactory.create(var));
+		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(child));
+		
+		Abstracter ab = new Abstracter(root,1);
+		Node result = ab.findAbstracter(third);
+		String ret = GraphSerializer.serialize(result);
+		assertEquals(ret,"S ( K S ) K");
 		
 	}
 }
