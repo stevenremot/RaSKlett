@@ -23,7 +23,7 @@ public class CombinatorPanel extends JPanel{
 	private JButton button;
 	private boolean enabled;
 	private ConfigManager manager;
-	private String name;
+	private String feature;
 	
 	/**
 	 * @brief Le constructeur de CombinatorPanel
@@ -31,44 +31,47 @@ public class CombinatorPanel extends JPanel{
 	 * @param category catégorie des combinateurs (ex : opérateurs logiques)
 	 * @param enabled les combinateurs sont natifs par défaut si enabled vaut true
 	 */
-	public CombinatorPanel(ArrayList<String> combinators, String category, boolean enabled) {
+	public CombinatorPanel(ArrayList<String> combinators, String category, String feature, boolean enabled) {
 		super();
 		
+		this.feature = feature;
 		text = new JTextArea();
 		manager = ConfigManager.getInstance();
 		this.enabled = enabled;
 		Border border = BorderFactory.createTitledBorder(category);
-		name = category;
         setBorder(border);  
-		for(String c: combinators)
-		{
+        
+		for(String c: combinators) {
 			//pour ne pas avoir un saut de ligne dès le début
 			if(combinators.indexOf(c) != 0)
 				text.append("\n" + c);
 			else
 				text.append(c);
 		}
+		
 		button = new JButton();
 		button.addActionListener(new ButtonListener());
+		
 		if(!this.enabled) {
 			text.setEnabled(false);
 			button.setText("Enable");
 		}
 		else
 			button.setText("Disable");
+		
 		setLayout(new BorderLayout());
 		add(text,BorderLayout.CENTER);
 		add(button,BorderLayout.SOUTH);
 		
-		
+		manager.toggle(feature, enabled);
 	}
 	
 	class ButtonListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			manager.toggle(name, enabled);
 			enabled = !enabled;
+			manager.toggle(feature, enabled);
 			text.setEnabled(enabled);
 			if(enabled) {
 				button.setText("Disable");

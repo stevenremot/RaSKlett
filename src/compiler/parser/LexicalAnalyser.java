@@ -1,7 +1,5 @@
 package compiler.parser;
 
-
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -9,111 +7,190 @@ import java.util.ArrayList;
 import compiler.CompilerException;
 
 /**
- * @brief Analyse lexicale du code
+ * @breif Classe d'analyse lexicale
  * 
- * Sépare le code en instructions, caractères par caractères
+ * Renvoie les instructions contenant les diffÃ©rents symboles du code.
  * 
- * @author Qianqian CHEN parser lexicalAnalyser 31/05/2013
+ * @author remot
+ *
  */
-public class LexicalAnalyser {
-	private ArrayList<Instruction> resInstruArrayList = new ArrayList<Instruction>();
-	private Instruction currentInstruction;
+class LexicalAnalyser {
+	private ArrayList<Instruction> result;
 	private Reader input;
-	private int lineCount;
-
+	private int currentChar;
+	private String currentSymbol;
+	private Instruction currentInstruction;
+	
+	private int currentLine, currentPos;
+	
+	private static String boundaries = "()[],;#.";
+	private static String spaces = " \t\n";
+	private static ArrayList<String> operators;
+	
+	static {
+		operators = new ArrayList<String>();
+		
+		String[] ops = {"+", "++", "+++", "++++", "-", "*", "/", "||", "&&", "!", "=", "!=", "<", ">", "<=", ">=", ":="};
+		
+		for(String op:ops) {
+			operators.add(op);
+		}
+	}
+	
 	public LexicalAnalyser(Reader input) throws CompilerException {
 		this.input = input;
-		readRowByRow();
+		currentInstruction = new Instruction();
+		result = new ArrayList<Instruction>();
+		currentLine = currentPos = 0;
+		
+		nextChar();
+		
+		while(!isAtEnd()) {
+			analyseNextSymbol();
+		}
+		registerInstruction();
 	}
 	
 	public ArrayList<Instruction> getSymbols() {
-		return resInstruArrayList;
+		return result;
+	}
+	
+	private boolean nextChar() {
+		try {
+			currentChar = input.read();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return !isAtEnd();
+	}
+	
+	private boolean isAtEnd() {
+		return currentChar < 0;
+	}
+	
+	private void registerSymbol() {
+		if(currentSymbol != null && !currentSymbol.isEmpty()) {
+			currentInstruction.addInstruction(currentSymbol);
+		}
+		
+		currentSymbol = "";
 	}
 	
 	private void registerInstruction() {
-		if(!currentInstruction.getInstruction().isEmpty()) {
-			resInstruArrayList.add(currentInstruction);
+		if(currentInstruction != null && !currentInstruction.getInstruction().isEmpty()) {
+			result.add(currentInstruction);
 		}
+		currentInstruction = new Instruction();
+		currentInstruction.setLine(currentLine);
+		currentInstruction.setPosition(currentPos);
 	}
 	
-	private void readInstructionByInstruction(String row) {
+	private boolean isBoundary() {
+		return boundaries.contains("" + (char)currentChar);
+	}
+	
+	private boolean isOperatorBeginning() {
+		for(String op: operators) {
+			if(op.startsWith("" + (char)currentChar)) {
+				return true;
+			}
+		}
 		
-		for(int i=0; i < row.length(); i++) {
-			char c = row.charAt(i);
+		return false;
+	}
+	
+	private void registerOperator() throws CompilerException {
+		currentSymbol = "";
+		
+		do {
+			currentSymbol += (char) currentChar;
 			
-			if(c == ';') {
-				i++;
-				
-				Instruction next = new Instruction();
-				next.setPosition(currentInstruction.getPosition() + 1);
-				next.setLine(lineCount);
-				
-				if(i < row.length()) {
-					char nc = row.charAt(i);
-					if(nc == ';') {
-						currentInstruction.addInstruction(";");
-						currentInstruction.addInstruction(";");
-					}
-					else {
-						next.addInstruction(Character.toString(nc));
-					}
+			ArrayList<String> candidates = new ArrayList<String>();
+			
+			for(String op: operators) {
+				if(op.startsWith(currentSymbol)) {
+					candidates.add(op);
 				}
+			}
 				
-				registerInstruction();
+			if(candidates.isEmpty()) {
+				break;
+			}
 				
-				currentInstruction = next;
+		} while(nextChar() && !isSpace() && !isBoundary());
+		
+		for(String op: operators) {
+			if(currentSymbol.equals(op)) {
+				registerSymbol();
+				return;
+			}
+		}
+		
+		throw new CompilerException("OpÃ©rateur inconnu: " + currentSymbol, currentLine, currentPos);
+	}
+	
+	private void registerIdentifier() {
+		currentSymbol = "";
+		
+		do {
+			currentSymbol += "" + (char) currentChar;
+		} while(nextChar() && !isBoundary() && !isSpace() && !isOperatorBeginning());
+		
+		registerSymbol();
+	}
+	
+	private void registerBoundary() {
+		if(currentChar == ';') {
+			currentPos++;
+			
+			nextChar();
+			if(currentChar == ';') {
+				currentSymbol = ";;";
+				nextChar();
 			}
 			else {
-				currentInstruction.addInstruction(Character.toString(c));
+				currentSymbol = "";
 			}
+			
+			skipSpaces();
+			
+			registerSymbol();
+			registerInstruction();
+			return;
 		}
+		
+		currentSymbol = "" + (char)currentChar;
+		registerSymbol();
+		nextChar();
 	}
 	
-	private void readRowByRow() throws CompilerException {
-		currentInstruction = new Instruction();
-		
-		BufferedReader br = null;
-		
-		try {
-			br = new BufferedReader(input);
-			
-			String targetString;
-			lineCount = 0;
-			
-			while((targetString = br.readLine()) != null) {
-				String line = targetString.trim();
-				
-				if(line.length() > 0) {
-					readInstructionByInstruction(line);
-					
-					if(currentInstruction.getInstruction().isEmpty()) {
-						currentInstruction.setLine(currentInstruction.getLine() + 1);
-						currentInstruction.setPosition(0);
-					}
-				}
-				
-				lineCount++;
+	private void skipSpaces() {
+		do {
+			if(currentChar == '\n') {
+				currentPos = 0;
+				currentLine++;
 			}
-			
-			registerInstruction();
-
-		} catch (IOException e) {
-			throw new CompilerException("Cannot read buffer", lineCount, 0);
-		}
+		} while(isSpace() && nextChar());
+	}
+	
+	private boolean isSpace() {
+		return spaces.contains("" + (char)currentChar);
+	}
+	
+	private void analyseNextSymbol() throws CompilerException {
+		skipSpaces();
 		
-		try {
-			br.close();
-		} catch (IOException e) {
-			throw new CompilerException("Could not close buffer", lineCount, 0);
+		if(!isAtEnd()) {
+			if(isBoundary()) {
+				registerBoundary();
+			}
+			else if(isOperatorBeginning()) {
+				registerOperator();
+			}
+			else {
+				registerIdentifier();
+			}
 		}
-
 	}
-	public ArrayList<Instruction> getResInstruArrayList() {
-		return resInstruArrayList;
-	}
-
-	public void setResInstruArrayList(ArrayList<Instruction> resInstruArrayList) {
-		this.resInstruArrayList = resInstruArrayList;
-	}
-
 }

@@ -6,6 +6,8 @@ import java.io.StringReader;
 
 import org.junit.Test;
 
+import compiler.config.ConfigManager;
+
 public class CompilerTest {
 
 	@Test
@@ -160,6 +162,28 @@ public class CompilerTest {
 		
 		Compiler c = new Compiler(input, callback);
 		Thread t = c.reduceInstruction();
+		t.join();
+	}
+	@Test
+	public void testComplexExpression() throws InterruptedException {
+		StringReader input = new StringReader("f x := 2 * x");
+		ConfigManager.getInstance().toggle(ConfigManager.NUMBERS, true);
+		
+		CompilerCallback callback = new CompilerCallback() {
+
+			@Override
+			public void onResult(String reducedGraph, int line, int position, boolean finished) {
+				assertEquals(":= $f ( lambda+++ $x * 2 $x", reducedGraph);
+			}
+
+			@Override
+			public void onFailure(CompilerException e) {
+				fail();
+			}		
+		};
+		
+		Compiler c = new Compiler(input, callback);
+		Thread t = c.reduceAll();
 		t.join();
 	}
 }

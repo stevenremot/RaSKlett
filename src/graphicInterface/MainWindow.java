@@ -28,6 +28,7 @@ import javax.swing.text.StyledEditorKit;
 import compiler.Compiler;
 import compiler.CompilerCallback;
 import compiler.CompilerException;
+import compiler.config.ConfigManager;
 
 public class MainWindow extends JFrame implements CompilerCallback{
 
@@ -248,10 +249,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		Border border = BorderFactory.createTitledBorder("Native combinators");
 		combinatorPanel.setBorder(border);    
 
-		CombinatorPanel basic = new CombinatorPanel(combinators, "basic-combinators : ", true);
-		CombinatorPanel bool = new CombinatorPanel(combinatorsBool, "booleans : ", false);
-		CombinatorPanel numbers = new CombinatorPanel(combinatorsNumbers, "numbers : ", false);
-		CombinatorPanel lists = new CombinatorPanel(combinatorsLists, "lists : ", false);
+		CombinatorPanel basic = new CombinatorPanel(combinators, "basic-combinators : ", ConfigManager.BASIC_COMBINATORS, true);
+		CombinatorPanel bool = new CombinatorPanel(combinatorsBool, "booleans : ", ConfigManager.BOOLEANS, false);
+		CombinatorPanel numbers = new CombinatorPanel(combinatorsNumbers, "numbers : ", ConfigManager.NUMBERS, false);
+		CombinatorPanel lists = new CombinatorPanel(combinatorsLists, "lists : ", ConfigManager.LISTS, false);
 		combinatorPanel.add(basic);
 		combinatorPanel.add(bool);
 		combinatorPanel.add(numbers);
@@ -274,33 +275,34 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		return editor;
 	}
 	
-	public void startCompilationStepByStep(){
-		editor.setText(editor.getCleanedText());
-		nextStep.setEnabled(true);
-		nextLine.setEnabled(true);
-		toEnd.setEnabled(true);
-		stop.setEnabled(true);
-		iNextStep.setEnabled(true);
-		iNextLine.setEnabled(true);
-		iToEnd.setEnabled(true);
-		iStop.setEnabled(true);
+	public void initCompilationEnvironment() {
+		offset = 0;
 		editor.disableEdition();
+		editor.setText(editor.getCleanedText());
+		stop.setEnabled(true);
+		iStop.setEnabled(true);
 		
+
 		String code = editor.getCleanedText();
 		Reader reader = new StringReader(code);
 		compiler = new Compiler(reader,this);
 	}
+	
+	public void startCompilationStepByStep(){
+		initCompilationEnvironment();
+		
+		nextStep.setEnabled(true);
+		nextLine.setEnabled(true);
+		toEnd.setEnabled(true);
+		iNextStep.setEnabled(true);
+		iNextLine.setEnabled(true);
+		iToEnd.setEnabled(true);
+		
+	}
 
 	public void startCompilation(){
-		editor.setText(editor.getCleanedText());
-		editor.disableEdition();
-		stop.setEnabled(true);
-		iStop.setEnabled(true);
+		initCompilationEnvironment();
 		
-		String code = editor.getCleanedText();
-		System.out.println("code : "+code);
-		Reader reader = new StringReader(code);
-		compiler = new Compiler(reader,this);
 		compiler.reduceAll();
 	}
 	
@@ -523,7 +525,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 					char[] buffer = text.toCharArray();
 					writer.write(buffer);
 					writer.close();
-					System.out.println("save");}
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			} 		
@@ -541,14 +543,16 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		// On transforme le code en un tableau de lignes.
 		String[] instructions = s.split("\n");
 		int pos = 1;
+
 		System.out.println(line + offset + position);
 		// line correspond au numÃ©ro de ligne AVANT l'insertion de rÃ©sultats ou d'erreurs.
 		// L'offset prend en compte le dÃ©calage occasionnÃ© par les insertions prÃ©cÃ©dentes de rÃ©sultats de compilation.
+		// line correspond au numéro de ligne AVANT l'insertion de résultats ou d'erreurs.
+		// L'offset prend en compte le décalage occasionné par les insertions précédentes de résultats de compilation.
 		for(int i = 0; i < line + offset + position +1; i++) {
-			System.out.println("instructions : "+instructions[i]);
 			pos += instructions[i].length();
 		}
-		System.out.println(pos);
+		
 		return pos+position;
 	}
 
@@ -556,10 +560,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void onResult(String reducedGraph, int line, int position,
 			boolean finished) {
 		try {
-			System.out.println(line+" , "+position);
 			int pos = getPos(line ,position);
 			System.out.println(reducedGraph);
 			editor.insertResult(">>> RÃ©sultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
+			editor.insertResult(">>> Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
 			offset++;
 		} catch (BadLocationException e) {
 			e.printStackTrace();
