@@ -133,9 +133,10 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	         
 	        //Add content to the window.
 	        frame.add(new PreferencesDialog(parent), BorderLayout.CENTER);
-	        frame.setPreferredSize(new Dimension(400,250)) ;
+	        frame.setPreferredSize(new Dimension(400,300)) ;
 	        //Display the window.
 	        frame.pack();
+			frame.setLocationRelativeTo(null);
 	        frame.setVisible(true);
 	    }
 	    
