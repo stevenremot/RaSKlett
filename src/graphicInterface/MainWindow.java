@@ -30,6 +30,7 @@ import compiler.config.ConfigManager;
 public class MainWindow extends JFrame implements CompilerCallback{
 
 	private Compiler compiler;
+	private Thread compilationThread;
 	
 	private String filename = null;
 	private String dir = null;
@@ -300,9 +301,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	public void startCompilation(){
 		initCompilationEnvironment();
+
 		enableCompilation(false);
 		compiler.reduceAll();
 		enableCompilation(true);
+
 	}
 	
 	public void toNextStep() {
@@ -313,11 +316,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	
 	public void toNextInstruction() {
-		compiler.reduceInstruction();
+		compilationThread = compiler.reduceInstruction();
 	}
 	
 	public void toEnd() {
-		compiler.reduceAll();
+		compilationThread = compiler.reduceAll();
 		editor.enableEdition();
 		stop.setEnabled(false);
 		iStop.setEnabled(false);
@@ -327,17 +330,19 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 		editor.enableEdition();
 		
-//		nextStep.setEnabled(false);
-//		nextLine.setEnabled(false);
-//		toEnd.setEnabled(false);
-//		stop.setEnabled(false);
-//		iNextStep.setEnabled(false);
-//		iNextLine.setEnabled(false);
-//		iToEnd.setEnabled(false);
-//		iStop.setEnabled(false);
+		nextStep.setEnabled(false);
+		nextLine.setEnabled(false);
+		toEnd.setEnabled(false);
+		stop.setEnabled(false);
+		iNextStep.setEnabled(false);
+		iNextLine.setEnabled(false);
+		iToEnd.setEnabled(false);
+		iStop.setEnabled(false);
 		
-		compiler = new Compiler(new StringReader(""),this);
 		compiler.stopReduction();
+		compilationThread.interrupt();
+		
+		compiler = null;
 		enableCompilation(true);
 		
 
@@ -568,6 +573,12 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			System.out.println(reducedGraph);
 			editor.insertResult(">>> Résultat de la ligne "+ l +" : "+reducedGraph,pos + l-2);
 			offset++;
+			
+			if(finished) {
+				compileStepByStep.setEnabled(false);
+				stopCompilation();
+				compileStepByStep.setEnabled(true);
+			}
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
