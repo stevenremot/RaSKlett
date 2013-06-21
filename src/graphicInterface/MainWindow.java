@@ -24,6 +24,7 @@ import javax.swing.text.BadLocationException;
 import compiler.Compiler;
 import compiler.CompilerCallback;
 import compiler.CompilerException;
+import compiler.config.ConfigManager;
 
 public class MainWindow extends JFrame implements CompilerCallback{
 
@@ -242,10 +243,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		Border border = BorderFactory.createTitledBorder("Native combinators");
 		combinatorPanel.setBorder(border);    
 
-		CombinatorPanel basic = new CombinatorPanel(combinators, "basic-combinators : ", true);
-		CombinatorPanel bool = new CombinatorPanel(combinatorsBool, "booleans : ", false);
-		CombinatorPanel numbers = new CombinatorPanel(combinatorsNumbers, "numbers : ", false);
-		CombinatorPanel lists = new CombinatorPanel(combinatorsLists, "lists : ", false);
+		CombinatorPanel basic = new CombinatorPanel(combinators, "basic-combinators : ", ConfigManager.BASIC_COMBINATORS, true);
+		CombinatorPanel bool = new CombinatorPanel(combinatorsBool, "booleans : ", ConfigManager.BOOLEANS, false);
+		CombinatorPanel numbers = new CombinatorPanel(combinatorsNumbers, "numbers : ", ConfigManager.NUMBERS, false);
+		CombinatorPanel lists = new CombinatorPanel(combinatorsLists, "lists : ", ConfigManager.LISTS, false);
 		combinatorPanel.add(basic);
 		combinatorPanel.add(bool);
 		combinatorPanel.add(numbers);
