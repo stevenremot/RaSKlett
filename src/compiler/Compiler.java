@@ -137,7 +137,6 @@ public class Compiler {
 	// réduit TOUT
 	private synchronized void all() throws CompilerException {
 		while(!isFinished()) {
-			lineFinished = false;
 			instruction();
 			sendResult();
 			
@@ -213,7 +212,6 @@ public class Compiler {
 				synchronized(t) {
 					try {
 						t.all();
-						t.sendResult();
 					}
 					catch(CompilerException e) {
 						e.setLine(currentInstruction.getLine());

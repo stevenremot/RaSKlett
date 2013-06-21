@@ -14,6 +14,7 @@ public class Test {
 	 * @throws BadLocationException 
 	 */
 	public static void main(String[] args) throws BadLocationException{
+
 		new MainWindow();
 
 	}
