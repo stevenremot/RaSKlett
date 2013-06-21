@@ -43,6 +43,7 @@ public class DocViewerDialog extends JDialog {
 		setSize(700, 500);
 		
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		setVisible(true);
 	}
 
 }
