@@ -12,23 +12,19 @@ import compiler.CompilerException;
  */
 public class Parser {
 	public String resultString;
-	
+
 	/**
 	 * to be a interface for call lexicalAnalyser and SemanticalAnalyser
-	 * @throws CompilerException 
+	 * @throws CompilerException
 	 */
 	public static ArrayList<Instruction> parse(Reader input) throws CompilerException {
 		LexicalAnalyser lA = new LexicalAnalyser(input);
 
-		ArrayList<Instruction>symbols = lA.getSymbols(); 
-		
-		for(Instruction instruction : symbols){
-			SemanticalAnalyser sA=new SemanticalAnalyser(instruction);
-			
-			instruction.setInstruction(new ArrayList<String>(sA.myresult));
-		}
-		
-		return symbols;
+		ArrayList<Instruction> symbols = lA.getSymbols();
+
+		SyntaxicalAnalyser sA = new SyntaxicalAnalyser(symbols);
+
+		return sA.getInstructions();
 
 	}
 }

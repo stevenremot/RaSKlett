@@ -520,7 +520,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 					char[] buffer = text.toCharArray();
 					writer.write(buffer);
 					writer.close();
-					System.out.println("save");}
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			} 		
@@ -545,7 +545,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			pos += instructions[i].length();
 		}
 		
-		System.out.println(pos);
 		return pos+position;
 	}
 
