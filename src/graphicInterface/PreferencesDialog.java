@@ -113,10 +113,16 @@ public class PreferencesDialog extends JPanel implements ActionListener{
         apply.addActionListener(this);
         buttonsPanel.add(apply);
         
+        JButton reset = new JButton("Reset");
+        reset.setActionCommand("reset");
+        reset.addActionListener(this);
+        buttonsPanel.add(reset);
+        
         JButton ok = new JButton("OK");
         ok.setActionCommand("close");
         ok.addActionListener(this);
         buttonsPanel.add(ok);
+        
         
         add(buttonsPanel);
 	    	    
@@ -141,33 +147,6 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	    }
 	    
 
-
-    /* 
-    public static void main(String[] args) {
-        //Schedule a job for the event dispatch thread:
-        //creating and showing this application's GUI.
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                //Turn off metal's use of bold fonts
-        UIManager.put("swing.boldMetal", Boolean.FALSE);
-        createAndShowGUI();
-            }
-        });
-    }
-    */
-    /*
-	public class ControleurApply implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
-			preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
-			editor.update();
-		}
-
-	}
-	*/
-
 	public void actionPerformed(ActionEvent e) {
 		if("apply".equals(e.getActionCommand())) {
 	        preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
@@ -180,5 +159,15 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		} else if ("close".equals(e.getActionCommand())) {
 		      frame.dispose();
 	    }
+		else if ("reset".equals(e.getActionCommand())) {
+	        preferences.putInt("textSize", 12);
+	        sizeList.setSelectedItem(12);
+			preferences.put("textFont", "Calibri");
+	        fontList.setSelectedItem("Calibri");
+	        preferences.put("lineNumbers", "true");
+	        lineNumbers.setSelected(true);
+	        parent.getPanneauText().setRowHeaderView( parent.getLineNumbers() ) ;
+			parent.getEditor().update();
+		}
 	}
 }

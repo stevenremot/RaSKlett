@@ -566,17 +566,19 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 	}
 
-	@Override
-	public void onFailure(CompilerException e) {
-		int line = e.getLine();
-		try {
-			editor.insertError("!!! Erreur ligne "+line+" " +e.getMessage(),line + offset );
-			offset++;
-		} catch (BadLocationException e1) {
-			e1.printStackTrace();
-		}
-	}
-	
+	   public void onFailure(CompilerException e) {
+	     int line = e.getLine();
+	     int position = e.getPosition();
+         int pos = getPos(line ,position);
+	     try {
+	       editor.insertError("!!! Erreur ligne "+line+" " +e.getMessage(),pos - 1 + line + offset );
+	       offset++;
+	       
+	       stopCompilation();
+	     } catch (BadLocationException e1) {
+	       e1.printStackTrace();
+	     }
+	   }
 	public JScrollPane getPanneauText(){
 		return this.panneauTexte;
 	}

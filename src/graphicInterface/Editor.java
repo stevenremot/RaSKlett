@@ -1,20 +1,13 @@
 package graphicInterface;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.util.Enumeration;
-
 import java.util.prefs.Preferences;
-
-import javax.swing.Action;
-import javax.swing.JScrollPane;
-
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import javax.swing.text.StyledEditorKit;
+
 
 public class Editor extends JTextPane {
 	
@@ -26,7 +19,6 @@ public class Editor extends JTextPane {
 	private Style error = this.addStyle("error", defaut);
 	private Style result = this.addStyle("result", defaut);
 	private StyledDocument doc;
-	private StyledEditorKit editorKit;
 	private Preferences preferences = Preferences.userRoot();
 	
 	public Editor(){
@@ -36,6 +28,10 @@ public class Editor extends JTextPane {
 	    StyleConstants.setFontSize(error, preferences.getInt("textSize", 11));
 	    StyleConstants.setFontSize(result, preferences.getInt("textSize", 11));
 		
+	    StyleConstants.setFontFamily(defaut,  preferences.get("textFont", "Calibri"));
+	    StyleConstants.setFontFamily(error, preferences.get("textFont", "Calibri"));
+	    StyleConstants.setFontFamily(result, preferences.get("textFont", "Calibri"));
+	    
 		StyleConstants.setForeground(defaut, Color.BLACK);
 	    StyleConstants.setForeground(error, Color.RED);
 	    StyleConstants.setForeground(result, Color.GREEN);
@@ -43,8 +39,6 @@ public class Editor extends JTextPane {
 	   doc = (StyledDocument) getDocument();
 	   doc.setParagraphAttributes(0, 1, defaut, true);
 	   
-	   editorKit = new StyledEditorKit();
-
 	}
 
 	public void appendText(String s) throws BadLocationException{

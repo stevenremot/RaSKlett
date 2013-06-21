@@ -14,8 +14,7 @@ public class Test {
 	 * @throws BadLocationException 
 	 */
 	public static void main(String[] args) throws BadLocationException{
-		MainWindow fenetre = new MainWindow();
-		Editor editor = fenetre.getEditor();
+		new MainWindow();
 
 	}
 
