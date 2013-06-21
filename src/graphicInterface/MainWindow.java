@@ -290,7 +290,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	
 	public void startCompilationStepByStep(){
 		initCompilationEnvironment();
-		
+
 		nextStep.setEnabled(true);
 		nextLine.setEnabled(true);
 		toEnd.setEnabled(true);
@@ -311,7 +311,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	
 	public void toNextStep() {
 		enableCompilation(false);
-		compiler.reduceStep();
+		if(compiler != null)
+			compiler.reduceStep();
 		enableCompilation(true);
 
 	}
