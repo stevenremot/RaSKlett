@@ -215,6 +215,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		menuBar.add(tools);
 
 		iCombinators = new JMenuItem("Combinators");
+		iCombinators.addActionListener(new ControleurCombinateurs()); 
 		iPreferences = new JMenuItem("Preferences");
 		iPreferences.addActionListener(new ControleurPreferences(this));
 
@@ -408,6 +409,14 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 
 	}
+	
+	public class ControleurCombinateurs implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+		}
+
+	}
 
 	public class ControleurPreferences implements ActionListener {
 
@@ -588,6 +597,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	       e1.printStackTrace();
 	     }
 	   }
+	   
 	public JScrollPane getPanneauText(){
 		return this.panneauTexte;
 	}
