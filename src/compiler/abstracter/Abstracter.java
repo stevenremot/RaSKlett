@@ -147,14 +147,16 @@ public class Abstracter {
 			
 			Node newNode = new Node(nfS, abstractNodeField(NodeFieldFactory.create(currentNode),level,var));
 			 
-			Node kNode = new Node(NodeFieldFactory.create(newNode),NodeFieldFactory.create(cmanager.get("K")));
+			Node kNode = new Node(NodeFieldFactory.create(cmanager.get("K")));
 			
 			if(nextNode.equals(lastNode))
-				nextNode.setFunction(NodeFieldFactory.create(kNode));
+				kNode.setArgument(lastNode.getArgument());
 			else{
 				nextNode.getNextNode().setFunction(nextNode.getArgument());
-				Node parNode = new Node(NodeFieldFactory.create(kNode),NodeFieldFactory.create(lastNode));
+				kNode.setArgument(NodeFieldFactory.create(lastNode));
 			}
+			
+			new Node(NodeFieldFactory.create(newNode),NodeFieldFactory.create(kNode));
 			
 			return newNode;
 			
