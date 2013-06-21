@@ -16,8 +16,8 @@ public class Test {
 	public static void main(String[] args) throws BadLocationException{
 		MainWindow fenetre = new MainWindow();
 		Editor editor = fenetre.getEditor();
-		editor.insertError("Erreur  ", 0);
-		editor.insertResult("resultat", 7);
+		//editor.insertError("Erreur  ", 0);
+		//editor.insertResult("resultat", 7);
 		//MainWindow fenetre = new MainWindow();
 		//Editor editor = fenetre.getEditor();
 //		try {
