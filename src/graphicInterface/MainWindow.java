@@ -282,6 +282,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 
 		String code = editor.getCleanedText();
+		System.out.println("code : "+code);
 		Reader reader = new StringReader(code);
 		compiler = new Compiler(reader,this);
 	}
@@ -300,8 +301,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	public void startCompilation(){
 		initCompilationEnvironment();
-		
-		compilationThread = compiler.reduceAll();
+
+		enableCompilation(false);
+		compiler.reduceAll();
+		enableCompilation(true);
+
 	}
 	
 	public void toNextStep() {
@@ -346,6 +350,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	
 	public void enableCompilation(boolean b)
 	{
+		if(!b)
+			editor.disableEdition();
+		else
+			editor.enableEdition();
 		if(compileStepByStep.isEnabled()) {
 			nextStep.setEnabled(b);
 			nextLine.setEnabled(b);
@@ -560,12 +568,14 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void onResult(String reducedGraph, int line, int position,
 			boolean finished) {
 		try {
-			int pos = getPos(line ,position);
-			System.out.println(reducedGraph);
-			editor.insertResult(">>> Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
-			offset++;
-			
-			if(finished) {
+			if(!finished) {
+				int pos = getPos(line ,position);
+				int l = line + offset + 1;
+				System.out.println(reducedGraph);
+				editor.insertResult(">>> Résultat de la ligne "+ l +" : "+reducedGraph,pos + l-2);
+				offset++;
+			}
+			else {
 				compileStepByStep.setEnabled(false);
 				stopCompilation();
 				compileStepByStep.setEnabled(true);
@@ -578,8 +588,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	@Override
 	public void onFailure(CompilerException e) {
 		int line = e.getLine();
+		int l = line + offset + 1;
+		int pos = getPos(line,0);
 		try {
-			editor.insertError("!!! Erreur ligne "+line+" " +e.getMessage(),line + offset );
+			editor.insertError("!!! Erreur : " +e.getMessage(),pos + l - 2);
+			//editor.insertError("!!! Erreur ligne "+l+" " +e.getMessage(),line + offset );
 			offset++;
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
