@@ -11,7 +11,7 @@ import compiler.CompilerException;
 /**
  * @brief Analyse lexicale du code
  * 
- * SÃ©pare le code en instructions, caractÃ¨res par caractÃ¨res
+ * Sépare le code en instructions, caractères par caractères
  * 
  * @author Qianqian CHEN parser lexicalAnalyser 31/05/2013
  */

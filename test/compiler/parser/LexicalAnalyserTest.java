@@ -22,10 +22,9 @@ public class LexicalAnalyserTest {
 		assertEquals(1, instructions.size());
 		
 		ArrayList<String> symbols = instructions.get(0).getInstruction();
-		assertEquals(3, symbols.size());
+		assertEquals(2, symbols.size());
 		assertEquals("A", symbols.get(0));
-		assertEquals(" ", symbols.get(1));
-		assertEquals("B", symbols.get(2));
+		assertEquals("B", symbols.get(1));
 	}
 	
 	@Test
@@ -44,10 +43,9 @@ public class LexicalAnalyserTest {
 		assertEquals(0, ins.getPosition());
 		
 		ArrayList<String> symbols = ins.getInstruction();
-		assertEquals(3, symbols.size());
+		assertEquals(2, symbols.size());
 		assertEquals("A", symbols.get(0));
-		assertEquals(" ", symbols.get(1));
-		assertEquals("B", symbols.get(2));
+		assertEquals("B", symbols.get(1));
 		
 		ins = instructions.get(1);
 		
@@ -55,10 +53,9 @@ public class LexicalAnalyserTest {
 		assertEquals(0, ins.getPosition());
 		
 		symbols = ins.getInstruction();
-		assertEquals(3, symbols.size());
+		assertEquals(2, symbols.size());
 		assertEquals("C", symbols.get(0));
-		assertEquals(" ", symbols.get(1));
-		assertEquals("D", symbols.get(2));
+		assertEquals("D", symbols.get(1));
 	}
 	
 	@Test
@@ -77,10 +74,9 @@ public class LexicalAnalyserTest {
 		assertEquals(0, ins.getPosition());
 		
 		ArrayList<String> symbols = ins.getInstruction();
-		assertEquals(3, symbols.size());
+		assertEquals(2, symbols.size());
 		assertEquals("A", symbols.get(0));
-		assertEquals(" ", symbols.get(1));
-		assertEquals("B", symbols.get(2));
+		assertEquals("B", symbols.get(1));
 		
 		ins = instructions.get(1);
 		
@@ -88,11 +84,9 @@ public class LexicalAnalyserTest {
 		assertEquals(1, ins.getPosition());
 		
 		symbols = ins.getInstruction();
-		assertEquals(4, symbols.size());
-		assertEquals(" ", symbols.get(0));
-		assertEquals("C", symbols.get(1));
-		assertEquals(" ", symbols.get(2));
-		assertEquals("D", symbols.get(3));
+		assertEquals(2, symbols.size());
+		assertEquals("C", symbols.get(0));
+		assertEquals("D", symbols.get(1));
 	}
 	
 	@Test
@@ -106,13 +100,11 @@ public class LexicalAnalyserTest {
 		assertEquals(1, instructions.size());
 		
 		ArrayList<String> symbols = instructions.get(0).getInstruction();
-		assertEquals(6, symbols.size());
+		assertEquals(4, symbols.size());
 		assertEquals("A", symbols.get(0));
-		assertEquals(" ", symbols.get(1));
-		assertEquals("B", symbols.get(2));
-		assertEquals(" ", symbols.get(3));
-		assertEquals("C", symbols.get(4));
-		assertEquals("D", symbols.get(5));
+		assertEquals("B", symbols.get(1));
+		assertEquals("C", symbols.get(2));
+		assertEquals("D", symbols.get(3));
 	}
 	
 	@Test
@@ -131,12 +123,10 @@ public class LexicalAnalyserTest {
 		assertEquals(0, ins.getPosition());
 		
 		ArrayList<String> symbols = ins.getInstruction();
-		assertEquals(5, symbols.size());
+		assertEquals(3, symbols.size());
 		assertEquals("A", symbols.get(0));
-		assertEquals(" ", symbols.get(1));
-		assertEquals("B", symbols.get(2));
-		assertEquals(";", symbols.get(3));
-		assertEquals(";", symbols.get(4));
+		assertEquals("B", symbols.get(1));
+		assertEquals(";;", symbols.get(2));
 		
 		ins = instructions.get(1);
 		
@@ -144,10 +134,78 @@ public class LexicalAnalyserTest {
 		assertEquals(1, ins.getPosition());
 		
 		symbols = ins.getInstruction();
+		assertEquals(2, symbols.size());
+		assertEquals("C", symbols.get(0));
+		assertEquals("D", symbols.get(1));
+	}
+	
+	@Test
+	public void testOperator() throws CompilerException {
+		StringReader input = new StringReader("A <= B");
+		
+		LexicalAnalyser lex = new LexicalAnalyser(input);
+		
+		ArrayList<Instruction> instructions = lex.getSymbols();
+		
+		assertEquals(1, instructions.size());
+		
+		Instruction ins = instructions.get(0);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(0, ins.getPosition());
+		
+		ArrayList<String> symbols = ins.getInstruction();
+		assertEquals(3, symbols.size());
+		assertEquals("A", symbols.get(0));
+		assertEquals("<=", symbols.get(1));
+		assertEquals("B", symbols.get(2));
+	}
+	
+	@Test
+	public void testLambda() throws CompilerException {
+		StringReader input = new StringReader("lambda++ x . a x");
+		
+		LexicalAnalyser lex = new LexicalAnalyser(input);
+		
+		ArrayList<Instruction> instructions = lex.getSymbols();
+		
+		assertEquals(1, instructions.size());
+		
+		Instruction ins = instructions.get(0);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(0, ins.getPosition());
+		
+		ArrayList<String> symbols = ins.getInstruction();
+		assertEquals(6, symbols.size());
+		assertEquals("lambda", symbols.get(0));
+		assertEquals("++", symbols.get(1));
+		assertEquals("x", symbols.get(2));
+		assertEquals(".", symbols.get(3));
+		assertEquals("a", symbols.get(4));
+		assertEquals("x", symbols.get(5));
+	}
+	
+	@Test
+	public void testBoundary() throws CompilerException {
+		StringReader input = new StringReader("A(B)");
+		
+		LexicalAnalyser lex = new LexicalAnalyser(input);
+		
+		ArrayList<Instruction> instructions = lex.getSymbols();
+		
+		assertEquals(1, instructions.size());
+		
+		Instruction ins = instructions.get(0);
+		
+		assertEquals(0, ins.getLine());
+		assertEquals(0, ins.getPosition());
+		
+		ArrayList<String> symbols = ins.getInstruction();
 		assertEquals(4, symbols.size());
-		assertEquals(" ", symbols.get(0));
-		assertEquals("C", symbols.get(1));
-		assertEquals(" ", symbols.get(2));
-		assertEquals("D", symbols.get(3));
+		assertEquals("A", symbols.get(0));
+		assertEquals("(", symbols.get(1));
+		assertEquals("B", symbols.get(2));
+		assertEquals(")", symbols.get(3));
 	}
 }

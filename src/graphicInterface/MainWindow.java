@@ -217,7 +217,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		iCombinators = new JMenuItem("Combinators");
 		iPreferences = new JMenuItem("Preferences");
-		iPreferences.addActionListener(new ControleurPreferences());
+		iPreferences.addActionListener(new ControleurPreferences(this));
 
 		tools.add(iCombinators);
 		tools.add(iPreferences);	
@@ -409,16 +409,19 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	public class ControleurPreferences implements ActionListener {
 
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			PreferencesDialog dialog = new PreferencesDialog();
-	        dialog.createAndShowGUI();
+		private MainWindow window;
 
+		public ControleurPreferences(MainWindow window) {
+		this.window = window;
 		}
 
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+		PreferencesDialog.createAndShowGUI(window);
+		}
 	}
 	/**
-	 * @brief Ouvre une boîte de dialogue pour sélectionner le fichier à ouvrir.
+	 * @brief Ouvre une boÃ®te de dialogue pour sÃ©lectionner le fichier Ã  ouvrir.
 	 * @author lagrange
 	 *
 	 */
@@ -476,7 +479,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 //						
 //						for(int j = 0; j < k; j++) {
 //							int pos = getPos(i,j);
-//							editor.insertResult("Résultat ligne "+i+ " instruction "+j +";",pos +offset -2 +i);
+//							editor.insertResult("RÃ©sultat ligne "+i+ " instruction "+j +";",pos +offset -2 +i);
 //						}
 //						offset += k;
 //					}
@@ -491,8 +494,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	/**
 	 * @brief Listener pour le bouton "save"
-	 * Ouvre un dialogue pour choisir le fichier dans lequel écrire si on n'a pas encore sauvegardé.
-	 * Si c'est le cas, sauvegarde dans le fichier que l'on a précisé à la première sauvegarde.
+	 * Ouvre un dialogue pour choisir le fichier dans lequel Ã©crire si on n'a pas encore sauvegardÃ©.
+	 * Si c'est le cas, sauvegarde dans le fichier que l'on a prÃ©cisÃ© Ã  la premiÃ¨re sauvegarde.
 	 * @author lagrange
 	 *
 	 */
@@ -528,10 +531,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	
 	/**
-	 * @brief Méthode calculant la position d'une erreur ou d'un résultat dans l'éditeur de texte après la compilation.
-	 * @param line la ligne de l'instruction correspondant à l'erreur ou au résultat.
+	 * @brief MÃ©thode calculant la position d'une erreur ou d'un rÃ©sultat dans l'Ã©diteur de texte aprÃ¨s la compilation.
+	 * @param line la ligne de l'instruction correspondant Ã  l'erreur ou au rÃ©sultat.
 	 * @param position la  position de l'instruction au sein d'une ligne d'instructions. 
-	 * @return pos la position où l'on va insérer le texte
+	 * @return pos la position oÃ¹ l'on va insÃ©rer le texte
 	 */
 	public int getPos(int line, int position) {
 		String s = editor.getText();
@@ -539,8 +542,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		String[] instructions = s.split("\n");
 		int pos = 1;
 		System.out.println(line + offset + position);
-		// line correspond au numéro de ligne AVANT l'insertion de résultats ou d'erreurs.
-		// L'offset prend en compte le décalage occasionné par les insertions précédentes de résultats de compilation.
+		// line correspond au numÃ©ro de ligne AVANT l'insertion de rÃ©sultats ou d'erreurs.
+		// L'offset prend en compte le dÃ©calage occasionnÃ© par les insertions prÃ©cÃ©dentes de rÃ©sultats de compilation.
 		for(int i = 0; i < line + offset + position +1; i++) {
 			System.out.println("instructions : "+instructions[i]);
 			pos += instructions[i].length();
@@ -556,7 +559,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			System.out.println(line+" , "+position);
 			int pos = getPos(line ,position);
 			System.out.println(reducedGraph);
-			editor.insertResult(">>> Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
+			editor.insertResult(">>> RÃ©sultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
 			offset++;
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -573,163 +576,13 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			e1.printStackTrace();
 		}
 	}
-
-	public static class PreferencesDialog extends JPanel implements ActionListener{
-		
-		private ImageIcon textPreferences = null;
-		private ImageIcon combinatorPreferences = null;
-	    
-	    private JComboBox sizeList;
-	    private JComboBox fontList;
-	    private JCheckBox lineNumbers;
-	    
-	    private static JFrame frame;
-		
-		
-		final String apply = "Apply";
-		final String restore = "Restore";
-		final String close = "Close";
-
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 5325511632318062715L;
-
-		public PreferencesDialog() {
-			setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-			JTabbedPane tabbedPane = new JTabbedPane();
-			
-			textPreferences = new ImageIcon("icons/textPreferences.png");
-			combinatorPreferences = new ImageIcon("icons/combinators.png");
-			
-			JPanel textPanel = new JPanel(new GridLayout(0, 1));		
-		    
-			Object[] numbers = {6, 8, 9, 10, 11, 12, 14, 16, 18, 20};
-			sizeList = new JComboBox(numbers);
-			sizeList.setEditable(true);
-			sizeList.setSelectedItem(preferences.getInt("textSize", 12));
-			sizeList.setMaximumSize(new Dimension(100,10));
-			
-			JPanel sizePanel = new JPanel(new GridLayout(0, 1));
-			sizePanel.add(new JLabel("Change text size"));
-			sizePanel.add(sizeList);
-			textPanel.add(sizePanel);
-			
-			Object[] fonts = {"Arial", "Calibri", "Comic Sans", "Courier", "Georgia", "Helvetica", "Script", "Times New Roman", "Verdana"};
-			fontList = new JComboBox(fonts);
-			fontList.setEditable(true);
-			fontList.setSelectedItem(preferences.get("textFont", "Calibri"));
-			fontList.setMaximumSize(new Dimension(100,10));
-			
-			JPanel fontPanel = new JPanel(new GridLayout(0, 1));
-			fontPanel.add(new JLabel("Change text font"));
-			fontPanel.add(fontList);
-			textPanel.add(fontPanel);
-			
-			lineNumbers = new JCheckBox("Add line numbers");
-			if (Boolean.valueOf(preferences.get("lineNumbers", "true"))) lineNumbers.setSelected(true);
-			textPanel.add(lineNumbers);
-			
-			textPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-			
-		    tabbedPane.addTab("Text preferences", textPreferences, textPanel,
-	                "Editor's text preferences");
-		    
-		    
-			JPanel combinatorsPanel = new JPanel(new GridLayout(1, 1));
-			combinatorsPanel.setLayout(new BoxLayout(combinatorsPanel, BoxLayout.PAGE_AXIS));
-			JLabel availableCombinators = new JLabel("Available combinators");
-			combinatorsPanel.add(availableCombinators);
-			
-			
-			tabbedPane.addTab("Available combinators", combinatorPreferences, combinatorsPanel,
-		            "Natively available combinators");
-			
-	        //Add the tabbed pane to this panel.
-	        add(tabbedPane);
-	         
-	        //The following line enables to use scrolling tabs.
-	        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);	
-	        tabbedPane.setBorder(new EmptyBorder(3, 3, 3, 3));
-	        
-	        JPanel buttonsPanel = new JPanel();
-	        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
-
-	        JButton apply = new JButton("Apply");
-	        apply.setActionCommand("apply");
-	        apply.addActionListener(this);
-	        buttonsPanel.add(apply);
-	        
-	        JButton ok = new JButton("OK");
-	        ok.setActionCommand("close");
-	        ok.addActionListener(this);
-	        buttonsPanel.add(ok);
-	        
-	        add(buttonsPanel);
-		    	    
-		}
-	    /**
-	     * Create the GUI and show it.  For thread safety,
-	     * this method should be invoked from
-	     * the event dispatch thread.
-	     */
-	    private static void createAndShowGUI() {
-	        //Create and set up the window.
-	        frame = new JFrame("TabbedPaneDemo");
-	        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	        frame.setIconImage((new ImageIcon("icons/cheese.png")).getImage());
-
-	         
-	        //Add content to the window.
-	        frame.add(new PreferencesDialog(), BorderLayout.CENTER);
-	        frame.setPreferredSize(new Dimension(400,250)) ;
-	        
-	        //Display the window.
-	        frame.pack();
-	        frame.setLocationRelativeTo(null);
-	        frame.setVisible(true);
-	    }
-	    /* 
-	    public static void main(String[] args) {
-	        //Schedule a job for the event dispatch thread:
-	        //creating and showing this application's GUI.
-	        SwingUtilities.invokeLater(new Runnable() {
-	            public void run() {
-	                //Turn off metal's use of bold fonts
-	        UIManager.put("swing.boldMetal", Boolean.FALSE);
-	        createAndShowGUI();
-	            }
-	        });
-	    }
-	    */
-	    /*
-		public class ControleurApply implements ActionListener {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
-				preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
-				editor.update();
-			}
-
-		}
-		*/
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
-			if("apply".equals(e.getActionCommand())) {
-		        preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
-				preferences.put("textFont", (String) fontList.getSelectedItem());
-		        preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
-				if (lineNumbers.isSelected()) panneauTexte.setRowHeaderView( tln ) ;
-				else panneauTexte.setRowHeaderView( null ) ;
-				editor.update();
-				
-			} else if ("close".equals(e.getActionCommand())) {
-			      frame.dispose();
-		    }
-		}
+	
+	public JScrollPane getPanneauText(){
+		return this.panneauTexte;
 	}
+	
+	public TextLineNumbers getLineNumbers(){
+		return this.tln;
+	}
+
 }

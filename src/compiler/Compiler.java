@@ -107,8 +107,13 @@ public class Compiler {
 	
 	// réduit une étape
 	private synchronized void step() throws CompilerException {
-		if(!finished && lineFinished || registerNextInstruction()) {
-			lineFinished = !sk.step();
+		if(!finished && (!lineFinished || registerNextInstruction())) {
+			if(sk != null) {
+				lineFinished = !sk.step();
+			}
+			else {
+				throw new CompilerException("Le compilateur a éét incorrectement initialisé suite à une erreur");
+			}
 		}
 	}
 	
@@ -116,15 +121,14 @@ public class Compiler {
 	private synchronized void instruction() throws CompilerException {
 		do {
 			this.step();
-		} while(!this.isFinished() && !this.isInterrupted());
-		
-		registerNextInstruction();
+		} while(!this.isFinished() && !this.isInterrupted() && !lineFinished);
 	}
 	
 	// réduit TOUT
 	private synchronized void all() throws CompilerException {
-		while(!this.isFinished() && !this.isInterrupted()) {
-			this.instruction();
+		while(!isFinished() && !isInterrupted()) {
+			instruction();
+			registerNextInstruction();
 		}
 	}
 	
@@ -136,6 +140,7 @@ public class Compiler {
 		if(!finished) {
 			try {
 				step();
+				finished = lineFinished;
 				sendResult();
 			}
 			catch(CompilerException e) {

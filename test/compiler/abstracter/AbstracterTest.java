@@ -143,13 +143,13 @@ public class AbstracterTest {
 		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(var));
 		
 		Abstracter ab = new Abstracter(root,1);
-		Node result = ab.searchVariable(fourth,var);
+		Node result = ab.searchVariable(third,var);
 		assertEquals(result,second);
 		
 		Node childRoot = new Node(new NodeNodeField(null), NodeFieldFactory.create(var));
 		Node child = new Node(NodeFieldFactory.create(childRoot), NodeFieldFactory.create(K));
 		second.setArgument(NodeFieldFactory.create(child));
-		result = ab.searchVariable(fourth,var);
+		result = ab.searchVariable(third,var);
 		assertEquals(result,second);
 	}
 	
@@ -226,4 +226,27 @@ public class AbstracterTest {
 		assertEquals(ret,"S ( K S ) K");
 		
 	}
+	
+	@Test
+	public void lambda3PlusTest(){
+		
+		// lambda+++x . x S K
+		Lambda lambda = new Lambda(3);
+		Var var = new Var("$x");
+		Combinator S = new DummyCombinator("S"); 
+		Combinator K = new DummyCombinator("K");
+		
+		Node root = new Node(NodeFieldFactory.create(lambda), NodeFieldFactory.create(var));
+		Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(var));		
+		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(S));
+		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(K));
+		
+		Abstracter ab = new Abstracter(root,1);
+		Node result = ab.findAbstracter(fourth);
+		String ret = GraphSerializer.serialize(result);
+		assertEquals(ret,"I I K S K");
+		
+		
+	}
+	
 }

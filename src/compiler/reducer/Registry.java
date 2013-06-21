@@ -18,7 +18,7 @@ public class Registry {
 	}
 	
 	public void setNode(Node node) {
-		this.node = node;
+		this.node = node.getRoot();
 	}
 
 }

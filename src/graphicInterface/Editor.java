@@ -8,8 +8,8 @@ import java.util.prefs.Preferences;
 
 import javax.swing.Action;
 import javax.swing.JScrollPane;
+
 import javax.swing.JTextPane;
-import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -87,7 +87,7 @@ public class Editor extends JTextPane {
 	
 	/**
 	 * @brief Méthode renvoyant les intructions écrites dans l'éditeur sans les erreurs et les résultats.  
-	 * @return
+	 * @return text : une string ne contenant que les instructions.
 	 */
 	public String getCleanedText() {
 		String text = "";

@@ -122,9 +122,31 @@ public class Abstracter {
 			
 		}
 		
+		
+		//règle lambda+++x . F = K F
+		if(level >= 3 && (lastNode.getArgument().getCombinator() == null || lastNode.getArgument().getCombinator() != null && !lastNode.getArgument().getCombinator().equals(var))){
+			
+			currentNode = searchVariable(lastNode,var);
+			
+			if(currentNode == null){
+				root.setFunction(NodeFieldFactory.create(cmanager.get("K")));
+				return root;
+			}
+			
+			Node nextNode = currentNode.getNextNode();
+			currentNode.setNextNode(null);
+			Node newNode = new Node(NodeFieldFactory.create(abstraction(currentNode,level,var)),NodeFieldFactory.create(cmanager.get("K")));
+			nextNode.setFunction(NodeFieldFactory.create(newNode));
+			return newNode;
+			
+		}
+		
+		
+		
+		// règle lambda++ x . F x = F
 		if(level >= 2 && lastNode.getArgument().getCombinator() != null && lastNode.getArgument().getCombinator().equals(var)){
 			
-			currentNode = searchVariable(lastNode,var);		
+			currentNode = searchVariable(lastNode.getFunction().getNode(),var);		
 		
 			if(currentNode == null){
 				
@@ -147,6 +169,8 @@ public class Abstracter {
 			}
 				
 		}
+		
+		
 		// règle lambda+ x . P Q = S (lambda+ x . P) (lambda+ x . Q)
 		if(lastNode.getFunction().getNode().equals(root)){
 	
@@ -204,10 +228,7 @@ public class Abstracter {
 	 */
 	public Node searchVariable(Node start, Var var){
 		
-		if(start.getFunction().getNode() == null)
-			return null;
-		
-		Node node = start.getFunction().getNode();
+		Node node = start;
 	
 		do{
 			

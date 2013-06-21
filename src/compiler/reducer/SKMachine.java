@@ -21,7 +21,7 @@ public class SKMachine {
 	}
 	
 	public void setGraph(Node graph) {
-		registry.setNode(graph.getRoot());
+		registry.setNode(graph);
 	}
 	
 	/**
