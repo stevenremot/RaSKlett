@@ -229,6 +229,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		menuBar.add(help);
 
 		iHelp = new JMenuItem("Help");
+		iHelp.addActionListener(new ControleurManual(this));
 
 		help.add(iHelp);
 
@@ -549,8 +550,25 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 	}
 	
+	public class ControleurManual implements ActionListener {
+		private MainWindow parent;
+		
+		public ControleurManual(MainWindow parent) {
+			this.parent = parent;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			try {
+				new DocViewerDialog(parent, "data/manuel.html", "User manual");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	/**
-	 * @brief MÃ©thode calculant la position d'une erreur ou d'un rÃ©sultat dans l'Ã©diteur de texte aprÃ¨s la compilation.
+	 * @brief Méthode calculant la position d'une erreur ou d'un rÃ©sultat dans l'Ã©diteur de texte aprÃ¨s la compilation.
 	 * @param line la ligne de l'instruction correspondant Ã  l'erreur ou au rÃ©sultat.
 	 * @param position la  position de l'instruction au sein d'une ligne d'instructions. 
 	 * @return pos la position oÃ¹ l'on va insÃ©rer le texte
