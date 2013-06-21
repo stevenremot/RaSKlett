@@ -267,7 +267,7 @@ public class AbstracterTest {
 		Abstracter ab = new Abstracter(root,1);
 		Node result = ab.findAbstracter(fourth);
 		String ret = GraphSerializer.serialize(result);
-		assertEquals(ret,"S I K ( S K )");
+		assertEquals(ret,"S I ( K ( S K ) )");
 		
 		
 	}

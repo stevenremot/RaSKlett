@@ -136,6 +136,8 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	        //Create and set up the window.
 	        frame = new JFrame("TabbedPaneDemo");
 	        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	        
+			frame.setIconImage((new ImageIcon("icons/cheese.png")).getImage());
 	         
 	        //Add content to the window.
 	        frame.add(new PreferencesDialog(parent), BorderLayout.CENTER);
