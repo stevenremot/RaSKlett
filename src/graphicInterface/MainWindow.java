@@ -268,33 +268,34 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		return editor;
 	}
 	
-	public void startCompilationStepByStep(){
-		editor.setText(editor.getCleanedText());
-		nextStep.setEnabled(true);
-		nextLine.setEnabled(true);
-		toEnd.setEnabled(true);
-		stop.setEnabled(true);
-		iNextStep.setEnabled(true);
-		iNextLine.setEnabled(true);
-		iToEnd.setEnabled(true);
-		iStop.setEnabled(true);
+	public void initCompilationEnvironment() {
+		offset = 0;
 		editor.disableEdition();
+		editor.setText(editor.getCleanedText());
+		stop.setEnabled(true);
+		iStop.setEnabled(true);
 		
+
 		String code = editor.getCleanedText();
 		Reader reader = new StringReader(code);
 		compiler = new Compiler(reader,this);
 	}
+	
+	public void startCompilationStepByStep(){
+		initCompilationEnvironment();
+		
+		nextStep.setEnabled(true);
+		nextLine.setEnabled(true);
+		toEnd.setEnabled(true);
+		iNextStep.setEnabled(true);
+		iNextLine.setEnabled(true);
+		iToEnd.setEnabled(true);
+		
+	}
 
 	public void startCompilation(){
-		editor.setText(editor.getCleanedText());
-		editor.disableEdition();
-		stop.setEnabled(true);
-		iStop.setEnabled(true);
+		initCompilationEnvironment();
 		
-		String code = editor.getCleanedText();
-		System.out.println("code : "+code);
-		Reader reader = new StringReader(code);
-		compiler = new Compiler(reader,this);
 		compiler.reduceAll();
 	}
 	
@@ -537,13 +538,13 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		// On transforme le code en un tableau de lignes.
 		String[] instructions = s.split("\n");
 		int pos = 1;
-		System.out.println(line + offset + position);
+		
 		// line correspond au numéro de ligne AVANT l'insertion de résultats ou d'erreurs.
 		// L'offset prend en compte le décalage occasionné par les insertions précédentes de résultats de compilation.
 		for(int i = 0; i < line + offset + position +1; i++) {
-			System.out.println("instructions : "+instructions[i]);
 			pos += instructions[i].length();
 		}
+		
 		System.out.println(pos);
 		return pos+position;
 	}
@@ -552,9 +553,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void onResult(String reducedGraph, int line, int position,
 			boolean finished) {
 		try {
-			System.out.println(line+" , "+position);
 			int pos = getPos(line ,position);
-			System.out.println(reducedGraph);
 			editor.insertResult(">>> Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
 			offset++;
 			
