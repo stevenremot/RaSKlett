@@ -340,7 +340,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		iStop.setEnabled(false);
 		
 		compiler.stopReduction();
-		compilationThread.interrupt();
 		
 		compiler = null;
 		enableCompilation(true);
@@ -452,8 +451,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 					reader.read(buffer);
 					reader.close();
 					String text = new String(buffer);
-					//editor.setText(text);
 					try {
+						// Pour avoir un code uniquement écrit en noir.
 						editor.setText(null);
 						editor.insertText(text, 0);
 					} catch (BadLocationException e) {
@@ -477,6 +476,14 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		public void actionPerformed(ActionEvent arg0) {
 			filename = null;
 			dir = null;
+			try {
+				// L'éditeur garde le style du dernier caractère écrit.
+				// Pour retrouver le style par défaut, on ajoute une chaîne de caractères à la fin à l'aide de appendText, qui écrit avec le style par défaut (en noir).
+				// C'est vraiment très moche, mais ça marche.
+				editor.appendText("blabla");
+			} catch (BadLocationException e) {
+				e.printStackTrace();
+			}
 			editor.setText(null);
 //			try {
 //				String[] s = editor.getCleanedText().split("\n");
