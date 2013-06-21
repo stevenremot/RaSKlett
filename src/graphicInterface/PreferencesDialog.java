@@ -30,8 +30,8 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	private ImageIcon textPreferences = null;
 	private ImageIcon combinatorPreferences = null;
     
-    private JComboBox sizeList;
-    private JComboBox fontList;
+    private JComboBox<?> sizeList;
+    private JComboBox<?> fontList;
     private JCheckBox lineNumbers;
     
     private static JFrame frame;
@@ -47,9 +47,8 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	 */
 	private static final long serialVersionUID = 5325511632318062715L;
 
-	@SuppressWarnings("unchecked")
 	public PreferencesDialog(MainWindow parent) {
-		this.parent = parent;
+		PreferencesDialog.parent = parent;
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		JTabbedPane tabbedPane = new JTabbedPane();
 		
@@ -59,7 +58,7 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		JPanel textPanel = new JPanel(new GridLayout(0, 1));		
 	    
 		Object[] numbers = {6, 8, 9, 10, 11, 12, 14, 16, 18, 20};
-		sizeList = new JComboBox(numbers);
+		sizeList = new JComboBox<Object>(numbers);
 		sizeList.setEditable(true);
 		sizeList.setSelectedItem(preferences.getInt("textSize", 12));
 		sizeList.setMaximumSize(new Dimension(100,10));
@@ -70,7 +69,7 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		textPanel.add(sizePanel);
 		
 		Object[] fonts = {"Arial", "Calibri", "Comic Sans", "Courier", "Georgia", "Helvetica", "Script", "Times New Roman", "Verdana"};
-		fontList = new JComboBox(fonts);
+		fontList = new JComboBox<Object>(fonts);
 		fontList.setEditable(true);
 		fontList.setSelectedItem(preferences.get("textFont", "Calibri"));
 		fontList.setMaximumSize(new Dimension(100,10));
@@ -169,13 +168,12 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	*/
 
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		if("apply".equals(e.getActionCommand())) {
 	        preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
 			preferences.put("textFont", (String) fontList.getSelectedItem());
 	        preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
-		//	if (lineNumbers.isSelected())  parent.getPanneauText().setRowHeaderView( parent.getLineNumbers() ) ;
-		//	else parent.getPanneauText().setRowHeaderView( null ) ;
+			if (lineNumbers.isSelected())  parent.getPanneauText().setRowHeaderView( parent.getLineNumbers() ) ;
+			else parent.getPanneauText().setRowHeaderView( null ) ;
 			parent.getEditor().update();
 			
 		} else if ("close".equals(e.getActionCommand())) {

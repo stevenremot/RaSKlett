@@ -4,7 +4,6 @@ package graphicInterface;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -20,10 +19,8 @@ import java.util.prefs.Preferences;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledEditorKit;
 
 import compiler.Compiler;
 import compiler.CompilerCallback;
@@ -66,9 +63,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JMenuItem iPreferences = null;
 	private JMenuItem iHelp = null;
 
-	private static JScrollPane panneauTexte ;
-	private static TextLineNumbers tln ;
-	private static Preferences preferences = Preferences.userRoot();
+	private  JScrollPane panneauTexte ;
+	private TextLineNumbers tln ;
+	private  Preferences preferences = Preferences.userRoot();
 
 	private JToolBar toolBar = null;
 	
@@ -562,7 +559,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		try {
 			int pos = getPos(line ,position);
 			System.out.println(reducedGraph);
-			editor.insertResult(">>> RÃ©sultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
 			editor.insertResult(">>> Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
 			offset++;
 		} catch (BadLocationException e) {
