@@ -60,7 +60,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JMenuItem iNextLine = null;
 	private JMenuItem iToEnd = null;
 	private JMenuItem iStop = null;
-	private JMenuItem iCombinators = null;
 	private JMenuItem iPreferences = null;
 	private JMenuItem iHelp = null;
 
@@ -214,12 +213,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
 				"Tools menu");
 		menuBar.add(tools);
 
-		iCombinators = new JMenuItem("Combinators");
-		iCombinators.addActionListener(new ControleurCombinateurs()); 
 		iPreferences = new JMenuItem("Preferences");
 		iPreferences.addActionListener(new ControleurPreferences(this));
 
-		tools.add(iCombinators);
 		tools.add(iPreferences);	
 
 		help = new JMenu("Help");
@@ -418,14 +414,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 
 	}
-	
-	public class ControleurCombinateurs implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-			
-		}
 
-	}
 
 	public class ControleurPreferences implements ActionListener {
 

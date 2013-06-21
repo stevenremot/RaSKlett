@@ -88,7 +88,7 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	    tabbedPane.addTab("Text preferences", textPreferences, textPanel,
                 "Editor's text preferences");
 	    
-	    
+	    /*
 		JPanel combinatorsPanel = new JPanel(new GridLayout(1, 1));
 		combinatorsPanel.setLayout(new BoxLayout(combinatorsPanel, BoxLayout.PAGE_AXIS));
 		JLabel availableCombinators = new JLabel("Available combinators");
@@ -97,7 +97,7 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		
 		tabbedPane.addTab("Available combinators", combinatorPreferences, combinatorsPanel,
 	            "Natively available combinators");
-		
+		*/
         //Add the tabbed pane to this panel.
         add(tabbedPane);
          
