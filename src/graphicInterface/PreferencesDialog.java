@@ -166,7 +166,6 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	        fontList.setSelectedItem("Calibri");
 	        preferences.put("lineNumbers", "true");
 	        lineNumbers.setSelected(true);
-	        parent.getPanneauText().setRowHeaderView( parent.getLineNumbers() ) ;
 			parent.getEditor().update();
 		}
 	}
