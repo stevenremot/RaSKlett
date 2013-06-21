@@ -29,6 +29,7 @@ import compiler.config.ConfigManager;
 public class MainWindow extends JFrame implements CompilerCallback{
 
 	private Compiler compiler;
+	private Thread compilationThread;
 	
 	private String filename = null;
 	private String dir = null;
@@ -296,7 +297,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	public void startCompilation(){
 		initCompilationEnvironment();
 		
-		compiler.reduceAll();
+		compilationThread = compiler.reduceAll();
 	}
 	
 	public void toNextStep() {
@@ -307,11 +308,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	
 	public void toNextInstruction() {
-		compiler.reduceInstruction();
+		compilationThread = compiler.reduceInstruction();
 	}
 	
 	public void toEnd() {
-		compiler.reduceAll();
+		compilationThread = compiler.reduceAll();
 		editor.enableEdition();
 		stop.setEnabled(false);
 		iStop.setEnabled(false);
@@ -321,17 +322,19 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 		editor.enableEdition();
 		
-//		nextStep.setEnabled(false);
-//		nextLine.setEnabled(false);
-//		toEnd.setEnabled(false);
-//		stop.setEnabled(false);
-//		iNextStep.setEnabled(false);
-//		iNextLine.setEnabled(false);
-//		iToEnd.setEnabled(false);
-//		iStop.setEnabled(false);
+		nextStep.setEnabled(false);
+		nextLine.setEnabled(false);
+		toEnd.setEnabled(false);
+		stop.setEnabled(false);
+		iNextStep.setEnabled(false);
+		iNextLine.setEnabled(false);
+		iToEnd.setEnabled(false);
+		iStop.setEnabled(false);
 		
-		compiler = new Compiler(new StringReader(""),this);
 		compiler.stopReduction();
+		compilationThread.interrupt();
+		
+		compiler = null;
 		enableCompilation(true);
 		
 
@@ -557,7 +560,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			offset++;
 			
 			if(finished) {
+				compileStepByStep.setEnabled(false);
 				stopCompilation();
+				compileStepByStep.setEnabled(true);
 			}
 		} catch (BadLocationException e) {
 			e.printStackTrace();
