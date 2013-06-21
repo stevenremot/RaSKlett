@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -63,6 +64,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JMenuItem iPreferences = null;
 	private JMenuItem iHelp = null;
 
+	private  JScrollPane panneauTexte ;
+	private TextLineNumbers tln ;
+	private  Preferences preferences = Preferences.userRoot();
 
 	private JToolBar toolBar = null;
 	
@@ -231,12 +235,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		editor.setEditable(true);
 		
-		JScrollPane panneauTexte = new JScrollPane(editor);
+		panneauTexte = new JScrollPane(editor);
 		add(panneauTexte, BorderLayout.CENTER);
 		
-		TextLineNumbers tln = new TextLineNumbers(editor);
-		panneauTexte.setRowHeaderView( tln );
-
+		tln = new TextLineNumbers(editor);
+		if (Boolean.valueOf(preferences.get("lineNumbers", "true"))) panneauTexte.setRowHeaderView( tln );
 
 		JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
 		combinatorPanel.setPreferredSize(new Dimension(170,0));
@@ -257,11 +260,12 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 
 		
-		
+		setIconImage((new ImageIcon("icons/cheese.png")).getImage());
 		setPreferredSize(new Dimension(800, 600));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("RaSKlett");
 		pack();
+		setLocationRelativeTo(null);
 		setVisible(true);
 	}
 
@@ -406,20 +410,20 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
 	public class ControleurPreferences implements ActionListener {
+
 		private MainWindow window;
-		
+
 		public ControleurPreferences(MainWindow window) {
-			this.window = window;
-		}
-		
-		@Override
-		public void actionPerformed(ActionEvent arg0) {
-	        PreferencesDialog.createAndShowGUI(window);
+		this.window = window;
 		}
 
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+		PreferencesDialog.createAndShowGUI(window);
+		}
 	}
 	/**
-	 * @brief Ouvre une boîte de dialogue pour sélectionner le fichier à ouvrir.
+	 * @brief Ouvre une boÃ®te de dialogue pour sÃ©lectionner le fichier Ã  ouvrir.
 	 * @author lagrange
 	 *
 	 */
@@ -442,8 +446,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 					String text = new String(buffer);
 					//editor.setText(text);
 					try {
-						// le texte dans le fichier n'est pas toujours dans le bon style.
-						// On utilise insertText pour écrire dans l'éditeur avec le style par défaut 
 						editor.setText(null);
 						editor.insertText(text, 0);
 					} catch (BadLocationException e) {
@@ -479,7 +481,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 //						
 //						for(int j = 0; j < k; j++) {
 //							int pos = getPos(i,j);
-//							editor.insertResult("Résultat ligne "+i+ " instruction "+j +";",pos +offset -2 +i);
+//							editor.insertResult("RÃ©sultat ligne "+i+ " instruction "+j +";",pos +offset -2 +i);
 //						}
 //						offset += k;
 //					}
@@ -494,8 +496,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	/**
 	 * @brief Listener pour le bouton "save"
-	 * Ouvre un dialogue pour choisir le fichier dans lequel écrire si on n'a pas encore sauvegardé.
-	 * Si c'est le cas, sauvegarde dans le fichier que l'on a précisé à la première sauvegarde.
+	 * Ouvre un dialogue pour choisir le fichier dans lequel Ã©crire si on n'a pas encore sauvegardÃ©.
+	 * Si c'est le cas, sauvegarde dans le fichier que l'on a prÃ©cisÃ© Ã  la premiÃ¨re sauvegarde.
 	 * @author lagrange
 	 *
 	 */
@@ -531,17 +533,20 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	
 	/**
-	 * @brief Méthode calculant la position d'une erreur ou d'un résultat dans l'éditeur de texte après la compilation.
-	 * @param line la ligne de l'instruction correspondant à l'erreur ou au résultat.
+	 * @brief MÃ©thode calculant la position d'une erreur ou d'un rÃ©sultat dans l'Ã©diteur de texte aprÃ¨s la compilation.
+	 * @param line la ligne de l'instruction correspondant Ã  l'erreur ou au rÃ©sultat.
 	 * @param position la  position de l'instruction au sein d'une ligne d'instructions. 
-	 * @return pos la position où l'on va insérer le texte
+	 * @return pos la position oÃ¹ l'on va insÃ©rer le texte
 	 */
 	public int getPos(int line, int position) {
 		String s = editor.getText();
 		// On transforme le code en un tableau de lignes.
 		String[] instructions = s.split("\n");
 		int pos = 1;
-		
+
+		System.out.println(line + offset + position);
+		// line correspond au numÃ©ro de ligne AVANT l'insertion de rÃ©sultats ou d'erreurs.
+		// L'offset prend en compte le dÃ©calage occasionnÃ© par les insertions prÃ©cÃ©dentes de rÃ©sultats de compilation.
 		// line correspond au numéro de ligne AVANT l'insertion de résultats ou d'erreurs.
 		// L'offset prend en compte le décalage occasionné par les insertions précédentes de résultats de compilation.
 		for(int i = 0; i < line + offset + position +1; i++) {
@@ -556,6 +561,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			boolean finished) {
 		try {
 			int pos = getPos(line ,position);
+			System.out.println(reducedGraph);
 			editor.insertResult(">>> Résultat de la ligne "+line+" : "+reducedGraph,pos + offset -1 +line);
 			offset++;
 			
@@ -572,15 +578,20 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	@Override
 	public void onFailure(CompilerException e) {
 		int line = e.getLine();
-		int position = e.getPosition();
-		int pos = getPos(line ,position);
 		try {
-			editor.insertError("!!! Erreur ligne "+line+" " +e.getMessage(),pos - 1 + line + offset );
+			editor.insertError("!!! Erreur ligne "+line+" " +e.getMessage(),line + offset );
 			offset++;
-			
-			stopCompilation();
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
 	}
+	
+	public JScrollPane getPanneauText(){
+		return this.panneauTexte;
+	}
+	
+	public TextLineNumbers getLineNumbers(){
+		return this.tln;
+	}
+
 }

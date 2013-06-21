@@ -1,13 +1,20 @@
 package graphicInterface;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.util.Enumeration;
+
 import java.util.prefs.Preferences;
+
+import javax.swing.Action;
+import javax.swing.JScrollPane;
 
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.text.StyledEditorKit;
 
 public class Editor extends JTextPane {
 	
@@ -19,10 +26,12 @@ public class Editor extends JTextPane {
 	private Style error = this.addStyle("error", defaut);
 	private Style result = this.addStyle("result", defaut);
 	private StyledDocument doc;
+	private StyledEditorKit editorKit;
 	private Preferences preferences = Preferences.userRoot();
 	
 	public Editor(){
 		super();
+		
 	    StyleConstants.setFontSize(defaut,  preferences.getInt("textSize", 11));
 	    StyleConstants.setFontSize(error, preferences.getInt("textSize", 11));
 	    StyleConstants.setFontSize(result, preferences.getInt("textSize", 11));
@@ -33,6 +42,8 @@ public class Editor extends JTextPane {
 
 	   doc = (StyledDocument) getDocument();
 	   doc.setParagraphAttributes(0, 1, defaut, true);
+	   
+	   editorKit = new StyledEditorKit();
 
 	}
 
@@ -112,10 +123,26 @@ public class Editor extends JTextPane {
 	}
 	
 	public void update(){
+		
+		
 		  StyleConstants.setFontSize(defaut,  preferences.getInt("textSize", 11));
 		  StyleConstants.setFontSize(error, preferences.getInt("textSize", 11));
 		  StyleConstants.setFontSize(result, preferences.getInt("textSize", 11));
-
+		  
+		  StyleConstants.setFontFamily(defaut,  preferences.get("textFont", "Calibri"));
+		  StyleConstants.setFontFamily(error,  preferences.get("textFont", "Calibri"));
+		  StyleConstants.setFontFamily(result,  preferences.get("textFont", "Calibri"));
+		  
+		  for (int pos = 0; pos < getText().length(); pos++){
+			  moveCaretPosition(pos);
+			  System.out.println(pos);
+			  Color couleur = (doc.getForeground(getCharacterAttributes()));
+			  System.out.println(couleur);
+			  if (couleur == Color.BLACK) doc.setCharacterAttributes(pos, 1, defaut, true);
+			  else if (couleur == Color.RED) doc.setCharacterAttributes(pos, 1, error, true);
+			  else doc.setCharacterAttributes(pos, 1, result, true);
+		  }
+		  
 	}
 	
 

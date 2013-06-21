@@ -1,5 +1,6 @@
 package graphicInterface;
 
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -18,23 +19,27 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 
+
+
 public class PreferencesDialog extends JPanel implements ActionListener{
+	
+	private Preferences preferences = Preferences.userRoot();
+	
+	private static MainWindow parent;
 	
 	private ImageIcon textPreferences = null;
 	private ImageIcon combinatorPreferences = null;
     
-    private JComboBox<Integer> sizeList;
+    private JComboBox<?> sizeList;
+    private JComboBox<?> fontList;
     private JCheckBox lineNumbers;
     
     private static JFrame frame;
 	
-	private Preferences preferences = Preferences.userRoot();
 	
 	final String apply = "Apply";
 	final String restore = "Restore";
 	final String close = "Close";
-	
-	private MainWindow parent;
 
 
 	/**
@@ -43,21 +48,19 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	private static final long serialVersionUID = 5325511632318062715L;
 
 	public PreferencesDialog(MainWindow parent) {
-		this.parent = parent;
-		
+		PreferencesDialog.parent = parent;
 		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 		JTabbedPane tabbedPane = new JTabbedPane();
 		
 		textPreferences = new ImageIcon("icons/textPreferences.png");
 		combinatorPreferences = new ImageIcon("icons/combinators.png");
 		
-		
 		JPanel textPanel = new JPanel(new GridLayout(0, 1));		
 	    
-		Integer[] numbers = {12, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18};
-		sizeList = new JComboBox<Integer>(numbers);
+		Object[] numbers = {6, 8, 9, 10, 11, 12, 14, 16, 18, 20};
+		sizeList = new JComboBox<Object>(numbers);
 		sizeList.setEditable(true);
-		sizeList.setSelectedItem(12);
+		sizeList.setSelectedItem(preferences.getInt("textSize", 12));
 		sizeList.setMaximumSize(new Dimension(100,10));
 		
 		JPanel sizePanel = new JPanel(new GridLayout(0, 1));
@@ -65,7 +68,19 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		sizePanel.add(sizeList);
 		textPanel.add(sizePanel);
 		
+		Object[] fonts = {"Arial", "Calibri", "Comic Sans", "Courier", "Georgia", "Helvetica", "Script", "Times New Roman", "Verdana"};
+		fontList = new JComboBox<Object>(fonts);
+		fontList.setEditable(true);
+		fontList.setSelectedItem(preferences.get("textFont", "Calibri"));
+		fontList.setMaximumSize(new Dimension(100,10));
+		
+		JPanel fontPanel = new JPanel(new GridLayout(0, 1));
+		fontPanel.add(new JLabel("Change text font"));
+		fontPanel.add(fontList);
+		textPanel.add(fontPanel);
+		
 		lineNumbers = new JCheckBox("Add line numbers");
+		if (Boolean.valueOf(preferences.get("lineNumbers", "true"))) lineNumbers.setSelected(true);
 		textPanel.add(lineNumbers);
 		
 		textPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -89,16 +104,21 @@ public class PreferencesDialog extends JPanel implements ActionListener{
         //The following line enables to use scrolling tabs.
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);	
         tabbedPane.setBorder(new EmptyBorder(3, 3, 3, 3));
+        
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
 
         JButton apply = new JButton("Apply");
         apply.setActionCommand("apply");
         apply.addActionListener(this);
-        add(apply);
+        buttonsPanel.add(apply);
         
         JButton ok = new JButton("OK");
         ok.setActionCommand("close");
         ok.addActionListener(this);
-        add(ok);
+        buttonsPanel.add(ok);
+        
+        add(buttonsPanel);
 	    	    
 	}
     /**
@@ -106,19 +126,21 @@ public class PreferencesDialog extends JPanel implements ActionListener{
      * this method should be invoked from
      * the event dispatch thread.
      */
-    public static void createAndShowGUI(MainWindow parent) {
-        //Create and set up the window.
-        frame = new JFrame("TabbedPaneDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-         
-        //Add content to the window.
-        frame.add(new PreferencesDialog(parent), BorderLayout.CENTER);
-        frame.setPreferredSize(new Dimension(400,250)) ;
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-    }
-    
+	 public static void createAndShowGUI(MainWindow parent) {
+	        //Create and set up the window.
+	        frame = new JFrame("TabbedPaneDemo");
+	        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	         
+	        //Add content to the window.
+	        frame.add(new PreferencesDialog(parent), BorderLayout.CENTER);
+	        frame.setPreferredSize(new Dimension(400,300)) ;
+	        //Display the window.
+	        frame.pack();
+			frame.setLocationRelativeTo(null);
+	        frame.setVisible(true);
+	    }
+	    
+
 
     /* 
     public static void main(String[] args) {
@@ -133,28 +155,30 @@ public class PreferencesDialog extends JPanel implements ActionListener{
         });
     }
     */
+    /*
 	public class ControleurApply implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
 			preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
-			parent.getEditor().update();
+			editor.update();
 		}
 
 	}
-	
+	*/
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		if("apply".equals(e.getActionCommand())) {
-	        System.out.println("apply button selected");
 	        preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
-			preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
+			preferences.put("textFont", (String) fontList.getSelectedItem());
+	        preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
+			if (lineNumbers.isSelected())  parent.getPanneauText().setRowHeaderView( parent.getLineNumbers() ) ;
+			else parent.getPanneauText().setRowHeaderView( null ) ;
 			parent.getEditor().update();
-		    } else if ("close".equals(e.getActionCommand())) {
-		      System.out.println("upgrade button selected");
+			
+		} else if ("close".equals(e.getActionCommand())) {
 		      frame.dispose();
-		    }
+	    }
 	}
 }
