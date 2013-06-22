@@ -18,7 +18,6 @@ import compiler.graph.Node;
  */
 public class Compiler {
 	private boolean finished = false;
-	private boolean interrupted;
 	private boolean lineFinished = false;
 	ArrayList<Instruction> symbols;
 	private SKMachine sk;
@@ -46,7 +45,7 @@ public class Compiler {
 	/**
 	 * @return le graphe réduit sous forme de chaîne de caractères
 	 */
-	public synchronized String getResult() {
+	public String getResult() {
 		if(sk == null) {
 			return "";
 		}
@@ -57,7 +56,7 @@ public class Compiler {
 	/**
 	 * @brief Envoie le résultat au callback
 	 */
-	public synchronized void sendResult() {
+	public void sendResult() {
 		if(currentInstruction == null) {
 			currentInstruction = new Instruction();
 		}
@@ -66,12 +65,16 @@ public class Compiler {
 				currentInstruction.getPosition(), isFinished());
 	}
 	
-	public synchronized boolean isFinished() {
+	public boolean isFinished() {
 		return finished;
 	}
+
+    public boolean isInterrupted() {
+        return(compilationThread != null && compilationThread.isInterrupted());
+    }
 	
 	// Compile l'instruction en graphe
-	private synchronized boolean registerNextInstruction() {
+	private boolean registerNextInstruction() {
 		if(currentInstructionIndex >= symbols.size()) {
 			finished = true;
 			return false;
@@ -107,7 +110,7 @@ public class Compiler {
 
 	
 	// réduit une étape
-	private synchronized void step() throws CompilerException {
+	private void step() throws CompilerException {
 		if(!finished && (!lineFinished || registerNextInstruction())) {
 			if(sk != null) {
 				lineFinished = !sk.step();
@@ -119,30 +122,17 @@ public class Compiler {
 	}
 	
 	// Réduit l'instruction suivante
-	private synchronized void instruction() throws CompilerException {
-		interrupted = false;
+	private void instruction() throws CompilerException {
 		do {
 			step();
-			
-			try {
-				Thread.sleep(10);
-			}
-			catch(InterruptedException e) {
-				interrupted = true;
-				break;
-			}
-		} while(!isFinished() && !lineFinished);
+		} while(!isFinished() && !lineFinished && !isInterrupted());
 	}
 	
 	// réduit TOUT
-	private synchronized void all() throws CompilerException {
-		while(!isFinished()) {
+	private void all() throws CompilerException {
+		while(!isFinished() && !isInterrupted()) {
 			instruction();
 			sendResult();
-			
-			if(interrupted) {
-				break;
-			}
 		}
 	}
 	
@@ -232,7 +222,7 @@ public class Compiler {
 	/**
 	 * @brief stoppe la réduction
 	 */
-	public synchronized void stopReduction() {if(compilationThread != null) {
+	public void stopReduction() {if(compilationThread != null) {
 			compilationThread.interrupt();
 		}
 	}
