@@ -482,26 +482,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 				e.printStackTrace();
 			}
 			editor.setText(null);
-//			try {
-//				String[] s = editor.getCleanedText().split("\n");
-//				int n = s.length;
-//				System.out.println("nb lignes : "+n);
-//				for(int i = 0; i < n ; i ++) {
-//					if(s[i].length() > 0) {
-//						int k = s[i].split(";").length;
-//						System.out.println("nb instruct ligne "+i+ " : "+k);
-//						
-//						for(int j = 0; j < k; j++) {
-//							int pos = getPos(i,j);
-//							editor.insertResult("RÃ©sultat ligne "+i+ " instruction "+j +";",pos +offset -2 +i);
-//						}
-//						offset += k;
-//					}
-//					
-//				}		
-//			} catch (BadLocationException e) {
-//				e.printStackTrace();
-//			}
 		}
 
 	}
@@ -573,9 +553,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		String[] instructions = s.split("\n");
 		int pos = 1;
 
-		System.out.println(line + offset + position);
-		// line correspond au numÃ©ro de ligne AVANT l'insertion de rÃ©sultats ou d'erreurs.
-		// L'offset prend en compte le dÃ©calage occasionnÃ© par les insertions prÃ©cÃ©dentes de rÃ©sultats de compilation.
+		// line correspond au numéro de ligne AVANT l'insertion de résultats ou d'erreurs.
+		// L'offset prend en compte le décalage occasionné par les insertions précédentes de résultats de compilation.
 		// line correspond au numéro de ligne AVANT l'insertion de résultats ou d'erreurs.
 		// L'offset prend en compte le décalage occasionné par les insertions précédentes de résultats de compilation.
 		for(int i = 0; i < line + offset + position +1; i++) {
@@ -592,7 +571,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			if(!finished) {
 				int pos = getPos(line ,position);
 				int l = line + offset + 1;
-				System.out.println(reducedGraph);
+
 				editor.insertResult(">>> Résultat de la ligne "+ l +" : "+reducedGraph,pos + l-2);
 				offset++;
 			}
@@ -614,7 +593,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		int pos = getPos(line,0);
 		try {
 			editor.insertError("!!! Erreur : " +e.getMessage(),pos + l - 2);
-			//editor.insertError("!!! Erreur ligne "+l+" " +e.getMessage(),line + offset );
 			offset++;
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
