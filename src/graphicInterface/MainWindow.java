@@ -427,7 +427,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 	}
 	/**
-	 * @brief Ouvre une boîte de dialogue pour sélectionner le fichier à  ouvrir.
+	 * Ouvre une boîte de dialogue pour sélectionner le fichier à  ouvrir.
 	 * @author lagrange
 	 *
 	 */
@@ -487,7 +487,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
 	/**
-	 * @brief Listener pour le bouton "save"
+	 * Listener pour le bouton "save"
 	 * Ouvre un dialogue pour choisir le fichier dans lequel Ã©crire si on n'a pas encore sauvegardÃ©.
 	 * Si c'est le cas, sauvegarde dans le fichier que l'on a prÃ©cisÃ© Ã  la premiÃ¨re sauvegarde.
 	 * @author lagrange
@@ -542,7 +542,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	
 	/**
-	 * @brief Méthode calculant la position d'une erreur ou d'un résultat dans l'éditeur de texte après la compilation.
+	 * Méthode calculant la position d'une erreur ou d'un résultat dans l'éditeur de texte après la compilation.
 	 * @param line la ligne de l'instruction correspondant à l'erreur ou au résultat.
 	 * @param position la  position de l'instruction au sein d'une ligne d'instructions. 
 	 * @return pos la position où l'on va insÃ©rer le texte
@@ -571,8 +571,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			if(!finished) {
 				int pos = getPos(line ,position);
 				int l = line + offset + 1;
-				position++;
-				editor.insertResult(">>> Résultat "+ position +" : "+reducedGraph,pos + l-2);
+				editor.insertResult(">>> "+reducedGraph,pos + l-2);
 				offset++;
 			}
 			else {
@@ -592,7 +591,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		int l = line + offset + 1;
 		int pos = getPos(line,0);
 		try {
-			editor.insertError("!!! Erreur : " +e.getMessage(),pos + l - 2);
+			editor.insertError("!!! " +e.getMessage(),pos + l - 2);
 			offset++;
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
