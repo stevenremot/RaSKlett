@@ -571,8 +571,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			if(!finished) {
 				int pos = getPos(line ,position);
 				int l = line + offset + 1;
-
-				editor.insertResult(">>> Résultat de la ligne "+ l +" : "+reducedGraph,pos + l-2);
+				position++;
+				editor.insertResult(">>> Résultat "+ position +" : "+reducedGraph,pos + l-2);
 				offset++;
 			}
 			else {
