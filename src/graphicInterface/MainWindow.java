@@ -189,8 +189,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		iCompileStepByStep = new JMenuItem("Compile step by step");
 		iCompileStepByStep.addActionListener(new ControleurCompileStepByStep());
 		iNextStep = new JMenuItem("Compile next step");
+        iNextStep.addActionListener(new ControleurToNextStep());
 		iNextLine = new JMenuItem("Compile next line");
+        iNextLine.addActionListener(new ControleurToNextInstruction());
 		iToEnd = new JMenuItem("Compile to end");
+        iToEnd.addActionListener(new ControleurToEnd());
 		iStop = new JMenuItem("Stop compilation");
 		iStop.addActionListener(new ControleurStop());
 
