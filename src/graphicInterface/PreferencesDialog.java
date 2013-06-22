@@ -1,6 +1,8 @@
 package graphicInterface;
 
 
+import compiler.config.ConfigManager;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -29,10 +31,13 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	
 	private ImageIcon textPreferences = null;
 	private ImageIcon combinatorPreferences = null;
+    private ImageIcon compilerPreferences = null;
     
     private JComboBox sizeList;
     private JComboBox fontList;
     private JCheckBox lineNumbers;
+
+    private JComboBox abstractionLevelList;
     
     private static JFrame frame;
 	
@@ -88,16 +93,38 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	    tabbedPane.addTab("Text preferences", textPreferences, textPanel,
                 "Editor's text preferences");
 	    
-	    /*
+	     /*
 		JPanel combinatorsPanel = new JPanel(new GridLayout(1, 1));
 		combinatorsPanel.setLayout(new BoxLayout(combinatorsPanel, BoxLayout.PAGE_AXIS));
+
+
 		JLabel availableCombinators = new JLabel("Available combinators");
 		combinatorsPanel.add(availableCombinators);
-		
-		
-		tabbedPane.addTab("Available combinators", combinatorPreferences, combinatorsPanel,
-	            "Natively available combinators");
-		*/
+
+
+		tabbedPane.addTab("Combinator preferences", combinatorPreferences, combinatorsPanel,
+	            "Set the enabled compinators");
+        */
+
+        JPanel compilerPanel = new JPanel(new GridLayout(1, 1));
+        compilerPanel.setLayout(new BoxLayout(compilerPanel, BoxLayout.PAGE_AXIS));
+
+        JPanel abstractionLevelPanel = new JPanel(new GridLayout(2, 1));
+
+        JLabel abstractionLevelLabel = new JLabel("Default abstraction level:");
+
+        Integer[] abstractionLevels = {1, 2, 3, 4};
+        abstractionLevelList = new JComboBox(abstractionLevels);
+        abstractionLevelList.setSelectedIndex(ConfigManager.getInstance().getDefaultAbstractionLevel()  -1);
+
+        abstractionLevelPanel.add(abstractionLevelLabel);
+        abstractionLevelPanel.add(abstractionLevelList);
+
+        compilerPanel.add(abstractionLevelPanel);
+
+        tabbedPane.addTab("Compiler settings", compilerPreferences, compilerPanel,
+                "Set the compiler's parameters");
+
         //Add the tabbed pane to this panel.
         add(tabbedPane);
          
@@ -151,12 +178,19 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 
 	public void actionPerformed(ActionEvent e) {
 		if("apply".equals(e.getActionCommand())) {
+
 	        preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
 			preferences.put("textFont", (String) fontList.getSelectedItem());
 	        preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
-			if (lineNumbers.isSelected())  parent.getPanneauText().setRowHeaderView( parent.getLineNumbers() ) ;
-			else parent.getPanneauText().setRowHeaderView( null ) ;
+
+			if (lineNumbers.isSelected())
+                parent.getPanneauText().setRowHeaderView( parent.getLineNumbers() );
+			else
+                parent.getPanneauText().setRowHeaderView( null );
+
 			parent.getEditor().update();
+
+            ConfigManager.getInstance().setDefaultAbstractionLevel(((Integer)abstractionLevelList.getSelectedItem()).intValue());
 			
 		} else if ("close".equals(e.getActionCommand())) {
 		      frame.dispose();
