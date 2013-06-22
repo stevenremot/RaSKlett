@@ -331,8 +331,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 		editor.enableEdition();
         inStepByStepCompilation = false;
-		
-		compiler.stopReduction();
+
+        if(compiler != null) {
+		    compiler.stopReduction();
+        }
 		
 		compiler = null;
 		enableCompilation(true);
@@ -617,6 +619,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
+        stopCompilation();
 	}
 	
 	public JScrollPane getPanneauText(){
