@@ -32,7 +32,6 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	private static MainWindow parent;
 	
 	private ImageIcon textPreferences = null;
-	private ImageIcon combinatorPreferences = null;
     private ImageIcon compilerPreferences = null;
     
     private JComboBox sizeList;
@@ -42,11 +41,6 @@ public class PreferencesDialog extends JPanel implements ActionListener{
     private JComboBox abstractionLevelList;
     
     private static JFrame frame;
-	
-	
-	final String apply = "Appliquer";
-	final String restore = "Restorer";
-	final String close = "Fermer";
 
 
 	private static final long serialVersionUID = 5325511632318062715L;
@@ -57,7 +51,7 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		JTabbedPane tabbedPane = new JTabbedPane();
 		
 		textPreferences = new ImageIcon("icons/textPreferences.png");
-		combinatorPreferences = new ImageIcon("icons/combinators.png");
+        compilerPreferences = new ImageIcon("icons/compiler_preferences.png");
 		
 		JPanel textPanel = new JPanel(new GridLayout(0, 1));		
 	    
@@ -91,19 +85,6 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		
 	    tabbedPane.addTab("Texte", textPreferences, textPanel,
                 "Les préférences du texte de l'éditeur");
-	    
-	     /*
-		JPanel combinatorsPanel = new JPanel(new GridLayout(1, 1));
-		combinatorsPanel.setLayout(new BoxLayout(combinatorsPanel, BoxLayout.PAGE_AXIS));
-
-
-		JLabel availableCombinators = new JLabel("Available combinators");
-		combinatorsPanel.add(availableCombinators);
-
-
-		tabbedPane.addTab("Combinator preferences", combinatorPreferences, combinatorsPanel,
-	            "Set the enabled compinators");
-        */
 
         JPanel compilerPanel = new JPanel(new GridLayout(1, 1));
         compilerPanel.setLayout(new BoxLayout(compilerPanel, BoxLayout.PAGE_AXIS));

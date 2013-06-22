@@ -542,10 +542,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	
 	/**
-	 * @brief Méthode calculant la position d'une erreur ou d'un rÃ©sultat dans l'Ã©diteur de texte aprÃ¨s la compilation.
-	 * @param line la ligne de l'instruction correspondant Ã  l'erreur ou au rÃ©sultat.
+	 * @brief Méthode calculant la position d'une erreur ou d'un résultat dans l'éditeur de texte après la compilation.
+	 * @param line la ligne de l'instruction correspondant à l'erreur ou au résultat.
 	 * @param position la  position de l'instruction au sein d'une ligne d'instructions. 
-	 * @return pos la position oÃ¹ l'on va insÃ©rer le texte
+	 * @return pos la position où l'on va insÃ©rer le texte
 	 */
     private int getPos(int line, int position) {
 		String s = editor.getText();
