@@ -80,7 +80,7 @@ public class Node {
             arg = this.getArgument();
         }
         else {
-            arg = NodeFieldFactory.create(this.getArgument().getNode().copy());
+            arg = NodeFieldFactory.create(this.getArgument().getNode().copy().getLastNode());
         }
 
         Node clone = new Node(func, arg);
