@@ -34,7 +34,7 @@ public class Editor extends JTextPane {
 	    
 		StyleConstants.setForeground(defaut, Color.BLACK);
 	    StyleConstants.setForeground(error, Color.RED);
-	    StyleConstants.setForeground(result, Color.GREEN);
+        StyleConstants.setForeground(result, new Color(0, 128, 0));
 
 	   doc = (StyledDocument) getDocument();
 	   doc.setParagraphAttributes(0, 1, defaut, true);
