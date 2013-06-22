@@ -79,7 +79,6 @@ class LexicalAnalyser {
 	
 	private void registerInstruction() {
 		if(currentInstruction != null && !currentInstruction.getInstruction().isEmpty()) {
-            currentInstruction.setLastLine(currentLine);
 			result.add(currentInstruction);
 		}
 		currentInstruction = new Instruction();
@@ -153,7 +152,9 @@ class LexicalAnalyser {
 			else {
 				currentSymbol = "";
 			}
-			
+
+            currentInstruction.setLastLine(currentLine);
+
 			skipSpaces();
 			
 			registerSymbol();
