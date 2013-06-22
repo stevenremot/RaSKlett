@@ -211,7 +211,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		compilation.add(iStop);
 
 		tools = new JMenu("Outils");
-		tools.setMnemonic(KeyEvent.VK_T);
+		tools.setMnemonic(KeyEvent.VK_O);
 		tools.getAccessibleContext().setAccessibleDescription(
 				"Menu des outils");
 		menuBar.add(tools);
@@ -222,7 +222,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		tools.add(iPreferences);	
 
 		help = new JMenu("Aide");
-		help.setMnemonic(KeyEvent.VK_H);
+		help.setMnemonic(KeyEvent.VK_A);
 		help.getAccessibleContext().setAccessibleDescription(
 				"Menu d'aide");
 		menuBar.add(help);
