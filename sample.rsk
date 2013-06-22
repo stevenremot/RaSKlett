@@ -1,0 +1,15 @@
+entier x := [x, entier(x + 1)];
+
+crible l := [head l, elim_mult (head l) (tail l)];
+
+elim_mult x l :=
+	if mod (head l) x = 0
+	then elim_mult x (tail l)
+	else [head l, elim_mult x (tail l)];
+
+nth k l := 
+	if k = 1
+	then head l
+	else nth (k - 1) (tail l);
+
+npremier n := nth n (crible (entier 2));
