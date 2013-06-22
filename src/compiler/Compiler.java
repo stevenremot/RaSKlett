@@ -12,7 +12,7 @@ import compiler.graph.GraphSerializer;
 import compiler.graph.Node;
 
 /**
- * @brief Classe haut niveau effectuant la compilation du code et renvoyant le résultat
+ * Classe haut niveau effectuant la compilation du code et renvoyant le résultat
  * @author remot
  *
  */
@@ -33,7 +33,9 @@ public class Compiler {
 		
 		try {
 			symbols = Parser.parse(input);
-			registerNextInstruction();
+			if(!registerNextInstruction()) {
+                throw new CompilerException("Rien à compiler", 0, 0);
+            }
 		}
 		catch(CompilerException e) {
 			callback.onFailure(e);
@@ -54,7 +56,7 @@ public class Compiler {
 	}
 	
 	/**
-	 * @brief Envoie le résultat au callback
+	 * Envoie le résultat au callback
 	 */
 	public void sendResult() {
 		if(currentInstruction == null) {
@@ -76,6 +78,7 @@ public class Compiler {
 	// Compile l'instruction en graphe
 	private boolean registerNextInstruction() {
 		if(currentInstructionIndex >= symbols.size()) {
+            currentInstruction = new Instruction();
 			finished = true;
 			return false;
 		}
@@ -137,7 +140,7 @@ public class Compiler {
 	}
 	
 	/**
-	 * @brief effectue une nétape de la réduction
+	 * effectue une nétape de la réduction
 	 * @return false si aucune étape n'a pu être effectué et que la réduction est donc finie, true sinon
 	 */
 	public boolean reduceStep() {
@@ -159,7 +162,7 @@ public class Compiler {
 	}
 	
 	/**
-	 * @brief effectue la réduction d'une ligne
+	 * effectue la réduction d'une ligne
 	 * 
 	 * @return le thread qui exécute la réduction
 	 */
@@ -189,7 +192,7 @@ public class Compiler {
 	}
 	
 	/**
-	 * @brief effectue la réduction totale
+	 * effectue la réduction totale
 	 * 
 	 * @return le thread qui exécute la réduction
 	 */
@@ -220,7 +223,7 @@ public class Compiler {
 	}
 	
 	/**
-	 * @brief stoppe la réduction
+	 * stoppe la réduction
 	 */
 	public void stopReduction() {if(compilationThread != null) {
 			compilationThread.interrupt();
