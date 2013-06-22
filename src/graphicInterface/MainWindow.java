@@ -61,6 +61,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JMenuItem iStop = null;
 	private JMenuItem iPreferences = null;
 	private JMenuItem iHelp = null;
+    private boolean inStepByStepCompilation = false;
 
 	private  JScrollPane panneauTexte ;
 	private TextLineNumbers tln ;
@@ -289,6 +290,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private void startCompilationStepByStep(){
 		initCompilationEnvironment();
 
+        inStepByStepCompilation = true;
+
 		nextStep.setEnabled(true);
 		nextLine.setEnabled(true);
 		toEnd.setEnabled(true);
@@ -300,6 +303,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
     private void startCompilation(){
 		initCompilationEnvironment();
+        inStepByStepCompilation = true;
 
 		enableCompilation(false);
 		compiler.reduceAll();
@@ -326,15 +330,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
     private void stopCompilation(){
 		
 		editor.enableEdition();
-		
-		nextStep.setEnabled(false);
-		nextLine.setEnabled(false);
-		toEnd.setEnabled(false);
-		stop.setEnabled(false);
-		iNextStep.setEnabled(false);
-		iNextLine.setEnabled(false);
-		iToEnd.setEnabled(false);
-		iStop.setEnabled(false);
+        inStepByStepCompilation = false;
 		
 		compiler.stopReduction();
 		
@@ -351,14 +347,15 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		else
 			editor.enableEdition();
 
-        nextStep.setEnabled(!b);
-        nextLine.setEnabled(!b);
-        toEnd.setEnabled(!b);
-        iNextStep.setEnabled(!b);
-        iNextLine.setEnabled(!b);
-        iToEnd.setEnabled(!b);
-		iCompileAll.setEnabled(!b);
-		compileAll.setEnabled(!b);
+        nextStep.setEnabled(inStepByStepCompilation);
+        nextLine.setEnabled(inStepByStepCompilation);
+        toEnd.setEnabled(inStepByStepCompilation);
+        iNextStep.setEnabled(inStepByStepCompilation);
+        iNextLine.setEnabled(inStepByStepCompilation);
+        iToEnd.setEnabled(inStepByStepCompilation);
+
+		iCompileAll.setEnabled(b);
+		compileAll.setEnabled(b);
 
 		stop.setEnabled(!b);
 		iStop.setEnabled(!b);
