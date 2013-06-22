@@ -1,6 +1,7 @@
 package compiler.combinators;
 
 import compiler.graph.Node;
+import compiler.graph.NodeField;
 import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
 
@@ -38,10 +39,22 @@ public class S implements Combinator {
 		if(node3 == null) {
 			return false;
 		}
+
+        NodeField thirdArgCopy = node3.getArgument();
+
+        // On copie le noeud pour éviter les boucles infinies en cas deremaniement du graphe
+        // Par exemple, avec S I I (S I I)
+        // Si on ne copie pas, on a:
+        // I (S I I) (I (S I I)) avec les deux (S I I) étant la même référence
+        // A l'itération suivante, on obtient S I I (I (S I I)) avec les deux S I I étant encore la même référence, ce qui amène
+        // une boucle infinie à l'affichage.
+        if(thirdArgCopy.getNode() != null) {
+            thirdArgCopy = NodeFieldFactory.create(thirdArgCopy.getNode().getRoot().copy().getLastNode());
+        }
 		
 		// On crée (X Z) et (Y Z)
 		Node funcNode = new Node(node1.getArgument(), node3.getArgument());
-		Node argNode = new Node(node2.getArgument(), node3.getArgument());
+		Node argNode = new Node(node2.getArgument(), thirdArgCopy);
 		
 		// On les assemble
 		node3.setFunction(NodeFieldFactory.create(funcNode));

@@ -123,6 +123,33 @@ public class CompilerTest {
 		
 		t.join();
 	}
+
+    @Test
+    public void testStepOnSIISIIDoesntThrowsException() throws InterruptedException {
+        StringReader input = new StringReader("S I I (S I I)");
+
+        CompilerCallback callback = new CompilerCallback() {
+            private int count = 0;
+
+            public void onResult(String result, int line, int position, boolean finished) {
+                assertFalse(finished);
+                if(count == 0) {
+                    assertEquals("I ( S I I ) ( I ( S I I ) )", result);
+                }
+
+                count++;
+            }
+
+            public void onFailure(CompilerException e) {
+                fail();
+            }
+        };
+
+        Compiler comp = new Compiler(input, callback);
+
+        comp.reduceStep();
+        comp.reduceStep();
+    }
 	
 	@Test
 	public void testParserExceptionAreThrown() {
