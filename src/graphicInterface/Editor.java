@@ -8,12 +8,13 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-
+/**
+ * @brief Classe de léditeur de texte
+ *
+ * Propose des fonctions spécialisées, comme ajouter un résultat, ou une erreur
+ */
 public class Editor extends JTextPane {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Style defaut = this.getStyle("default");
 	private Style error = this.addStyle("error", defaut);

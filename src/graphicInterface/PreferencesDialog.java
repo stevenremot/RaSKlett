@@ -22,7 +22,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 
 
-
+/**
+ * @brief Dialogue permettant à l'utilisateur de voir et modifier les préférences du programme
+ */
 public class PreferencesDialog extends JPanel implements ActionListener{
 	
 	private Preferences preferences = Preferences.userRoot();
@@ -47,9 +49,6 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	final String close = "Fermer";
 
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5325511632318062715L;
 
 	public PreferencesDialog(MainWindow parent) {
@@ -154,22 +153,15 @@ public class PreferencesDialog extends JPanel implements ActionListener{
         add(buttonsPanel);
 	    	    
 	}
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from
-     * the event dispatch thread.
-     */
+
 	 public static void createAndShowGUI(MainWindow parent) {
-	        //Create and set up the window.
 	        frame = new JFrame("Configuration");
 	        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	        
 			frame.setIconImage((new ImageIcon("icons/cheese.png")).getImage());
-	         
-	        //Add content to the window.
+
 	        frame.add(new PreferencesDialog(parent), BorderLayout.CENTER);
-	        frame.setPreferredSize(new Dimension(400,300)) ;
-	        //Display the window.
+	        frame.setPreferredSize(new Dimension(400,300));
 	        frame.pack();
 			frame.setLocationRelativeTo(null);
 	        frame.setVisible(true);
