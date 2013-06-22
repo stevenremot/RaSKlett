@@ -39,8 +39,9 @@ public class CompilerTest {
 		
 		CompilerCallback callback = new CompilerCallback() {
 			public void onResult(String result, int line, int position, boolean finished) {
-				assertTrue(finished);
-				assertEquals("I K", result);
+				if(finished) {
+					assertEquals("I K", result);
+				}
 			}
 			
 			public void onFailure(CompilerException e) {
@@ -173,7 +174,9 @@ public class CompilerTest {
 
 			@Override
 			public void onResult(String reducedGraph, int line, int position, boolean finished) {
-				assertEquals(":= $f ( lambda+++ $x * 2 $x", reducedGraph);
+				if(finished) {
+					assertEquals(":= $f ( lambda++++ $x * 2 $x )", reducedGraph);
+				}
 			}
 
 			@Override
