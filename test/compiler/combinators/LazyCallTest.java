@@ -21,7 +21,9 @@ public class LazyCallTest {
 		
 		Registry reg = new Registry();
 		reg.setNode(n);
-		
+
+        CombinatorManager.reset();
+
 		assertFalse(lazy.applyReduction(reg));
 	}
 	
@@ -32,7 +34,8 @@ public class LazyCallTest {
 		final Node f = new Node(
 				NodeFieldFactory.create(new S()),
 				NodeFieldFactory.create(new K()));
-		
+
+		CombinatorManager.reset();
 		CombinatorManager.getInstance().addCombinator(new Combinator() {
 
 			@Override
