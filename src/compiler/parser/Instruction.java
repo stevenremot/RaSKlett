@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class Instruction {
 	private int numberL = 0;
 	private int numberI = 0;
+    private int lastLine = 0;
 
 	private ArrayList<String> contentStrings = new ArrayList<String>();
 
@@ -21,6 +22,14 @@ public class Instruction {
 	public void setLine(int numberL) {
 		this.numberL = numberL;
 	}
+
+    public int getLastLine() {
+        return lastLine;
+    }
+
+    public void setLastLine(int lastLine) {
+        this.lastLine = lastLine;
+    }
 
 	public int getPosition() {
 		return numberI;

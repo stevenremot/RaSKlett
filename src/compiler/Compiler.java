@@ -61,7 +61,7 @@ public class Compiler {
 			currentInstruction = new Instruction();
 		}
 		
-		callback.onResult(getResult(), currentInstruction.getLine(),
+		callback.onResult(getResult(), currentInstruction.getLastLine(),
 				currentInstruction.getPosition(), isFinished());
 	}
 	
@@ -88,7 +88,7 @@ public class Compiler {
 			graph = GraphFactory.create(currentInstruction.getInstruction());
 		}
 		catch(CompilerException e) {
-			e.setLine(currentInstruction.getLine());
+			e.setLine(currentInstruction.getLastLine());
 			e.setPosition(currentInstruction.getPosition());
 			
 			callback.onFailure(e);
@@ -148,7 +148,7 @@ public class Compiler {
 				sendResult();
 			}
 			catch(CompilerException e) {
-				e.setLine(currentInstruction.getLine());
+				e.setLine(currentInstruction.getLastLine());
 				e.setPosition(currentInstruction.getPosition());
 				
 				callback.onFailure(e);
@@ -173,7 +173,7 @@ public class Compiler {
 						t.instruction();
 					}
 					catch(CompilerException e) {
-						e.setLine(currentInstruction.getLine());
+						e.setLine(currentInstruction.getLastLine());
 						e.setPosition(currentInstruction.getPosition());
 						
 						callback.onFailure(e);
@@ -204,7 +204,7 @@ public class Compiler {
 						t.all();
 					}
 					catch(CompilerException e) {
-						e.setLine(currentInstruction.getLine());
+						e.setLine(currentInstruction.getLastLine());
 						e.setPosition(currentInstruction.getPosition());
 						
 						callback.onFailure(e);
