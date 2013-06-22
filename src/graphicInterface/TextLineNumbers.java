@@ -7,7 +7,11 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
 
+
 /**
+ *
+ * Classe affichant les numéros de lignes, récupéré de http://code.google.com/p/fluxocode/source/browse/Fluxo/src/com/renangomes/fluxo/fluxograma/TextLineNumber.java?r=6
+ *
  *  This class will display line numbers for a related text component. The text
  *  component must use the same line height for each line. TextLineNumber
  *  supports wrapped lines and will highlight the line number of the current
