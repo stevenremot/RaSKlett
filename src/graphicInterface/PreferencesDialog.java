@@ -30,8 +30,8 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	private ImageIcon textPreferences = null;
 	private ImageIcon combinatorPreferences = null;
     
-    private JComboBox<?> sizeList;
-    private JComboBox<?> fontList;
+    private JComboBox sizeList;
+    private JComboBox fontList;
     private JCheckBox lineNumbers;
     
     private static JFrame frame;
@@ -58,7 +58,7 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		JPanel textPanel = new JPanel(new GridLayout(0, 1));		
 	    
 		Object[] numbers = {6, 8, 9, 10, 11, 12, 14, 16, 18, 20};
-		sizeList = new JComboBox<Object>(numbers);
+		sizeList = new JComboBox(numbers);
 		sizeList.setEditable(true);
 		sizeList.setSelectedItem(preferences.getInt("textSize", 12));
 		sizeList.setMaximumSize(new Dimension(100,10));
@@ -69,7 +69,7 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		textPanel.add(sizePanel);
 		
 		Object[] fonts = {"Arial", "Calibri", "Comic Sans", "Courier", "Georgia", "Helvetica", "Script", "Times New Roman", "Verdana"};
-		fontList = new JComboBox<Object>(fonts);
+		fontList = new JComboBox(fonts);
 		fontList.setEditable(true);
 		fontList.setSelectedItem(preferences.get("textFont", "Calibri"));
 		fontList.setMaximumSize(new Dimension(100,10));
