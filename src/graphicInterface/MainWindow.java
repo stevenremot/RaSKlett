@@ -273,7 +273,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		return editor;
 	}
 	
-	public void initCompilationEnvironment() {
+	private void initCompilationEnvironment() {
 		offset = 0;
 		editor.disableEdition();
 		editor.setText(editor.getCleanedText());
@@ -282,12 +282,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 
 		String code = editor.getCleanedText();
-		System.out.println("code : "+code);
 		Reader reader = new StringReader(code);
 		compiler = new Compiler(reader,this);
 	}
 	
-	public void startCompilationStepByStep(){
+	private void startCompilationStepByStep(){
 		initCompilationEnvironment();
 
 		nextStep.setEnabled(true);
@@ -299,7 +298,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 	}
 
-	public void startCompilation(){
+    private void startCompilation(){
 		initCompilationEnvironment();
 
 		enableCompilation(false);
@@ -307,27 +306,27 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		enableCompilation(true);
 
 	}
-	
-	public void toNextStep() {
+
+    private void toNextStep() {
 		enableCompilation(false);
 		if(compiler != null)
 			compiler.reduceStep();
 		enableCompilation(true);
 
 	}
-	
-	public void toNextInstruction() {
+
+    private void toNextInstruction() {
 		compiler.reduceInstruction();
 	}
-	
-	public void toEnd() {
+
+    private void toEnd() {
 		compiler.reduceAll();
 		editor.enableEdition();
 		stop.setEnabled(false);
 		iStop.setEnabled(false);
 	}
 
-	public void stopCompilation(){
+    private void stopCompilation(){
 		
 		editor.enableEdition();
 		
@@ -347,8 +346,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 
 	}
-	
-	public void enableCompilation(boolean b)
+
+    private void enableCompilation(boolean b)
 	{
 		if(!b)
 			editor.disableEdition();
@@ -369,9 +368,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 		
 	}
-	
 
-	public class ControleurCompileAll implements ActionListener {
+
+    private class ControleurCompileAll implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			startCompilation();
@@ -379,29 +378,29 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	}
 
-	public class ControleurCompileStepByStep implements ActionListener {
+    private class ControleurCompileStepByStep implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			startCompilationStepByStep();
 		}
 
 	}
-	
-	public class ControleurToNextStep implements ActionListener {
+
+    private class ControleurToNextStep implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			toNextStep();
 		}
 	}
-	
-	public class ControleurToNextInstruction implements ActionListener {
+
+    private class ControleurToNextInstruction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			toNextInstruction();
 		}
 	}
-	
-	public class ControleurToEnd implements ActionListener {
+
+    private class ControleurToEnd implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			toEnd();
@@ -409,7 +408,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
 
-	public class ControleurStop implements ActionListener {
+    private class ControleurStop implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			stopCompilation();
@@ -418,7 +417,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
 
-	public class ControleurPreferences implements ActionListener {
+    private class ControleurPreferences implements ActionListener {
 
 		private MainWindow window;
 
@@ -432,11 +431,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 	}
 	/**
-	 * @brief Ouvre une boÃ®te de dialogue pour sÃ©lectionner le fichier Ã  ouvrir.
+	 * @brief Ouvre une boîte de dialogue pour sélectionner le fichier à  ouvrir.
 	 * @author lagrange
 	 *
 	 */
-	public class ControleurOpen implements ActionListener{
+    private class ControleurOpen implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -472,7 +471,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	}
 
-	public class ControleurCreate implements ActionListener{
+    private class ControleurCreate implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -518,7 +517,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	 * @author lagrange
 	 *
 	 */
-	public class ControleurSave implements ActionListener {
+    private class ControleurSave implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -548,8 +547,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			} 		
 		}
 	}
-	
-	public class ControleurManual implements ActionListener {
+
+    private class ControleurManual implements ActionListener {
 		private MainWindow parent;
 		
 		public ControleurManual(MainWindow parent) {
@@ -572,7 +571,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	 * @param position la  position de l'instruction au sein d'une ligne d'instructions. 
 	 * @return pos la position oÃ¹ l'on va insÃ©rer le texte
 	 */
-	public int getPos(int line, int position) {
+    private int getPos(int line, int position) {
 		String s = editor.getText();
 		// On transforme le code en un tableau de lignes.
 		String[] instructions = s.split("\n");
