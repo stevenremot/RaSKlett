@@ -303,15 +303,12 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		enableCompilation(false);
 		compiler.reduceAll();
-		enableCompilation(true);
 
 	}
 
     private void toNextStep() {
-		enableCompilation(false);
 		if(compiler != null)
 			compiler.reduceStep();
-		enableCompilation(true);
 
 	}
 
@@ -353,16 +350,16 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			editor.disableEdition();
 		else
 			editor.enableEdition();
-		if(compileStepByStep.isEnabled()) {
-			nextStep.setEnabled(b);
-			nextLine.setEnabled(b);
-			toEnd.setEnabled(b);
-			iNextStep.setEnabled(b);
-			iNextLine.setEnabled(b);
-			iToEnd.setEnabled(b);
-		}
-		iCompileAll.setEnabled(b);
-		compileAll.setEnabled(b);
+
+        nextStep.setEnabled(!b);
+        nextLine.setEnabled(!b);
+        toEnd.setEnabled(!b);
+        iNextStep.setEnabled(!b);
+        iNextLine.setEnabled(!b);
+        iToEnd.setEnabled(!b);
+		iCompileAll.setEnabled(!b);
+		compileAll.setEnabled(!b);
+
 		stop.setEnabled(!b);
 		iStop.setEnabled(!b);
 		
