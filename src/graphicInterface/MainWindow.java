@@ -551,13 +551,13 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		String s = editor.getText();
 		// On transforme le code en un tableau de lignes.
 		String[] instructions = s.split("\n");
-		int pos = 1;
+		int pos = 1 - position;
 
 		// line correspond au numéro de ligne AVANT l'insertion de résultats ou d'erreurs.
 		// L'offset prend en compte le décalage occasionné par les insertions précédentes de résultats de compilation.
 		// line correspond au numéro de ligne AVANT l'insertion de résultats ou d'erreurs.
 		// L'offset prend en compte le décalage occasionné par les insertions précédentes de résultats de compilation.
-		for(int i = 0; i < line + offset + position +1; i++) {
+		for(int i = 0; i < line + offset + 1; i++) {
 			pos += instructions[i].length();
 		}
 		
