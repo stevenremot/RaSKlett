@@ -60,11 +60,11 @@ public class Editor extends JTextPane {
 		String er = "\n"+s;
 		if(getText().length() > 0){
 			doc.insertString(position, er , error);
-			doc.insertString(position + er.length(), "\n", defaut);
+			doc.insertString(position + er.length(), " ", defaut);
 		}
 		else {
 			doc.insertString(doc.getLength(), s, error);
-			doc.insertString(doc.getLength(), "\n", defaut);
+			doc.insertString(doc.getLength(), " ", defaut);
 		}
 	}
 	
@@ -72,11 +72,11 @@ public class Editor extends JTextPane {
 		String res = "\n" + s;
 		if(getText().length() > 0) {
 			doc.insertString(position, "\n"+s, result);
-			doc.insertString(position + res.length(), "\n", defaut);
+			doc.insertString(position + res.length(), " ", defaut);
 		}
 		else {
 			doc.insertString(doc.getLength(), s, result);
-			doc.insertString(doc.getLength(), "\n", defaut);
+			doc.insertString(doc.getLength(), " ", defaut);
 		}
 
 	}
