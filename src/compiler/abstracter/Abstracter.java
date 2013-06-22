@@ -17,28 +17,12 @@ public class Abstracter {
 	
 	public Abstracter(Node expression, int level){
 		abstractedGraph = expression;
+		
 	}
 	
 	public Node getAbstractedGraph(){
+		abstractedGraph = findAbstracter(abstractedGraph);
 		return abstractedGraph;
-	}
-	
-	
-	public void abstractGraph(){
-	// lambda+	
-		
-		Node node = abstractedGraph;
-		
-		// parcours du graphe pour trouver la dernière expression à extraire
-		while(node.getArgument().getCombinator() != null && (node.getArgument().getCombinator() instanceof Lambda || node.getArgument().getCombinator() instanceof Var))
-			node = node.getNextNode();
-		
-		
-		if(node.getFunction().getCombinator() == null){
-			NodeField func = NodeFieldFactory.create(node.getFunction().getNode().getArgument().getCombinator());
-			NodeField arg = NodeFieldFactory.create(node.getArgument().getCombinator());
-		} 	
-		
 	}
 	
 	
