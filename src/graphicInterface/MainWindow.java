@@ -30,7 +30,6 @@ import compiler.config.ConfigManager;
 public class MainWindow extends JFrame implements CompilerCallback{
 
 	private Compiler compiler;
-	private Thread compilationThread;
 	
 	private String filename = null;
 	private String dir = null;
@@ -245,7 +244,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		Border border = BorderFactory.createTitledBorder("Native combinators");
 		combinatorPanel.setBorder(border);    
 
-		CombinatorPanel basic = new CombinatorPanel(combinators, "basic-combinators : ", ConfigManager.BASIC_COMBINATORS, true);
+		CombinatorPanel basic = new CombinatorPanel(combinators, "basic-combinators : ", ConfigManager.BASIC_COMBINATORS, false);
 		CombinatorPanel bool = new CombinatorPanel(combinatorsBool, "booleans : ", ConfigManager.BOOLEANS, false);
 		CombinatorPanel numbers = new CombinatorPanel(combinatorsNumbers, "numbers : ", ConfigManager.NUMBERS, false);
 		CombinatorPanel lists = new CombinatorPanel(combinatorsLists, "lists : ", ConfigManager.LISTS, false);
@@ -315,11 +314,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	
 	public void toNextInstruction() {
-		compilationThread = compiler.reduceInstruction();
+		compiler.reduceInstruction();
 	}
 	
 	public void toEnd() {
-		compilationThread = compiler.reduceAll();
+		compiler.reduceAll();
 		editor.enableEdition();
 		stop.setEnabled(false);
 		iStop.setEnabled(false);
