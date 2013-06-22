@@ -122,7 +122,7 @@ public class Compiler {
 	private synchronized void instruction() throws CompilerException {
 		interrupted = false;
 		do {
-			this.step();
+			step();
 			
 			try {
 				Thread.sleep(10);
