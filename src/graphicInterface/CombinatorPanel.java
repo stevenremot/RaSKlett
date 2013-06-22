@@ -74,10 +74,10 @@ public class CombinatorPanel extends JPanel{
 			manager.toggle(feature, enabled);
 			text.setEnabled(enabled);
 			if(enabled) {
-				button.setText("Disable");
+				button.setText("Désactiver");
 			}
 			else
-				button.setText("Enable");
+				button.setText("Activer");
 		}
 	}
 }

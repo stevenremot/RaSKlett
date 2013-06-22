@@ -42,9 +42,9 @@ public class PreferencesDialog extends JPanel implements ActionListener{
     private static JFrame frame;
 	
 	
-	final String apply = "Apply";
-	final String restore = "Restore";
-	final String close = "Close";
+	final String apply = "Appliquer";
+	final String restore = "Restorer";
+	final String close = "Fermer";
 
 
 	/**
@@ -69,7 +69,7 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		sizeList.setMaximumSize(new Dimension(100,10));
 		
 		JPanel sizePanel = new JPanel(new GridLayout(0, 1));
-		sizePanel.add(new JLabel("Change text size"));
+		sizePanel.add(new JLabel("Changer la taille du texte"));
 		sizePanel.add(sizeList);
 		textPanel.add(sizePanel);
 		
@@ -80,18 +80,18 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		fontList.setMaximumSize(new Dimension(100,10));
 		
 		JPanel fontPanel = new JPanel(new GridLayout(0, 1));
-		fontPanel.add(new JLabel("Change text font"));
+		fontPanel.add(new JLabel("Changer la police du texte"));
 		fontPanel.add(fontList);
 		textPanel.add(fontPanel);
 		
-		lineNumbers = new JCheckBox("Add line numbers");
+		lineNumbers = new JCheckBox("Montrer les numéros de ligne");
 		if (Boolean.valueOf(preferences.get("lineNumbers", "true"))) lineNumbers.setSelected(true);
 		textPanel.add(lineNumbers);
 		
 		textPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		
-	    tabbedPane.addTab("Text preferences", textPreferences, textPanel,
-                "Editor's text preferences");
+	    tabbedPane.addTab("Texte", textPreferences, textPanel,
+                "Les préférences du texte de l'éditeur");
 	    
 	     /*
 		JPanel combinatorsPanel = new JPanel(new GridLayout(1, 1));
@@ -111,7 +111,7 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 
         JPanel abstractionLevelPanel = new JPanel(new GridLayout(2, 1));
 
-        JLabel abstractionLevelLabel = new JLabel("Default abstraction level:");
+        JLabel abstractionLevelLabel = new JLabel("Niveau d'abstraction par défaut:");
 
         Integer[] abstractionLevels = {1, 2, 3, 4};
         abstractionLevelList = new JComboBox(abstractionLevels);
@@ -122,8 +122,8 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 
         compilerPanel.add(abstractionLevelPanel);
 
-        tabbedPane.addTab("Compiler settings", compilerPreferences, compilerPanel,
-                "Set the compiler's parameters");
+        tabbedPane.addTab("Compilateur", compilerPreferences, compilerPanel,
+                "Les paramètres du compilateur");
 
         //Add the tabbed pane to this panel.
         add(tabbedPane);
@@ -135,12 +135,12 @@ public class PreferencesDialog extends JPanel implements ActionListener{
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
 
-        JButton apply = new JButton("Apply");
+        JButton apply = new JButton("Appliquer");
         apply.setActionCommand("apply");
         apply.addActionListener(this);
         buttonsPanel.add(apply);
         
-        JButton reset = new JButton("Reset");
+        JButton reset = new JButton("Restaurer");
         reset.setActionCommand("reset");
         reset.addActionListener(this);
         buttonsPanel.add(reset);
@@ -161,7 +161,7 @@ public class PreferencesDialog extends JPanel implements ActionListener{
      */
 	 public static void createAndShowGUI(MainWindow parent) {
 	        //Create and set up the window.
-	        frame = new JFrame("TabbedPaneDemo");
+	        frame = new JFrame("Configuration");
 	        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	        
 			frame.setIconImage((new ImageIcon("icons/cheese.png")).getImage());

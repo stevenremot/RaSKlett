@@ -101,39 +101,39 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		
 		create = new JButton(new ImageIcon("icons/create.png"));
-		create.setToolTipText("Open a new file");
+		create.setToolTipText("Créer un nouveau fichier");
 		create.addActionListener(new ControleurCreate());
 
 		open = new JButton(new ImageIcon("icons/open.png"));
-		open.setToolTipText("Open an existing file");
+		open.setToolTipText("Ouvrir un fchier existant");
 		open.addActionListener(new ControleurOpen());
 
 		save = new JButton(new ImageIcon("icons/save.png"));
-		save.setToolTipText("Save the current file");
+		save.setToolTipText("Sauver le fichier courant");
 		save.addActionListener(new ControleurSave());
 
 		compileAll = new JButton(new ImageIcon("icons/compile.png"));
-		compileAll.setToolTipText("Compile all the code");
+		compileAll.setToolTipText("Compiler le code en entier");
 		compileAll.addActionListener(new ControleurCompileAll());
 
 		compileStepByStep = new JButton(new ImageIcon("icons/compile_sbs.png"));
-		compileStepByStep.setToolTipText("Compile the code step by step");
+		compileStepByStep.setToolTipText("Compiler le code pas-à-pas");
 		compileStepByStep.addActionListener(new ControleurCompileStepByStep());
 
 		nextStep = new JButton(new ImageIcon("icons/next.png"));
-		nextStep.setToolTipText("Compile next instruction");
+		nextStep.setToolTipText("Compiler l'étape");
 		nextStep.addActionListener(new ControleurToNextStep());
 
 		nextLine = new JButton(new ImageIcon("icons/next_line.png"));
-		nextLine.setToolTipText("Compile next line");
+		nextLine.setToolTipText("Compiler l'instruction");
 		nextLine.addActionListener(new ControleurToNextInstruction());
 
 		toEnd = new JButton(new ImageIcon("icons/to_end.png"));
-		toEnd.setToolTipText("Compile the rest of the code");
+		toEnd.setToolTipText("Compiler le reste du code");
 		toEnd.addActionListener(new ControleurCompileAll());
 
 		stop = new JButton(new ImageIcon("icons/stop.png"));	
-		stop.setToolTipText("Interrupt compilation");
+		stop.setToolTipText("Interrompre la compilation");
 		stop.addActionListener( new ControleurStop());
 		
 
@@ -160,19 +160,19 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		menuBar = new JMenuBar();
 
-		file = new JMenu("File");
+		file = new JMenu("Fichier");
 		file.setMnemonic(KeyEvent.VK_F);
 		file.getAccessibleContext().setAccessibleDescription(
-				"File menu");
+				"Fichier");
 		menuBar.add(file);
 
-		iOpen = new JMenuItem("Open");
+		iOpen = new JMenuItem("Ouvrir");
 		iOpen.addActionListener(new ControleurOpen());
 
-		iCreate = new JMenuItem("Create");
+		iCreate = new JMenuItem("Créer");
 		iCreate.addActionListener(new ControleurCreate());
 		
-		iSave = new JMenuItem("Save");
+		iSave = new JMenuItem("Sauver");
 		iSave.addActionListener(new ControleurSave());
 
 		file.add(iOpen);
@@ -182,20 +182,20 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		compilation = new JMenu("Compilation");
 		compilation.setMnemonic(KeyEvent.VK_C);
 		compilation.getAccessibleContext().setAccessibleDescription(
-				"Menu with compilation tools");
+				"Commandes de compilation");
 		menuBar.add(compilation);
 
-		iCompileAll = new JMenuItem("Compile all");
+		iCompileAll = new JMenuItem("Compiler tout le code");
 		iCompileAll.addActionListener(new ControleurCompileAll());
-		iCompileStepByStep = new JMenuItem("Compile step by step");
+		iCompileStepByStep = new JMenuItem("Compiler le code pas-à-pas");
 		iCompileStepByStep.addActionListener(new ControleurCompileStepByStep());
-		iNextStep = new JMenuItem("Compile next step");
+		iNextStep = new JMenuItem("Compiler l'étape");
         iNextStep.addActionListener(new ControleurToNextStep());
-		iNextLine = new JMenuItem("Compile next line");
+		iNextLine = new JMenuItem("Compiler l'instruction");
         iNextLine.addActionListener(new ControleurToNextInstruction());
-		iToEnd = new JMenuItem("Compile to end");
+		iToEnd = new JMenuItem("Compiler le reste du code");
         iToEnd.addActionListener(new ControleurToEnd());
-		iStop = new JMenuItem("Stop compilation");
+		iStop = new JMenuItem("Interrompre la compilation");
 		iStop.addActionListener(new ControleurStop());
 
 		iNextStep.setEnabled(false);
@@ -210,24 +210,24 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		compilation.add(iToEnd);
 		compilation.add(iStop);
 
-		tools = new JMenu("Tools");
+		tools = new JMenu("Outils");
 		tools.setMnemonic(KeyEvent.VK_T);
 		tools.getAccessibleContext().setAccessibleDescription(
-				"Tools menu");
+				"Menu des outils");
 		menuBar.add(tools);
 
-		iPreferences = new JMenuItem("Preferences");
+		iPreferences = new JMenuItem("Préférences");
 		iPreferences.addActionListener(new ControleurPreferences(this));
 
 		tools.add(iPreferences);	
 
-		help = new JMenu("Help");
+		help = new JMenu("Aide");
 		help.setMnemonic(KeyEvent.VK_H);
 		help.getAccessibleContext().setAccessibleDescription(
-				"Help menu");
+				"Menu d'aide");
 		menuBar.add(help);
 
-		iHelp = new JMenuItem("Help");
+		iHelp = new JMenuItem("Manuel");
 		iHelp.addActionListener(new ControleurManual(this));
 
 		help.add(iHelp);
@@ -245,13 +245,13 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
 		combinatorPanel.setPreferredSize(new Dimension(170,0));
 
-		Border border = BorderFactory.createTitledBorder("Native combinators");
+		Border border = BorderFactory.createTitledBorder("Combinateurs natifs");
 		combinatorPanel.setBorder(border);    
 
-		CombinatorPanel basic = new CombinatorPanel(combinators, "basic-combinators : ", ConfigManager.BASIC_COMBINATORS, false);
-		CombinatorPanel bool = new CombinatorPanel(combinatorsBool, "booleans : ", ConfigManager.BOOLEANS, false);
-		CombinatorPanel numbers = new CombinatorPanel(combinatorsNumbers, "numbers : ", ConfigManager.NUMBERS, false);
-		CombinatorPanel lists = new CombinatorPanel(combinatorsLists, "lists : ", ConfigManager.LISTS, false);
+		CombinatorPanel basic = new CombinatorPanel(combinators, "Basiques : ", ConfigManager.BASIC_COMBINATORS, false);
+		CombinatorPanel bool = new CombinatorPanel(combinatorsBool, "Booléens : ", ConfigManager.BOOLEANS, false);
+		CombinatorPanel numbers = new CombinatorPanel(combinatorsNumbers, "Nombres : ", ConfigManager.NUMBERS, false);
+		CombinatorPanel lists = new CombinatorPanel(combinatorsLists, "Listes : ", ConfigManager.LISTS, false);
 		combinatorPanel.add(basic);
 		combinatorPanel.add(bool);
 		combinatorPanel.add(numbers);
@@ -554,7 +554,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
-				new DocViewerDialog(parent, "data/manuel.html", "User manual");
+				new DocViewerDialog(parent, "data/manuel.html", "Manuel d'utilisation");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
