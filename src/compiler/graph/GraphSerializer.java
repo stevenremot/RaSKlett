@@ -12,12 +12,8 @@ public abstract class GraphSerializer {
 	 */
 	public static String serialize(Node graph) {
 		String ret = "";
-		
-		// On a une expresssion a M1 M2 ..., on se place au a
-		Node root = graph;
-		while(root.getFunction().getNode() != null) {
-			root = root.getFunction().getNode();
-		}
+
+		Node root = graph.getRoot();
 		
 		// On écrit la fonction
 		ret += root.getFunction().getCombinator().getName();
