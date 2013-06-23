@@ -23,7 +23,7 @@ import javax.swing.border.EmptyBorder;
 
 
 /**
- * @brief Dialogue permettant à l'utilisateur de voir et modifier les préférences du programme
+ * Dialogue permettant à l'utilisateur de voir et modifier les préférences du programme
  */
 public class PreferencesDialog extends JPanel implements ActionListener{
 	
@@ -150,11 +150,11 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	    
 
 	public void actionPerformed(ActionEvent e) {
-		if("apply".equals(e.getActionCommand())) {
+		if("apply".equals(e.getActionCommand()) || "close".equals(e.getActionCommand())) {
 
 	        preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
 			preferences.put("textFont", (String) fontList.getSelectedItem());
-	        preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
+	        preferences.put("lineNumbers", Boolean.toString(lineNumbers.isSelected()));
 
 			if (lineNumbers.isSelected())
                 parent.getPanneauText().setRowHeaderView( parent.getLineNumbers() );
@@ -163,9 +163,11 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 
 			parent.getEditor().update();
 
-            ConfigManager.getInstance().setDefaultAbstractionLevel(((Integer)abstractionLevelList.getSelectedItem()).intValue());
+            ConfigManager.getInstance().setDefaultAbstractionLevel(((Integer)abstractionLevelList.getSelectedItem()));
 			
-		} else if ("close".equals(e.getActionCommand())) {
+		}
+
+        if ("close".equals(e.getActionCommand())) {
 		      frame.dispose();
 	    }
 		else if ("reset".equals(e.getActionCommand())) {
@@ -175,6 +177,8 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	        fontList.setSelectedItem("Calibri");
 	        preferences.put("lineNumbers", "true");
 	        lineNumbers.setSelected(true);
+            abstractionLevelList.setSelectedIndex(3);
+            ConfigManager.getInstance().setDefaultAbstractionLevel(4);
 			parent.getEditor().update();
 		}
 	}
