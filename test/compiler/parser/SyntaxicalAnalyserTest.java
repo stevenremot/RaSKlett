@@ -308,16 +308,17 @@ public class SyntaxicalAnalyserTest {
 		
 		ArrayList<String> symbols = ins.getInstruction();
 		
-		assertEquals(9, symbols.size());
-		assertEquals("(", symbols.get(0));
-		assertEquals("lambda++", symbols.get(1));
-		assertEquals("$x", symbols.get(2));
-		assertEquals("(", symbols.get(3));
-		assertEquals("vec", symbols.get(4));
-		assertEquals("a", symbols.get(5));
-		assertEquals("$x", symbols.get(6));
-		assertEquals(")", symbols.get(7));
+		assertEquals(10, symbols.size());
+        assertEquals("I", symbols.get(0));
+        assertEquals("(", symbols.get(1));
+		assertEquals("lambda++", symbols.get(2));
+		assertEquals("$x", symbols.get(3));
+		assertEquals("(", symbols.get(4));
+		assertEquals("vec", symbols.get(5));
+		assertEquals("a", symbols.get(6));
+		assertEquals("$x", symbols.get(7));
 		assertEquals(")", symbols.get(8));
+		assertEquals(")", symbols.get(9));
 	}
 	
 	@Test

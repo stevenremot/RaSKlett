@@ -150,6 +150,11 @@ public class Compiler {
 		if(!finished) {
 			try {
 				step();
+
+                if(lineFinished) {
+                    registerNextInstruction();
+                }
+
 				sendResult();
 			}
 			catch(CompilerException e) {
