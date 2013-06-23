@@ -135,14 +135,14 @@ public class Abstracter {
 				
 				if(root.getNextNode() == null){
 					root.setFunction(NodeFieldFactory.create(cmanager.get("K")));
-					return root;
+					return root.getLastNode();
 				}
 				
 				root.getNextNode().setFunction(root.getArgument());
 				root = root.getNextNode();
 				
 				Node newNode = new Node(NodeFieldFactory.create(cmanager.get("K")),NodeFieldFactory.create(lastNode));
-				return newNode;
+				return newNode.getLastNode();
 			}
 			
 			if(currentNode.equals(lastNode)){
@@ -153,7 +153,7 @@ public class Abstracter {
 				lastNode.setFunction(NodeFieldFactory.create(firstNode));
 				firstNode.setNextNode(lastNode);
 				
-				return firstNode;
+				return firstNode.getLastNode();
 			}
 			
 			Node nextNode = currentNode.getNextNode();
@@ -172,7 +172,7 @@ public class Abstracter {
 			
 			new Node(NodeFieldFactory.create(newNode),NodeFieldFactory.create(kNode));
 			
-			return newNode;
+			return newNode.getLastNode();
 			
 		}
 		
@@ -211,7 +211,7 @@ public class Abstracter {
 					parNode.setArgument(NodeFieldFactory.create(lastNode));
 				}
 				
-				return newNode;
+				return newNode.getLastNode();
 			}
 				
 		}
@@ -225,7 +225,7 @@ public class Abstracter {
 			lastNode.setFunction(NodeFieldFactory.create(firstNode));
 			firstNode.setNextNode(lastNode);
 			
-			return firstNode;
+			return firstNode.getLastNode();
 			
 		}
 		
@@ -237,7 +237,7 @@ public class Abstracter {
 			lastNode.setFunction(NodeFieldFactory.create(firstNode));
 			firstNode.setNextNode(lastNode);
 			
-			return firstNode;
+			return firstNode.getLastNode();
 		}
 		
 		
