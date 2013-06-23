@@ -165,7 +165,6 @@ public class SyntaxicalAnalyser {
 		
 		String funcName = definitionHead.pop();
 		result.add("$" + funcName);
-		result.add("(");
 
 		
 		setCurrentSymbolIndex(defSymbolIndex);
@@ -179,20 +178,22 @@ public class SyntaxicalAnalyser {
 			
 			while(!definitionHead.isEmpty()) {
 				String var = definitionHead.pop();
+                result.add("I");
+                result.add("(");
 				result.add("lambda");
 				result.add("$" + var);
 				varNames.add(var);
 			}
 			
 			ArrayList<String> expr = new ArrayList<String>();
-			
+
 			for(String symbol: parseEvaluable()) {
 				if(symbol.equals(funcName)) {
 					expr.add("@" + symbol);
 				}
 				else {
 					boolean wasVarName = false;
-					
+
 					for(String varName: varNames) {
 						if(symbol.equals(varName)) {
 							expr.add("$" + symbol);
@@ -200,7 +201,7 @@ public class SyntaxicalAnalyser {
 							break;
 						}
 					}
-					
+
 					if(!wasVarName) {
 						expr.add(symbol);
 					}
@@ -210,6 +211,10 @@ public class SyntaxicalAnalyser {
             // Rajout d'une garde I, voir parseLambda
             result.add("I");
             result.addAll(wrapInParenthesis(expr));
+
+            for(int i=0; i < varNames.size(); i++) {
+                result.add(")");
+            }
 		}
 		else {
 			ArrayList<String> expr = new ArrayList<String>();
@@ -225,8 +230,6 @@ public class SyntaxicalAnalyser {
 			
 			result.addAll(expr);
 		}
-		
-		result.add(")");
 		
 		return result;
 	}
@@ -406,12 +409,12 @@ public class SyntaxicalAnalyser {
 		if(!nextSymbol()) {
 			error("Expression d'abstraction mal formée, il manque l'expression à abstraire après le point");
 		}
-		
+
 		ArrayList<String> expr = new ArrayList<String>();
-		
+
 		for(String symbol: parseEvaluable()) {
 			boolean wasVar = false;
-			
+
 			for(String varName: varNames) {
 				if(symbol.equals(varName)) {
 					expr.add("$" + symbol);
@@ -419,7 +422,7 @@ public class SyntaxicalAnalyser {
 					break;
 				}
 			}
-			
+
 			if(!wasVar) {
 				expr.add(symbol);
 			}
@@ -430,7 +433,7 @@ public class SyntaxicalAnalyser {
         // En rajoutant I, on garde les parenthèses.
         result.add("I");
 		result.add("(");
-		
+
 		for(String varName: varNames) {
 			result.add(lambdaName);
 			result.add("$" + varName);
@@ -440,9 +443,9 @@ public class SyntaxicalAnalyser {
         // les parnethèses au début
         result.add("I");
         result.addAll(wrapInParenthesis(expr));
-		
+
 		result.add(")");
-		
+
 		return result;
 	}
 	
@@ -515,7 +518,7 @@ public class SyntaxicalAnalyser {
                 index++;
             }
 
-            if(count == 0) {
+            if(index == expr.size()) {
                 return expr;
             }
         }
