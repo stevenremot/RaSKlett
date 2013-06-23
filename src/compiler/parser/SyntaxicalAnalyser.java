@@ -467,7 +467,7 @@ public class SyntaxicalAnalyser {
 		nextSymbol();
 		
 		ArrayList<String> thenClause = parseEvaluable();
-		
+
 		result.addAll(wrapInParenthesis(thenClause));
 		
 		if(!currentSymbol.equals("else")) {
@@ -475,7 +475,7 @@ public class SyntaxicalAnalyser {
 		}
 		
 		nextSymbol();
-		
+
 		ArrayList<String> elseClause = parseEvaluable();
 		
 		result.addAll(wrapInParenthesis(elseClause));
