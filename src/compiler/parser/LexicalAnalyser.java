@@ -3,15 +3,16 @@ package compiler.parser;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import compiler.CompilerException;
 
 /**
- * @breif Classe d'analyse lexicale
+ * Classe d'analyse lexicale
  * 
  * Renvoie les instructions contenant les différents symboles du code.
  * 
- * @author remot
+ * @author qchen
  *
  */
 class LexicalAnalyser {
@@ -31,10 +32,8 @@ class LexicalAnalyser {
 		operators = new ArrayList<String>();
 		
 		String[] ops = {"+", "++", "+++", "++++", "-", "*", "/", "||", "&&", "!", "=", "!=", "<", ">", "<=", ">=", ":="};
-		
-		for(String op:ops) {
-			operators.add(op);
-		}
+
+        Collections.addAll(operators, ops);
 	}
 	
 	public LexicalAnalyser(Reader input) throws CompilerException {

@@ -62,7 +62,7 @@ public class Definition implements Combinator {
 
 			@Override
 			public Node getGraph() {
-				return graph.copy();
+				return graph.copy().getLastNode();
 			}
 
 			@Override
@@ -72,7 +72,7 @@ public class Definition implements Combinator {
 			}
 		});
 		
-		// On a pu finir, mais le définition a "mangé tout le reste de l'instruction.
+		// On a pu finir, mais la définition a "mangé tout le reste de l'instruction.
 		return false;
 	}
 

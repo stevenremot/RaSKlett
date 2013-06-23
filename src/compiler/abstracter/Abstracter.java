@@ -6,7 +6,7 @@ import compiler.combinators.Lambda;
 import compiler.combinators.Var;
 
 /**
- * @brief classe réalisant l'abstraction d'une expression
+ * Classe réalisant l'abstraction d'une expression
  * @author kazmiero
  *
  */
@@ -15,13 +15,13 @@ public class Abstracter {
 	
 	private Node abstractedGraph;
 	
-	public Abstracter(Node expression, int level){
+	public Abstracter(Node expression){
 		abstractedGraph = expression;
 		
 	}
 	
 	/**
-	 * @brief réalise l'abstraction de l'ensemble du graphe puis le renvoie
+	 * Réalise l'abstraction de l'ensemble du graphe puis le renvoie
 	 * @return graphe après abstraction
 	 */
 	public Node getAbstractedGraph(){
@@ -31,9 +31,8 @@ public class Abstracter {
 	
 	
 	/**
-	 * @brief cherche des abstracters dans le graphe à partir de la fin de l'expression (associativité à gauche) et réalise les abstractions correspondantes
+	 * Cherche des abstracters dans le graphe à partir de la fin de l'expression (associativité à gauche) et réalise les abstractions correspondantes
 	 * Il est important que les abstractions les plus profondes dans le graphe soient effectuées en premier.
-	 * @param expression
 	 * @return graphe après abstraction
 	 */
 	public Node findAbstracter(Node expression){
@@ -84,18 +83,15 @@ public class Abstracter {
 			Node abstractedArgument = findAbstracter(node.getArgument().getNode()); 
 			node.setArgument(NodeFieldFactory.create(abstractedArgument));
 		}
-		
+
 		return node.getLastNode();
 		
 	}
 	
 	/**
-	 * @brief réalise l'abstraction du graphe donné par 'expression', au niveau (nombre de +) 'level', pour la variable 'var'
+	 * Réalise l'abstraction du graphe donné par 'expression', au niveau (nombre de +) 'level', pour la variable 'var'
 	 * la fonction findAbstracter assure qu'il s'agit d'une abstraction simple (à une seule variable)
 	 * Les abstractions lambda+, lambda++ et lambda+++ sont implémentées.
-	 * @param expression
-	 * @param level
-	 * @param var
 	 * @return expression abstraite
 	 */
 	public Node abstraction(Node expression, int level, Var var){
@@ -174,7 +170,7 @@ public class Abstracter {
 		*/
 		
 		//règle lambda+++x . F = K F
-		if(level >= 3 && (lastNode.getArgument().getCombinator() == null || lastNode.getArgument().getCombinator() != null && !lastNode.getArgument().getCombinator().equals(var))){
+		if(level >= 3 && (lastNode.getArgument().getCombinator() == null || !lastNode.getArgument().getCombinator().equals(var))){
 			
 			currentNode = searchVariable(lastNode,var);
 			
@@ -186,7 +182,6 @@ public class Abstracter {
 				}
 				
 				root.getNextNode().setFunction(root.getArgument());
-				root = root.getNextNode();
 				
 				Node newNode = new Node(NodeFieldFactory.create(cmanager.get("K")),NodeFieldFactory.create(lastNode));
 				return newNode.getLastNode();
@@ -251,7 +246,7 @@ public class Abstracter {
 				
 				Node parNode;
 				if(currentNode.equals(lastNode))
-					parNode = new Node(NodeFieldFactory.create(newNode),NodeFieldFactory.create(currentNode.getArgument().getCombinator()));
+					new Node(NodeFieldFactory.create(newNode),NodeFieldFactory.create(currentNode.getArgument().getCombinator()));
 				else {
 					parNode = new Node(NodeFieldFactory.create(newNode));
 					currentNode.getNextNode().setFunction(currentNode.getArgument());
@@ -291,12 +286,9 @@ public class Abstracter {
 	}
 	
 	/**
-	 * @brief réalise l'abstraction (lambda+) d'un NodeField.
+	 * Réalise l'abstraction (lambda+) d'un NodeField.
 	 * En cas de NodeNodeField (parenthèses), demande l'astraction du Node correspondant.
-	 *  
-	 * @param nf
-	 * @param level
-	 * @param var
+	 *
 	 * @return abstracted NodeField
 	 */
 	private NodeField abstractNodeField(NodeField nf, int level, Var var){
@@ -322,10 +314,9 @@ public class Abstracter {
 	
 	
 	/**
-	 * @brief parcourt le graphe à l'envers jusqu'à ce que la variable soit trouvée.
+	 * Parcourt le graphe à l'envers jusqu'à ce que la variable soit trouvée.
 	 * Utile pour lambda+ et lambda++
-	 * @param start
-	 * @param var
+	 *
 	 * @return premier Node contenant var. null si var n'a pas été trouvée
 	 */
 	public Node searchVariable(Node start, Var var){

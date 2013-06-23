@@ -39,7 +39,7 @@ public class AbstracterTest {
 		Node second = new Node(NodeFieldFactory.create(root),NodeFieldFactory.create(K));
 		root.setNextNode(second);
 		
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.abstraction(root,1,var);
 		String ret = GraphSerializer.serialize(result);
 		
@@ -58,7 +58,7 @@ public class AbstracterTest {
 		Node child = new Node(NodeFieldFactory.create(var),NodeFieldFactory.create(K));
 		Node root = new Node(NodeFieldFactory.create(S),NodeFieldFactory.create(child));
 		
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.abstraction(root,1,var);
 		String ret = GraphSerializer.serialize(result);
 		
@@ -90,7 +90,7 @@ public class AbstracterTest {
 		childRoot.setNextNode(child);
 		Node root = new Node(NodeFieldFactory.create(S),NodeFieldFactory.create(child));
 		
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.abstraction(root,1,var);
 		String ret = GraphSerializer.serialize(result);
 		
@@ -113,7 +113,7 @@ public class AbstracterTest {
 		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(child));
 		second.setNextNode(third);
 		
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.findAbstracter(root);
 		String ret = GraphSerializer.serialize(result);
 		
@@ -135,7 +135,7 @@ public class AbstracterTest {
 		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(var));
 		third.setNextNode(fourth);
 		
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.findAbstracter(root);
 		String ret = GraphSerializer.serialize(result);
 		
@@ -151,9 +151,9 @@ public class AbstracterTest {
 		Node root = new Node(NodeFieldFactory.create(K), NodeFieldFactory.create(K));
 		Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(var));
 		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(K));
-		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(var));
+		new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(var));
 		
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.searchVariable(third,var);
 		assertEquals(result,second);
 		
@@ -184,7 +184,7 @@ public class AbstracterTest {
 		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(K));
 		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(var));
 		
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.findAbstracter(fourth);
 		String ret = GraphSerializer.serialize(result);
 		assertEquals(ret,"S K");
@@ -216,7 +216,7 @@ public class AbstracterTest {
 		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(var));
 		Node fifth = new Node(NodeFieldFactory.create(fourth), NodeFieldFactory.create(K));
 		
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.findAbstracter(fifth);
 		String ret = GraphSerializer.serialize(result);
 		assertEquals(ret,"S ( S K ) ( K K )");
@@ -238,7 +238,7 @@ public class AbstracterTest {
 		Node fifth = new Node(NodeFieldFactory.create(fourth), NodeFieldFactory.create(K));
 		Node sixth = new Node(NodeFieldFactory.create(fifth), NodeFieldFactory.create(var));
 		
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.findAbstracter(sixth);
 		String ret = GraphSerializer.serialize(result);
 		assertEquals(ret,"S K ( K K )");
@@ -260,7 +260,7 @@ public class AbstracterTest {
 		Node child = new Node(NodeFieldFactory.create(K), NodeFieldFactory.create(var));
 		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(child));
 		
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.findAbstracter(third);
 		String ret = GraphSerializer.serialize(result);
 		assertEquals(ret,"S ( K S ) K");
@@ -281,7 +281,7 @@ public class AbstracterTest {
 		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(S));
 		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(K));
 		
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.findAbstracter(fourth);
 		String ret = GraphSerializer.serialize(result);
 		assertEquals(ret,"S I ( K ( S K ) )");
@@ -303,7 +303,7 @@ public void lambda3PlusTest2(){
 		Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(S));
 		Node fourth = new Node(NodeFieldFactory.create(third), NodeFieldFactory.create(K));
 	
-		Abstracter ab = new Abstracter(root,1);
+		Abstracter ab = new Abstracter(root);
 		Node result = ab.findAbstracter(fourth);
 		String ret = GraphSerializer.serialize(result);
 		assertEquals(ret,"K ( S S K )");
@@ -324,7 +324,7 @@ public void debugTest(){
 	Node child = new Node(NodeFieldFactory.create(childRoot), NodeFieldFactory.create(K));
 	Node root = new Node(NodeFieldFactory.create(I), NodeFieldFactory.create(child));
 	
-	Abstracter ab = new Abstracter(root,1);
+	Abstracter ab = new Abstracter(root);
 	Node result = ab.getAbstractedGraph();
 	String ret = GraphSerializer.serialize(result);
 	assertEquals(ret,"I ( K K )");

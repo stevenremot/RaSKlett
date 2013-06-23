@@ -2,6 +2,7 @@ package compiler.parser;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +14,7 @@ import compiler.CompilerException;
  * 
  * Transforme les suites de symboles du langage en suite de noms de combinateurs
  * 
- * @author remot
+ * @author qchen
  *
  */
 public class SyntaxicalAnalyser {
@@ -248,8 +249,8 @@ public class SyntaxicalAnalyser {
 	private ArrayList<String> parseEvaluable() throws CompilerException {
 		ArrayList<String> result = new ArrayList<String>();
 		
-		Stack<Integer> operandsPosition = new Stack<Integer>(); 
-		
+		Stack<Integer> operandsPosition = new Stack<Integer>();
+
 		do {
 			operandsPosition.push(result.size());
 			
@@ -264,6 +265,7 @@ public class SyntaxicalAnalyser {
 			}
 			else if(currentSymbol.equals("if")) {
 				result.addAll(parseCondition());
+                break;
 			}
 			else if(currentSymbol.equals("lambda")) {
 					result.addAll(parseLambda());
@@ -279,7 +281,8 @@ public class SyntaxicalAnalyser {
 					error("Opérateur " + currentSymbolIndex + "n'a pas d'opérande gauche");
 				}
 				
-				result.add(operandsPosition.peek(), currentSymbol);
+				parseOperator(result, operandsPosition.peek());
+                break;
 			}
 			
 		} while(nextSymbol());
@@ -313,7 +316,19 @@ public class SyntaxicalAnalyser {
 		
 		return result;
 	}
-	
+
+    private void parseOperator(List<String> expression, int firstOperandPos) throws CompilerException {
+        expression.add(firstOperandPos, currentSymbol);
+        expression.add(firstOperandPos, "(");
+
+        if(!nextSymbol()) {
+            throw new CompilerException("Opérateur " + currentSymbol + " doit avoir une deuxième opérande");
+        }
+
+        expression.addAll(parseEvaluable());
+        expression.add(")");
+    }
+
 	private ArrayList<String> parseVector() throws CompilerException {
 		ArrayList<String> result = new ArrayList<String>();
 		

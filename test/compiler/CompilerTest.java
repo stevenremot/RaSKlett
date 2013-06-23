@@ -202,7 +202,7 @@ public class CompilerTest {
 			@Override
 			public void onResult(String reducedGraph, int line, int position, boolean finished) {
 				if(finished) {
-					assertEquals(":= $f ( lambda++++ $x * 2 $x )", reducedGraph);
+					assertEquals(":= $f (  * 2 )", reducedGraph);
 				}
 			}
 

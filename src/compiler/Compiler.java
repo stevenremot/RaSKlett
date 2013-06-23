@@ -98,7 +98,7 @@ public class Compiler {
 		try {
 			graph = GraphFactory.create(currentInstruction.getInstruction());
 
-            Abstracter ab = new Abstracter(graph, 1);
+            Abstracter ab = new Abstracter(graph.getRoot());
             graph = ab.getAbstractedGraph();
 		}
 		catch(CompilerException e) {
@@ -150,7 +150,11 @@ public class Compiler {
 		if(!finished) {
 			try {
 				step();
-				finished = lineFinished;
+
+                if(lineFinished) {
+                    registerNextInstruction();
+                }
+
 				sendResult();
 			}
 			catch(CompilerException e) {
