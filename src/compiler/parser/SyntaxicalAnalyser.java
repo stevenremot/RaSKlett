@@ -206,8 +206,10 @@ public class SyntaxicalAnalyser {
 					}
 				}
 			}
-			
-			result.addAll(expr);
+
+            // Rajout d'une garde I, voir parseLambda
+            result.add("I");
+            result.addAll(wrapInParenthesis(expr));
 		}
 		else {
 			ArrayList<String> expr = new ArrayList<String>();
@@ -306,9 +308,7 @@ public class SyntaxicalAnalyser {
 		}
 		
 		ArrayList<String> result = new ArrayList<String>();
-		result.add("(");
-		result.addAll(parseEvaluable());
-		result.add(")");
+		result.addAll(wrapInParenthesis(parseEvaluable()));
 		
 		if(isAtEndOfSymbols() || !currentSymbol.equals(")")) {
 			error("Parenthèses non fermées");
@@ -435,8 +435,11 @@ public class SyntaxicalAnalyser {
 			result.add(lambdaName);
 			result.add("$" + varName);
 		}
-		
-		result.addAll(expr);
+
+        // ICI aussi on a besoin d'un I, car l'abstraction n'accepte pas
+        // les parnethèses au début
+        result.add("I");
+        result.addAll(wrapInParenthesis(expr));
 		
 		result.add(")");
 		
@@ -452,9 +455,7 @@ public class SyntaxicalAnalyser {
 		
 		ArrayList<String> condition = parseEvaluable();
 		
-		result.add("(");
-		result.addAll(condition);
-		result.add(")");
+		result.addAll(wrapInParenthesis(condition));
 		
 		if(!currentSymbol.equals("then")) {
 			error("La condition d'un 'if' doit être suivie d'une clause then");
@@ -464,9 +465,7 @@ public class SyntaxicalAnalyser {
 		
 		ArrayList<String> thenClause = parseEvaluable();
 		
-		result.add("(");
-		result.addAll(thenClause);
-		result.add(")");
+		result.addAll(wrapInParenthesis(thenClause));
 		
 		if(!currentSymbol.equals("else")) {
 			error("La clause then d'un if doit être suivie d'une clause else");
@@ -476,9 +475,7 @@ public class SyntaxicalAnalyser {
 		
 		ArrayList<String> elseClause = parseEvaluable();
 		
-		result.add("(");
-		result.addAll(elseClause);
-		result.add(")");
+		result.addAll(wrapInParenthesis(elseClause));
 		
 		return result;
 	}
@@ -498,5 +495,36 @@ public class SyntaxicalAnalyser {
 		}
 		return false;
 	}
+
+    private ArrayList<String> wrapInParenthesis(ArrayList<String> expr) {
+        if(expr.size() <= 1) {
+            return expr;
+        }
+
+        if(expr.get(0).equals("(")) {
+            int count = 1, index = 1;
+
+            while(count > 0 && index < expr.size()) {
+                if(expr.get(index).equals("(")) {
+                    count++;
+                }
+                else if(expr.get(index).equals(")")) {
+                    count--;
+                }
+
+                index++;
+            }
+
+            if(count == 0) {
+                return expr;
+            }
+        }
+
+        ArrayList<String> expr2 = new ArrayList<String>();
+        expr2.add("(");
+        expr2.addAll(expr);
+        expr2.add(")");
+        return expr2;
+    }
 
 }
