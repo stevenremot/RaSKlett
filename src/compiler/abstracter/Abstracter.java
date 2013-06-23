@@ -80,6 +80,11 @@ public class Abstracter {
 			node = abstractedGraph;
 		}
 		
+		else if(node.getArgument().getNode() != null){
+			Node abstractedArgument = findAbstracter(node.getArgument().getNode()); 
+			node.setArgument(NodeFieldFactory.create(abstractedArgument));
+		}
+		
 		return node.getLastNode();
 		
 	}

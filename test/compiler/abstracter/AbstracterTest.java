@@ -306,5 +306,24 @@ public void lambda3PlusTest2(){
 		
 		
 	}
+
+@Test
+public void debugTest(){
+	
+	// I ( lambda+ x . K )
+	Lambda lambda = new Lambda(3);
+	Var var = new Var("$x");
+	Combinator I = new DummyCombinator("I");
+	Combinator K = new DummyCombinator("K");
+	
+	Node childRoot = new Node(NodeFieldFactory.create(lambda), NodeFieldFactory.create(var));
+	Node child = new Node(NodeFieldFactory.create(childRoot), NodeFieldFactory.create(K));
+	Node root = new Node(NodeFieldFactory.create(I), NodeFieldFactory.create(child));
+	
+	Abstracter ab = new Abstracter(root,1);
+	Node result = ab.getAbstractedGraph();
+	String ret = GraphSerializer.serialize(result);
+	assertEquals(ret,"I ( K K )");
+}
 	
 }
