@@ -25,7 +25,7 @@ public class Abstracter {
 	 * @return graphe après abstraction
 	 */
 	public Node getAbstractedGraph(){
-		abstractedGraph = findAbstracter(abstractedGraph);
+		abstractedGraph = findAbstracter(abstractedGraph).getRoot();
 		return abstractedGraph;
 	}
 	
