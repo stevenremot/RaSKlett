@@ -100,9 +100,11 @@ class LexicalAnalyser {
 	}
 	
 	private void registerOperator() throws CompilerException {
+        String oldSymbol = "";
 		currentSymbol = "";
 		
 		do {
+            oldSymbol = currentSymbol;
 			currentSymbol += (char) currentChar;
 			
 			ArrayList<String> candidates = new ArrayList<String>();
@@ -125,6 +127,16 @@ class LexicalAnalyser {
 				return;
 			}
 		}
+
+        for(String op: operators) {
+            if(oldSymbol.equals(op)) {
+                String tmp = currentSymbol;
+                currentSymbol = oldSymbol;
+                registerSymbol();
+                currentSymbol = tmp.substring(tmp.length() - 1);
+                return;
+            }
+        }
 		
 		throw new CompilerException("Opérateur inconnu: " + currentSymbol, currentLine, currentPos);
 	}
