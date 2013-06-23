@@ -1,6 +1,7 @@
 package compiler.parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,7 +9,7 @@ import java.util.regex.Pattern;
 import compiler.CompilerException;
 
 /**
- * @brief Réalise l'analyse syntaxique du code en sortie de SemanticalAnalyser
+ * Réalise l'analyse syntaxique du code en sortie de SemanticalAnalyser
  * 
  * Transforme les suites de symboles du langage en suite de noms de combinateurs
  * 
@@ -29,12 +30,11 @@ public class SyntaxicalAnalyser {
 	
 	static {
 		operators = new ArrayList<String>();
+
 		String[] ops = {"+", "-", "*", "/", "&&", "||",
 				"<", ">", "<=", ">=", "=", "!="};
-		
-		for(String op: ops) {
-			operators.add(op);
-		}
+
+        Collections.addAll(operators, ops);
 	}
 	
 	public SyntaxicalAnalyser(ArrayList<Instruction> instructions) throws CompilerException {
@@ -70,11 +70,7 @@ public class SyntaxicalAnalyser {
 		
 		currentSymbolIndex = -1;
 		
-		if(!nextSymbol()) {
-			return nextInstruction();
-		}
-		
-		return true;
+		return nextSymbol() || nextInstruction();
 	}
 	
 	private boolean isAtEndOfSymbols() {
@@ -121,9 +117,8 @@ public class SyntaxicalAnalyser {
 		do {
 			if(currentSymbol.equals(":=")) {
 				isDefinition = true;
-				break;
 			}
-		} while(nextSymbol() && !isDefinition);
+		} while(!isDefinition && nextSymbol());
 		
 		ArrayList<String> expr;
 		
@@ -272,6 +267,7 @@ public class SyntaxicalAnalyser {
 			}
 			else if(currentSymbol.equals("lambda")) {
 					result.addAll(parseLambda());
+                    break;
 				}
 			else if(isName() || currentSymbol.equals("!")) {
 				result.add(currentSymbol);
