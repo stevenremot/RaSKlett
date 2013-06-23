@@ -409,7 +409,11 @@ public class SyntaxicalAnalyser {
 				expr.add(symbol);
 			}
 		}
-		
+
+        // Des parenthèses au début du code sont équivalentes à pas de pérenthèses, dans le graphe.
+        // c'est rpoblématique pour lambda  car l'abstraction s'effectue sur le graphe suivant lambda.
+        // En rajoutant I, on garde les parenthèses.
+        result.add("I");
 		result.add("(");
 		
 		for(String varName: varNames) {

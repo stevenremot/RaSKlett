@@ -3,6 +3,7 @@ package compiler;
 import java.io.Reader;
 import java.util.ArrayList;
 
+import compiler.abstracter.Abstracter;
 import compiler.parser.Parser;
 import compiler.parser.Instruction;
 import compiler.reducer.SKMachine;
@@ -96,6 +97,9 @@ public class Compiler {
 		
 		try {
 			graph = GraphFactory.create(currentInstruction.getInstruction());
+
+            Abstracter ab = new Abstracter(graph, 1);
+            graph = ab.getAbstractedGraph();
 		}
 		catch(CompilerException e) {
 			sendFailure(e, true);
