@@ -123,7 +123,7 @@ public class Abstracter {
 		
 		
 		//règle lambda+++x . F = K F
-		if(level >= 3 && (lastNode.getArgument().getCombinator() == null || lastNode.getArgument().getCombinator() != null && !lastNode.getArgument().getCombinator().equals(var))){
+		if(level >= 3 && (lastNode.getArgument().getCombinator() == null || !lastNode.getArgument().getCombinator().equals(var))){
 			
 			currentNode = searchVariable(lastNode,var);
 			
