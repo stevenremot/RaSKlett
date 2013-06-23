@@ -328,8 +328,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
     private void stopCompilation(){
-		
-		editor.enableEdition();
+
         inStepByStepCompilation = false;
 
         if(compiler != null) {
@@ -355,6 +354,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
         iNextStep.setEnabled(inStepByStepCompilation);
         iNextLine.setEnabled(inStepByStepCompilation);
         iToEnd.setEnabled(inStepByStepCompilation);
+
+        iCompileStepByStep.setEnabled(b);
+        compileStepByStep.setEnabled(b);
 
 		iCompileAll.setEnabled(b);
 		compileAll.setEnabled(b);
@@ -575,9 +577,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 				offset++;
 			}
 			else {
-				compileStepByStep.setEnabled(false);
 				stopCompilation();
-				compileStepByStep.setEnabled(true);
 			}
 		} catch (BadLocationException e) {
 			e.printStackTrace();

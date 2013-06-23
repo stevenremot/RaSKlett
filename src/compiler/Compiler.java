@@ -98,7 +98,7 @@ public class Compiler {
 		try {
 			graph = GraphFactory.create(currentInstruction.getInstruction());
 
-            Abstracter ab = new Abstracter(graph.getRoot(), 1);
+            Abstracter ab = new Abstracter(graph.getRoot());
             graph = ab.getAbstractedGraph();
 		}
 		catch(CompilerException e) {

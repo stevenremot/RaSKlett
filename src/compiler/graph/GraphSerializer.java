@@ -1,14 +1,14 @@
 package compiler.graph;
 
 /**
- * @brief Convertit un graphe en chîne de caractères
+ * Convertit un graphe en chîne de caractères
  * @author remot
  *
  */
 public abstract class GraphSerializer {
 	
 	/**
-	 * @brief Méthode de sérialisation de graphe
+	 * Méthode de sérialisation de graphe
 	 */
 	public static String serialize(Node graph) {
 		String ret = "";
