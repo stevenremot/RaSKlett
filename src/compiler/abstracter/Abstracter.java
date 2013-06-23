@@ -20,14 +20,19 @@ public class Abstracter {
 		
 	}
 	
+	/**
+	 * @brief réalise l'abstraction de l'ensemble du graphe puis le renvoie
+	 * @return graphe après abstraction
+	 */
 	public Node getAbstractedGraph(){
-		abstractedGraph = findAbstracter(abstractedGraph);
+		abstractedGraph = findAbstracter(abstractedGraph).getRoot();
 		return abstractedGraph;
 	}
 	
 	
 	/**
 	 * @brief cherche des abstracters dans le graphe à partir de la fin de l'expression (associativité à gauche) et réalise les abstractions correspondantes
+	 * Il est important que les abstractions les plus profondes dans le graphe soient effectuées en premier.
 	 * @param expression
 	 * @return graphe après abstraction
 	 */
@@ -79,6 +84,15 @@ public class Abstracter {
 		
 	}
 	
+	/**
+	 * @brief réalise l'abstraction du graphe donné par 'expression', au niveau (nombre de +) 'level', pour la variable 'var'
+	 * la fonction findAbstracter assure qu'il s'agit d'une abstraction simple (à une seule variable)
+	 * Les abstractions lambda+, lambda++ et lambda+++ sont implémentées.
+	 * @param expression
+	 * @param level
+	 * @param var
+	 * @return expression abstraite
+	 */
 	public Node abstraction(Node expression, int level, Var var){
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
@@ -99,7 +113,7 @@ public class Abstracter {
 		// un seul combinateur
 		if(lastNode.equals(root)){
 			
-			if(root.getArgument().getCombinator().equals(var))
+			if(root.getArgument().getCombinator() != null && root.getArgument().getCombinator().equals(var))
 				return new Node(NodeFieldFactory.create(cmanager.get("I")),NodeFieldFactory.create(cmanager.get("I")));
 			else
 				return new Node(NodeFieldFactory.create(cmanager.get("K")),NodeFieldFactory.create(root.getArgument().getCombinator()));
@@ -124,6 +138,17 @@ public class Abstracter {
 				
 				Node newNode = new Node(NodeFieldFactory.create(cmanager.get("K")),NodeFieldFactory.create(lastNode));
 				return newNode;
+			}
+			
+			if(currentNode.equals(lastNode)){
+				
+				lastNode.getFunction().getNode().setNextNode(null);
+				Node firstNode = new Node(nfS,abstractNodeField(lastNode.getFunction(),level,var));
+				lastNode.setArgument(abstractNodeField(lastNode.getArgument(),level,var));
+				lastNode.setFunction(NodeFieldFactory.create(firstNode));
+				firstNode.setNextNode(lastNode);
+				
+				return firstNode;
 			}
 			
 			Node nextNode = currentNode.getNextNode();
@@ -213,6 +238,15 @@ public class Abstracter {
 		
 	}
 	
+	/**
+	 * @brief réalise l'abstraction (lambda+) d'un NodeField.
+	 * En cas de NodeNodeField (parenthèses), demande l'astraction du Node correspondant.
+	 *  
+	 * @param nf
+	 * @param level
+	 * @param var
+	 * @return abstracted NodeField
+	 */
 	private NodeField abstractNodeField(NodeField nf, int level, Var var){
 
 		CombinatorManager cmanager = CombinatorManager.getInstance();
@@ -252,25 +286,17 @@ public class Abstracter {
 				if(searchVariable(node.getArgument().getNode(),var) != null)
 					return node;
 			
-			if(node.getArgument().getCombinator().equals(var))
+			if(node.getArgument().getCombinator() != null && node.getArgument().getCombinator().equals(var))
 				return node;
-					
+			
+			if(node.getFunction().getCombinator() != null && node.getFunction().getCombinator().equals(var))
+				return node;
+			
 			node = node.getFunction().getNode();
 		}
 		while(node != null);
 		// ici rien n'a été trouvé
 		return null;
-	}
-	
-	private void simplifyGraph(){
-		
-		CombinatorManager cmanager = CombinatorManager.getInstance();
-		Node root = abstractedGraph.getRoot();
-		
-		if(root.getFunction().getCombinator().equals(cmanager.get("I")) && root.getArgument().getCombinator() != null)
-			root.getNextNode().setFunction(NodeFieldFactory.create(root.getArgument().getCombinator()));
-			abstractedGraph = root.getNextNode();
-		
 	}
 
 }

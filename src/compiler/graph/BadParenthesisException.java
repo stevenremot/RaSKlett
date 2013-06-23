@@ -13,6 +13,6 @@ public class BadParenthesisException extends CompilerException {
 	private static final long serialVersionUID = 1L;
 
 	public BadParenthesisException(){
-		super("Undesired Parenthesis");
+		super("Parenthèse non désirée");
 	}
 }
