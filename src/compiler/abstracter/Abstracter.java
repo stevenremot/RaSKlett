@@ -115,6 +115,7 @@ public class Abstracter {
 		
 		Node lastNode = root.getLastNode();
 		Node currentNode = lastNode;
+		
 		// un seul combinateur
 		if(lastNode.equals(root)){
 			
@@ -125,6 +126,52 @@ public class Abstracter {
 			
 		}
 		
+		// règle lambda++++x . F ( G x ) = B F G
+		/*
+		if(level >= 4 && lastNode.getArgument().getCombinator() == null)
+			if(lastNode.getArgument().getNode().getArgument().getCombinator() != null && lastNode.getArgument().getNode().getArgument().getCombinator().equals(var)){
+				
+				Node subgraphNode = lastNode.getArgument().getNode();
+				
+				Node gNode = null;
+				if(subgraphNode.getFunction().getNode() == null && !subgraphNode.getFunction().getCombinator().equals(var))
+					gNode = new Node(new NodeNodeField(null), NodeFieldFactory.create(subgraphNode.getFunction().getCombinator()));
+				else if(searchVariable(subgraphNode.getFunction().getNode(), var) == null){
+					subgraphNode.getFunction().getNode().setNextNode(null);
+					gNode = new Node(new NodeNodeField(null), NodeFieldFactory.create(subgraphNode.getFunction().getNode()));
+				}
+				
+				if(gNode != null){
+					
+					NodeField fNodeField = null;
+					Node bNode = null;
+					
+					currentNode = lastNode.getFunction().getNode();
+					
+					if(currentNode.equals(root) && !currentNode.getArgument().getCombinator().equals(var)){
+						fNodeField = currentNode.getArgument();
+						bNode = new Node(NodeFieldFactory.create(cmanager.get("B")),fNodeField);
+						gNode.setFunction(NodeFieldFactory.create(bNode));
+						return gNode;
+					}
+					
+					Node varNode = searchVariable(currentNode,var);
+					
+					if(varNode == null){
+							
+						root.getNextNode().setFunction(root.getArgument());
+						currentNode.setNextNode(null);
+						fNodeField = NodeFieldFactory.create(currentNode);
+						bNode = new Node(NodeFieldFactory.create(cmanager.get("B")),fNodeField);
+						gNode.setFunction(NodeFieldFactory.create(bNode));
+						return gNode;
+							
+					}
+					
+				}
+					
+			}
+		*/
 		
 		//règle lambda+++x . F = K F
 		if(level >= 3 && (lastNode.getArgument().getCombinator() == null || lastNode.getArgument().getCombinator() != null && !lastNode.getArgument().getCombinator().equals(var))){

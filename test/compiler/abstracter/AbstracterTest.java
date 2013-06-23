@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import compiler.CompilerException;
 import compiler.graph.BadParenthesisException;
 import compiler.graph.CombinatorNotFoundException;
 import compiler.graph.EmptyStackException;
@@ -15,10 +16,13 @@ import compiler.graph.NodeFieldFactory;
 import compiler.graph.GraphSerializer;
 import compiler.graph.Node;
 import compiler.graph.NodeNodeField;
+import compiler.combinators.B;
 import compiler.combinators.Combinator;
+import compiler.combinators.CombinatorManager;
 import compiler.combinators.DummyCombinator;
 import compiler.combinators.Lambda;
 import compiler.combinators.Var;
+import compiler.config.ConfigManager;
 
 public class AbstracterTest {
 	
@@ -325,5 +329,29 @@ public void debugTest(){
 	String ret = GraphSerializer.serialize(result);
 	assertEquals(ret,"I ( K K )");
 }
+
+@Test
+public void lambda4PlusTest() throws CompilerException{
+	CombinatorManager manager = CombinatorManager.getInstance();
+	manager.addCombinator(new B());
+	
+	// lambda++++ x . K ( S K x )
+	Lambda lambda = new Lambda(4);
+	Var var = new Var("$x");
+	Combinator S = new DummyCombinator("S");
+	Combinator K = new DummyCombinator("K");
+	
+	Node root = new Node(NodeFieldFactory.create(lambda), NodeFieldFactory.create(var));
+	Node childRoot = new Node(NodeFieldFactory.create(S), NodeFieldFactory.create(K));
+	Node child = new Node(NodeFieldFactory.create(childRoot), NodeFieldFactory.create(var));
+	Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(K));
+	Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(child));
+	
+	Abstracter ab = new Abstracter(third,1);
+	Node result = ab.getAbstractedGraph();
+	String ret = GraphSerializer.serialize(result);
+	assertEquals(ret,"B K ( S K )");
+}
+
 	
 }
