@@ -264,6 +264,7 @@ public class SyntaxicalAnalyser {
 			}
 			else if(currentSymbol.equals("if")) {
 				result.addAll(parseCondition());
+                break;
 			}
 			else if(currentSymbol.equals("lambda")) {
 					result.addAll(parseLambda());
