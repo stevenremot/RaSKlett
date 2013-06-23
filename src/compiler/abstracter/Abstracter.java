@@ -37,6 +37,8 @@ public class Abstracter {
 	 */
 	public Node findAbstracter(Node expression){
 		
+		CombinatorManager cmanager = CombinatorManager.getInstance();
+		
 		Node lastNode = expression.getLastNode();
 		
 		Node node = lastNode;
@@ -56,6 +58,11 @@ public class Abstracter {
 				Lambda lambda = (Lambda) node.getFunction().getNode().getArgument().getCombinator();
 				// on coupe la connection au reste du graphe
 				node.getNextNode().setFunction(new NodeNodeField(null));
+				
+				// ajout d'un I dans le cas de parenthèses litigieuses
+				if(node.getNextNode().getArgument().getCombinator() == null)
+					node.getNextNode().setFunction(NodeFieldFactory.create(cmanager.get("I")));
+					
 				Node abstractedSubGraph = abstraction(node.getNextNode(), lambda.getLevel(), var);
 				
 				node = node.getFunction().getNode();
@@ -75,6 +82,11 @@ public class Abstracter {
 			Lambda lambda = (Lambda) node.getFunction().getCombinator();
 			// on coupe la connection au reste du graphe
 			node.getNextNode().setFunction(new NodeNodeField(null));
+			
+			// ajout d'un I dans le cas de parenthèses litigieuses
+			if(node.getNextNode().getArgument().getCombinator() == null)
+				node.getNextNode().setFunction(NodeFieldFactory.create(cmanager.get("I")));
+			
 			Node abstractedGraph = abstraction(node.getNextNode(), lambda.getLevel(), var);
 			node = abstractedGraph;
 		}

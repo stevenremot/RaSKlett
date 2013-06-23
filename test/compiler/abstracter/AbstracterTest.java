@@ -347,7 +347,7 @@ public void lambda4PlusTest() throws CompilerException{
 	Node second = new Node(NodeFieldFactory.create(root), NodeFieldFactory.create(K));
 	Node third = new Node(NodeFieldFactory.create(second), NodeFieldFactory.create(child));
 	
-	Abstracter ab = new Abstracter(third,1);
+	Abstracter ab = new Abstracter(third);
 	Node result = ab.getAbstractedGraph();
 	String ret = GraphSerializer.serialize(result);
 	assertEquals(ret,"B K ( S K )");
