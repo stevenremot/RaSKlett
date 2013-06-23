@@ -33,12 +33,10 @@ public class Compiler {
 		
 		try {
 			symbols = Parser.parse(input);
-			if(!registerNextInstruction()) {
-                throw new CompilerException("Rien à compiler", 0, 0);
-            }
+			registerNextInstruction();
 		}
 		catch(CompilerException e) {
-			callback.onFailure(e);
+			sendFailure(e, false);
 		}
 		
 		
@@ -55,10 +53,10 @@ public class Compiler {
 		return GraphSerializer.serialize(sk.getReducedGraph());
 	}
 	
-	/**
+	/*
 	 * Envoie le résultat au callback
 	 */
-	public void sendResult() {
+	private void sendResult() {
 		if(currentInstruction == null) {
 			currentInstruction = new Instruction();
 		}
@@ -66,6 +64,15 @@ public class Compiler {
 		callback.onResult(getResult(), currentInstruction.getLastLine(),
 				currentInstruction.getPosition(), isFinished());
 	}
+
+    private void  sendFailure(CompilerException e, boolean populateException) {
+        if(populateException && currentInstruction != null) {
+            e.setLine(currentInstruction.getLastLine());
+            e.setPosition(currentInstruction.getPosition());
+        }
+
+        callback.onFailure(e);
+    }
 	
 	public boolean isFinished() {
 		return finished;
@@ -91,10 +98,7 @@ public class Compiler {
 			graph = GraphFactory.create(currentInstruction.getInstruction());
 		}
 		catch(CompilerException e) {
-			e.setLine(currentInstruction.getLastLine());
-			e.setPosition(currentInstruction.getPosition());
-			
-			callback.onFailure(e);
+			sendFailure(e, true);
 			return false;
 		}
 		
@@ -114,13 +118,8 @@ public class Compiler {
 	
 	// réduit une étape
 	private void step() throws CompilerException {
-		if(!finished && (!lineFinished || registerNextInstruction())) {
-			if(sk != null) {
-				lineFinished = !sk.step();
-			}
-			else {
-				throw new CompilerException("Le compilateur a été incorrectement initialisé suite à une erreur");
-			}
+		if(!finished && (!lineFinished || registerNextInstruction()) && sk != null) {
+            lineFinished = !sk.step();
 		}
 	}
 	
@@ -128,12 +127,12 @@ public class Compiler {
 	private void instruction() throws CompilerException {
 		do {
 			step();
-		} while(!isFinished() && !lineFinished && !isInterrupted());
+		} while(!isFinished() && !lineFinished && !isInterrupted() && sk != null);
 	}
 	
 	// réduit TOUT
 	private void all() throws CompilerException {
-		while(!isFinished() && !isInterrupted()) {
+		while(!isFinished() && !isInterrupted() && sk != null) {
 			instruction();
 			sendResult();
 		}
@@ -151,10 +150,7 @@ public class Compiler {
 				sendResult();
 			}
 			catch(CompilerException e) {
-				e.setLine(currentInstruction.getLastLine());
-				e.setPosition(currentInstruction.getPosition());
-				
-				callback.onFailure(e);
+				sendFailure(e, true);
 			}
 		}
 		
@@ -176,10 +172,7 @@ public class Compiler {
 						t.instruction();
 					}
 					catch(CompilerException e) {
-						e.setLine(currentInstruction.getLastLine());
-						e.setPosition(currentInstruction.getPosition());
-						
-						callback.onFailure(e);
+						sendFailure(e, true);
 					}
 				}
 			}
@@ -204,13 +197,10 @@ public class Compiler {
 			public void run() {
 				synchronized(t) {
 					try {
-						t.all();
+                        t.all();
 					}
 					catch(CompilerException e) {
-						e.setLine(currentInstruction.getLastLine());
-						e.setPosition(currentInstruction.getPosition());
-						
-						callback.onFailure(e);
+						sendFailure(e, true);
 					}
 				}
 			}
