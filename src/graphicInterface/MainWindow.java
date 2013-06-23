@@ -85,8 +85,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		ArrayList<String> combinatorsBool = new ArrayList<String>();
 		combinatorsBool.add("true");
 		combinatorsBool.add("false");
-		combinatorsBool.add("and ");
-		combinatorsBool.add("or");
+		combinatorsBool.add("and : B1 && B2 ");
+		combinatorsBool.add("or : B1 || B2");
 		
 		ArrayList<String> combinatorsNumbers = new ArrayList<String>();
 		combinatorsNumbers.add("+  -  *  /");
