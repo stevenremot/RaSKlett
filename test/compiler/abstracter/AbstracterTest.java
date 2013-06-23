@@ -2,8 +2,15 @@ package compiler.abstracter;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.junit.Test;
 
+import compiler.graph.BadParenthesisException;
+import compiler.graph.CombinatorNotFoundException;
+import compiler.graph.EmptyStackException;
+import compiler.graph.GraphFactory;
 import compiler.graph.NodeFieldFactory;
 import compiler.graph.GraphSerializer;
 import compiler.graph.Node;
@@ -132,7 +139,7 @@ public class AbstracterTest {
 	}
 	
 	@Test
-	public void searchVariableTest(){
+	public void searchVariableTest() throws EmptyStackException, BadParenthesisException, CombinatorNotFoundException{
 		
 		Combinator K = new DummyCombinator("K");
 		Var var = new Var("$x");
@@ -151,6 +158,12 @@ public class AbstracterTest {
 		second.setArgument(NodeFieldFactory.create(child));
 		result = ab.searchVariable(third,var);
 		assertEquals(result,second);
+		
+		String[] example = {"S","(","S","(","S","K",")","K",")"};
+		Node graph = GraphFactory.create(new ArrayList<String>(Arrays.asList(example)));
+		result = ab.searchVariable(graph,var);
+		assertEquals(result,null);
+		
 	}
 	
 	@Test
