@@ -13,7 +13,7 @@ import compiler.CompilerException;
  * 
  * Transforme les suites de symboles du langage en suite de noms de combinateurs
  * 
- * @author remot
+ * @author qchen
  *
  */
 public class SyntaxicalAnalyser {
