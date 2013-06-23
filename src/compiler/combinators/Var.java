@@ -29,7 +29,7 @@ public class Var implements Combinator {
 
 	@Override
 	public String getName() {
-		return name;
+		return getVarName();
 	}
 	
 	public String getVarName() {
