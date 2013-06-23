@@ -13,7 +13,7 @@ public class EmptyStackException extends CompilerException {
 	private static final long serialVersionUID = 1L;
 
 	public EmptyStackException(){
-		super("GraphFactory Stack is empty");
+		super("La pile de GraphFactory est vide");
 	}
 
 }
