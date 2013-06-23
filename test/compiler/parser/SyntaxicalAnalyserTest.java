@@ -187,10 +187,12 @@ public class SyntaxicalAnalyserTest {
 			
 			ArrayList<String> symbols = ins.getInstruction();
 			
-			assertEquals(3, symbols.size());
-			assertEquals(op, symbols.get(0));
-			assertEquals("a", symbols.get(1));
-			assertEquals("b", symbols.get(2));
+			assertEquals(5, symbols.size());
+            assertEquals("(", symbols.get(0));
+			assertEquals(op, symbols.get(1));
+			assertEquals("a", symbols.get(2));
+			assertEquals("b", symbols.get(3));
+            assertEquals(")", symbols.get(4));
 		}
 		
 		for(String op: ops) {
@@ -212,10 +214,11 @@ public class SyntaxicalAnalyserTest {
 			
 			ArrayList<String> symbols = ins.getInstruction();
 			
-			assertEquals(6, symbols.size());
-			assertEquals(op, symbols.get(0));
-			assertEquals("(", symbols.get(1));
-			assertEquals("a", symbols.get(2));
+			assertEquals(8, symbols.size());
+            assertEquals("(", symbols.get(0));
+            assertEquals(op, symbols.get(1));
+			assertEquals("(", symbols.get(2));
+			assertEquals("a", symbols.get(3));
 		}
 	}
 	
@@ -344,19 +347,21 @@ public class SyntaxicalAnalyserTest {
 		
 		ArrayList<String> symbols = ins.getInstruction();
 		
-		assertEquals(12, symbols.size());
-		assertEquals("(", symbols.get(0));
-		assertEquals("=", symbols.get(1));
-		assertEquals("x", symbols.get(2));
-		assertEquals("0", symbols.get(3));
-		assertEquals(")", symbols.get(4));
-		assertEquals("(", symbols.get(5));
-		assertEquals("a", symbols.get(6));
-		assertEquals("b", symbols.get(7));
-		assertEquals(")", symbols.get(8));
-		assertEquals("(", symbols.get(9));
-		assertEquals("c", symbols.get(10));
-		assertEquals(")", symbols.get(11));
+		assertEquals(14, symbols.size());
+        assertEquals("(", symbols.get(0));
+        assertEquals("(", symbols.get(1));
+		assertEquals("=", symbols.get(2));
+		assertEquals("x", symbols.get(3));
+		assertEquals("0", symbols.get(4));
+        assertEquals(")", symbols.get(5));
+        assertEquals(")", symbols.get(6));
+		assertEquals("(", symbols.get(7));
+		assertEquals("a", symbols.get(8));
+		assertEquals("b", symbols.get(9));
+		assertEquals(")", symbols.get(10));
+		assertEquals("(", symbols.get(11));
+		assertEquals("c", symbols.get(12));
+		assertEquals(")", symbols.get(13));
 	}
 	
 	@Test

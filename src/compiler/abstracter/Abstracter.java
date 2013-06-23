@@ -83,7 +83,7 @@ public class Abstracter {
 			Node abstractedArgument = findAbstracter(node.getArgument().getNode()); 
 			node.setArgument(NodeFieldFactory.create(abstractedArgument));
 		}
-		
+		System.out.println(GraphSerializer.serialize(node.getRoot()));
 		return node.getLastNode();
 		
 	}
