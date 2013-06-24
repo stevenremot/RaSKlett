@@ -700,7 +700,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			boolean finished) {
         if(!finished) {
 		    try {
-                int l = line + offset + 1;;
+                int l = line + offset + 1;
                 String result;
 
                 if(selectedInstruction != null) {
