@@ -45,6 +45,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JButton nextLine = null;
 	private JButton toEnd = null;
 	private JButton stop = null;
+	private JButton clean = null;
 	private JMenuBar menuBar = null;
 	private JMenu file = null;
 	private JMenu compilation = null;
@@ -59,6 +60,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JMenuItem iNextLine = null;
 	private JMenuItem iToEnd = null;
 	private JMenuItem iStop = null;
+	private JMenuItem iClean = null;
 	private JMenuItem iPreferences = null;
 	private JMenuItem iHelp = null;
     private boolean inStepByStepCompilation = false;
@@ -83,8 +85,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		combinators.add("CStar : CStar X Y = Y X");
 		
 		ArrayList<String> combinatorsBool = new ArrayList<String>();
-		combinatorsBool.add("true");
-		combinatorsBool.add("false");
+		combinatorsBool.add("true, false");
+		combinatorsBool.add("not : !B ");
 		combinatorsBool.add("and : B1 && B2 ");
 		combinatorsBool.add("or : B1 || B2");
 		
@@ -136,6 +138,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		stop.setToolTipText("Interrompre la compilation");
 		stop.addActionListener( new ControleurStop());
 		
+		clean = new JButton(new ImageIcon("icons/clean.png"));
+		clean.setToolTipText("Effacer les réultats et les erreurs");
+		clean.addActionListener(new ControleurClean());
 
 		nextStep.setEnabled(false);
 		nextLine.setEnabled(false);
@@ -154,6 +159,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		toolBar.add(nextLine);
 		toolBar.add(toEnd);
 		toolBar.add(stop);
+		toolBar.add(clean);
 
 
 		add(toolBar, BorderLayout.NORTH);
@@ -197,6 +203,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
         iToEnd.addActionListener(new ControleurToEnd());
 		iStop = new JMenuItem("Interrompre la compilation");
 		iStop.addActionListener(new ControleurStop());
+		iClean= new JMenuItem("Nettoyer le code");
+		clean.addActionListener(new ControleurClean());
 
 		iNextStep.setEnabled(false);
 		iNextLine.setEnabled(false);
@@ -209,6 +217,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		compilation.add(iNextLine);
 		compilation.add(iToEnd);
 		compilation.add(iStop);
+		compilation.add(iClean);
 
 		tools = new JMenu("Outils");
 		tools.setMnemonic(KeyEvent.VK_O);
@@ -272,6 +281,16 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	public Editor getEditor(){
 		return editor;
+	}
+	
+	private void clean() {
+		String textCleaned = editor.getCleanedText();
+		editor.setText(null);
+		try {
+			editor.appendText(textCleaned);
+		} catch (BadLocationException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void initCompilationEnvironment() {
@@ -366,6 +385,15 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 		
 	}
+    
+    private class ControleurClean implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			clean();
+		}
+    	
+    }
 
 
     private class ControleurCompileAll implements ActionListener {

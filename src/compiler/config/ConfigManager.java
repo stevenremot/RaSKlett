@@ -3,7 +3,7 @@ package compiler.config;
 import java.util.HashMap;
 
 /**
- * @brief Classe centralisant la configuration du compilateur
+ * Classe centralisant la configuration du compilateur
  * 
  * Par défaut, tout est désactivé, et le niveau d'abstraction est à 4
  * 
@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class ConfigManager {
 
 	private HashMap<String, Boolean> features;
-	private int abstractionLevel = 2; // On mettra plus quand ça fonctionnera
+	private int abstractionLevel = 3; // On mettra plus quand ça fonctionnera
 	
 	private static ConfigManager instance = null;
 	
@@ -35,7 +35,7 @@ public class ConfigManager {
 	}
 	
 	/**
-	 * @brief Activer / Désactiver une fonctionnalité
+	 * Activer / Désactiver une fonctionnalité
 	 * 
 	 * @param feature Foncionnalité à modifier
 	 * @param toggled true si on l'active, false sinon

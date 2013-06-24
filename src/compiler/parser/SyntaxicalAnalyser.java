@@ -321,6 +321,8 @@ public class SyntaxicalAnalyser {
 	}
 
     private void parseOperator(List<String> expression, int firstOperandPos) throws CompilerException {
+        expression.add(0, "(");
+        expression.add(")");
         expression.add(firstOperandPos, currentSymbol);
         expression.add(firstOperandPos, "(");
 
@@ -328,7 +330,7 @@ public class SyntaxicalAnalyser {
             throw new CompilerException("Opérateur " + currentSymbol + " doit avoir une deuxième opérande");
         }
 
-        expression.addAll(parseEvaluable());
+        expression.addAll(wrapInParenthesis(parseEvaluable()));
         expression.add(")");
     }
 
