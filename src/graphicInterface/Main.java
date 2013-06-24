@@ -9,16 +9,15 @@ import javax.swing.text.BadLocationException;
  * @author landeau
  *
  */
-public class Test {
+public class Main {
 	/**
 	 * Méthode main
-	 * @param args
 	 * @throws BadLocationException 
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws BadLocationException, IOException{
 
-		MainWindow m = new MainWindow();
+		new MainWindow();
 	}
 
 }

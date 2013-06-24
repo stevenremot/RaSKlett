@@ -7,14 +7,14 @@ import compiler.CompilerException;
 
 /**
  * @author qchen
- * For the call of lexicalAnalyser and SemanticalAnalyser
+ * For the call of lexicalAnalyser and SyntaxicalAnalyser
  * 03/06/2013
  */
 public class Parser {
 	public String resultString;
 
 	/**
-	 * to be a interface for call lexicalAnalyser and SemanticalAnalyser
+	 * to be a interface for call lexicalAnalyser and SyntaxicalAnalyser
 	 * @throws CompilerException
 	 */
 	public static ArrayList<Instruction> parse(Reader input) throws CompilerException {
