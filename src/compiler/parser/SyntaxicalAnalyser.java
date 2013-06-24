@@ -212,7 +212,7 @@ public class SyntaxicalAnalyser {
             result.add("I");
             result.addAll(wrapInParenthesis(expr));
 
-            for(int i=0; i < varNames.size(); i++) {
+            for (int i = 0; i < varNames.size(); i++) {
                 result.add(")");
             }
 		}
@@ -250,8 +250,12 @@ public class SyntaxicalAnalyser {
 			return false;
 		}
 	}
-	
-	private ArrayList<String> parseEvaluable() throws CompilerException {
+
+    private ArrayList<String> parseEvaluable() throws CompilerException {
+        return parseEvaluable(false);
+    }
+
+	private ArrayList<String> parseEvaluable(boolean isOperand) throws CompilerException {
 		ArrayList<String> result = new ArrayList<String>();
 		
 		Stack<Integer> operandsPosition = new Stack<Integer>();
@@ -280,6 +284,10 @@ public class SyntaxicalAnalyser {
 				result.add(currentSymbol);
 			}
 			else if(isOperator()) {
+                if(isOperand) {
+                    break;
+                }
+
 				operandsPosition.pop();
 				
 				if(operandsPosition.isEmpty()) {
@@ -287,7 +295,7 @@ public class SyntaxicalAnalyser {
 				}
 				
 				parseOperator(result, operandsPosition.peek());
-                break;
+                previousSymbol();
 			}
 			
 		} while(nextSymbol());
@@ -330,7 +338,7 @@ public class SyntaxicalAnalyser {
             throw new CompilerException("Opérateur " + currentSymbol + " doit avoir une deuxième opérande");
         }
 
-        expression.addAll(wrapInParenthesis(parseEvaluable()));
+        expression.addAll(wrapInParenthesis(parseEvaluable(true)));
         expression.add(")");
     }
 
