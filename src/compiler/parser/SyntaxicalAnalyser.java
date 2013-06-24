@@ -338,7 +338,7 @@ public class SyntaxicalAnalyser {
 		Stack<ArrayList<String>> elements = new Stack<ArrayList<String>>();
 		
 		while(!currentSymbol.equals("]") && nextSymbol()) {
-			elements.add(parseEvaluable());
+			elements.add(wrapInParenthesis(parseEvaluable()));
 			
 			if(!currentSymbol.equals(",") && !currentSymbol.equals("]")) {
 				error("Les éléments d'un vecteur doivent être séparés par une virgule");
