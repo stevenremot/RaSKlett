@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -181,12 +182,15 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		iOpen = new JMenuItem("Ouvrir");
 		iOpen.addActionListener(new ControleurOpen());
+		iOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,InputEvent.CTRL_DOWN_MASK));
 
 		iCreate = new JMenuItem("Créer");
 		iCreate.addActionListener(new ControleurCreate());
+		iCreate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,InputEvent.CTRL_DOWN_MASK));
 		
 		iSave = new JMenuItem("Enregistrer");
 		iSave.addActionListener(new ControleurSave());
+		iSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,InputEvent.CTRL_DOWN_MASK));
 		
 		iSaveAs = new JMenuItem("Enregistrer sous");
 		iSaveAs.addActionListener(new ControleurSaveAs());
