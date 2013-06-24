@@ -82,6 +82,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
     // Dans le cas d'une compilation de sélection, contient l'avant, l'après, et la sélection
     private List<String> selectedInstruction = null;
+    private int selectedInstructionLine = -1;
 
 
 	/**
@@ -330,11 +331,18 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			e.printStackTrace();
 		}
 	}
-	
-	private void initCompilationEnvironment() {
+
+    private void initCompilationEnvironment() {
+        initCompilationEnvironment(true);
+    }
+
+	private void initCompilationEnvironment(boolean cleanText) {
 		offset = 0;
 		editor.disableEdition();
-		editor.setText(editor.getCleanedText());
+        if(cleanText) {
+		    editor.setText(editor.getCleanedText());
+        }
+
 		stop.setEnabled(true);
 		iStop.setEnabled(true);
 		
@@ -373,7 +381,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
         selectedInstruction = getEditor().getSelectedInstruction();
 
         if(selectedInstruction != null) {
-            initCompilationEnvironment();
+            selectedInstructionLine = getEditor().getSelectedLineNumber();
+            initCompilationEnvironment(false);
             compiler = new Compiler(new StringReader(selectedInstruction.get(1)), this);
 
             if(compiler != null && !compiler.isInterrupted()) {
@@ -691,17 +700,19 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			boolean finished) {
         if(!finished) {
 		    try {
-				int pos = getPos(line ,position);
-				int l = line + offset + 1;
-
+                int l = line + offset + 1;;
                 String result;
 
                 if(selectedInstruction != null) {
                     result = selectedInstruction.get(0) + " " + reducedGraph + " " + selectedInstruction.get(2);
+                    line = selectedInstructionLine;
+                    position = 0;
                 }
                 else {
                     result = reducedGraph;
                 }
+
+                int pos = getPos(line ,position);
 
 				editor.insertResult(">>> "+ result,pos + l-2);
 				offset++;

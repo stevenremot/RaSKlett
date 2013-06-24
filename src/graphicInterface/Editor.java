@@ -97,8 +97,8 @@ public class Editor extends JTextPane {
 
         while(start > 0 && text.charAt(start) != ';') {
             // Si on sélectionn l'expression d'un résultat, la suite risque de sauter le début sans cette condition
-            if(text.substring(start).equals(">>>")) {
-                start += 3;
+            if(text.substring(start).startsWith(">>> ")) {
+                start += 4;
                 break;
             }
             start--;
@@ -133,6 +133,27 @@ public class Editor extends JTextPane {
         String endText = text.substring(selectionEnd, end);
 
         return Arrays.asList(new String[] { startText.trim(), selectionText.trim(), endText.trim()});
+    }
+
+    /**
+     * @return La ligne de l'instruction sélectionnée, ou -1
+     */
+    public int getSelectedLineNumber() {
+        if(getSelectedText() == null) {
+            return -1;
+        }
+
+        String t = getText();
+        int end = getSelectionEnd();
+        int line = 0;
+
+        for(int c = 0; c < end; c++) {
+            if(t.charAt(c) == '\n') {
+                line++;
+            }
+        }
+
+        return line;
     }
 	
 	public void disableEdition(){
