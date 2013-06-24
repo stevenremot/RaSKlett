@@ -2,7 +2,6 @@ package compiler.combinators;
 
 import compiler.graph.Node;
 import compiler.reducer.Registry;
-import compiler.abstracter.Abstracter;
 
 /**
  * Combinateur réalisant l'abstraction de l'expression
@@ -25,13 +24,12 @@ public class Lambda implements Combinator {
 		return null;
 	}
 
+    /**
+     * Tous les lambdas sont éliminés avant la réduction, donc on retourne false.
+     */
 	@Override
 	public boolean applyReduction(Registry registry) {
-		Abstracter a = new Abstracter(registry.getNode(), level);
-		
-		registry.setNode(a.getAbstractedGraph());
-		
-		return true;
+        return false;
 	}
 
 	@Override

@@ -4,6 +4,14 @@ import compiler.graph.Node;
 import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
 
+/**
+ * 
+ * @author Juliette
+ *
+ * @brief Combinateur True
+ * 
+ * Prend le premier argument, ignore le suivant
+ */
 public class True implements Combinator {
 
 	@Override

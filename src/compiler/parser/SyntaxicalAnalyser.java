@@ -1,6 +1,8 @@
 package compiler.parser;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,11 +10,11 @@ import java.util.regex.Pattern;
 import compiler.CompilerException;
 
 /**
- * @brief Réalise l'analyse syntaxique du code en sortie de SemanticalAnalyser
+ * Réalise l'analyse syntaxique du code en sortie de SemanticalAnalyser
  * 
  * Transforme les suites de symboles du langage en suite de noms de combinateurs
  * 
- * @author remot
+ * @author qchen
  *
  */
 public class SyntaxicalAnalyser {
@@ -29,12 +31,11 @@ public class SyntaxicalAnalyser {
 	
 	static {
 		operators = new ArrayList<String>();
+
 		String[] ops = {"+", "-", "*", "/", "&&", "||",
 				"<", ">", "<=", ">=", "=", "!="};
-		
-		for(String op: ops) {
-			operators.add(op);
-		}
+
+        Collections.addAll(operators, ops);
 	}
 	
 	public SyntaxicalAnalyser(ArrayList<Instruction> instructions) throws CompilerException {
@@ -70,11 +71,7 @@ public class SyntaxicalAnalyser {
 		
 		currentSymbolIndex = -1;
 		
-		if(!nextSymbol()) {
-			return nextInstruction();
-		}
-		
-		return true;
+		return nextSymbol() || nextInstruction();
 	}
 	
 	private boolean isAtEndOfSymbols() {
@@ -121,9 +118,8 @@ public class SyntaxicalAnalyser {
 		do {
 			if(currentSymbol.equals(":=")) {
 				isDefinition = true;
-				break;
 			}
-		} while(nextSymbol() && !isDefinition);
+		} while(!isDefinition && nextSymbol());
 		
 		ArrayList<String> expr;
 		
@@ -169,7 +165,6 @@ public class SyntaxicalAnalyser {
 		
 		String funcName = definitionHead.pop();
 		result.add("$" + funcName);
-		result.add("(");
 
 		
 		setCurrentSymbolIndex(defSymbolIndex);
@@ -183,20 +178,22 @@ public class SyntaxicalAnalyser {
 			
 			while(!definitionHead.isEmpty()) {
 				String var = definitionHead.pop();
+                result.add("I");
+                result.add("(");
 				result.add("lambda");
 				result.add("$" + var);
 				varNames.add(var);
 			}
 			
 			ArrayList<String> expr = new ArrayList<String>();
-			
+
 			for(String symbol: parseEvaluable()) {
 				if(symbol.equals(funcName)) {
 					expr.add("@" + symbol);
 				}
 				else {
 					boolean wasVarName = false;
-					
+
 					for(String varName: varNames) {
 						if(symbol.equals(varName)) {
 							expr.add("$" + symbol);
@@ -204,14 +201,20 @@ public class SyntaxicalAnalyser {
 							break;
 						}
 					}
-					
+
 					if(!wasVarName) {
 						expr.add(symbol);
 					}
 				}
 			}
-			
-			result.addAll(expr);
+
+            // Rajout d'une garde I, voir parseLambda
+            result.add("I");
+            result.addAll(wrapInParenthesis(expr));
+
+            for(int i=0; i < varNames.size(); i++) {
+                result.add(")");
+            }
 		}
 		else {
 			ArrayList<String> expr = new ArrayList<String>();
@@ -227,8 +230,6 @@ public class SyntaxicalAnalyser {
 			
 			result.addAll(expr);
 		}
-		
-		result.add(")");
 		
 		return result;
 	}
@@ -253,8 +254,8 @@ public class SyntaxicalAnalyser {
 	private ArrayList<String> parseEvaluable() throws CompilerException {
 		ArrayList<String> result = new ArrayList<String>();
 		
-		Stack<Integer> operandsPosition = new Stack<Integer>(); 
-		
+		Stack<Integer> operandsPosition = new Stack<Integer>();
+
 		do {
 			operandsPosition.push(result.size());
 			
@@ -269,9 +270,11 @@ public class SyntaxicalAnalyser {
 			}
 			else if(currentSymbol.equals("if")) {
 				result.addAll(parseCondition());
+                break;
 			}
 			else if(currentSymbol.equals("lambda")) {
 					result.addAll(parseLambda());
+                    break;
 				}
 			else if(isName() || currentSymbol.equals("!")) {
 				result.add(currentSymbol);
@@ -283,7 +286,8 @@ public class SyntaxicalAnalyser {
 					error("Opérateur " + currentSymbolIndex + "n'a pas d'opérande gauche");
 				}
 				
-				result.add(operandsPosition.peek(), currentSymbol);
+				parseOperator(result, operandsPosition.peek());
+                break;
 			}
 			
 		} while(nextSymbol());
@@ -307,9 +311,7 @@ public class SyntaxicalAnalyser {
 		}
 		
 		ArrayList<String> result = new ArrayList<String>();
-		result.add("(");
-		result.addAll(parseEvaluable());
-		result.add(")");
+		result.addAll(wrapInParenthesis(parseEvaluable()));
 		
 		if(isAtEndOfSymbols() || !currentSymbol.equals(")")) {
 			error("Parenthèses non fermées");
@@ -317,7 +319,19 @@ public class SyntaxicalAnalyser {
 		
 		return result;
 	}
-	
+
+    private void parseOperator(List<String> expression, int firstOperandPos) throws CompilerException {
+        expression.add(firstOperandPos, currentSymbol);
+        expression.add(firstOperandPos, "(");
+
+        if(!nextSymbol()) {
+            throw new CompilerException("Opérateur " + currentSymbol + " doit avoir une deuxième opérande");
+        }
+
+        expression.addAll(parseEvaluable());
+        expression.add(")");
+    }
+
 	private ArrayList<String> parseVector() throws CompilerException {
 		ArrayList<String> result = new ArrayList<String>();
 		
@@ -395,12 +409,12 @@ public class SyntaxicalAnalyser {
 		if(!nextSymbol()) {
 			error("Expression d'abstraction mal formée, il manque l'expression à abstraire après le point");
 		}
-		
+
 		ArrayList<String> expr = new ArrayList<String>();
-		
+
 		for(String symbol: parseEvaluable()) {
 			boolean wasVar = false;
-			
+
 			for(String varName: varNames) {
 				if(symbol.equals(varName)) {
 					expr.add("$" + symbol);
@@ -408,23 +422,30 @@ public class SyntaxicalAnalyser {
 					break;
 				}
 			}
-			
+
 			if(!wasVar) {
 				expr.add(symbol);
 			}
 		}
-		
+
+        // Des parenthèses au début du code sont équivalentes à pas de pérenthèses, dans le graphe.
+        // c'est rpoblématique pour lambda  car l'abstraction s'effectue sur le graphe suivant lambda.
+        // En rajoutant I, on garde les parenthèses.
+        result.add("I");
 		result.add("(");
-		
+
 		for(String varName: varNames) {
 			result.add(lambdaName);
 			result.add("$" + varName);
 		}
-		
-		result.addAll(expr);
-		
+
+        // ICI aussi on a besoin d'un I, car l'abstraction n'accepte pas
+        // les parnethèses au début
+        result.add("I");
+        result.addAll(wrapInParenthesis(expr));
+
 		result.add(")");
-		
+
 		return result;
 	}
 	
@@ -437,9 +458,7 @@ public class SyntaxicalAnalyser {
 		
 		ArrayList<String> condition = parseEvaluable();
 		
-		result.add("(");
-		result.addAll(condition);
-		result.add(")");
+		result.addAll(wrapInParenthesis(condition));
 		
 		if(!currentSymbol.equals("then")) {
 			error("La condition d'un 'if' doit être suivie d'une clause then");
@@ -448,22 +467,18 @@ public class SyntaxicalAnalyser {
 		nextSymbol();
 		
 		ArrayList<String> thenClause = parseEvaluable();
-		
-		result.add("(");
-		result.addAll(thenClause);
-		result.add(")");
+
+		result.addAll(wrapInParenthesis(thenClause));
 		
 		if(!currentSymbol.equals("else")) {
 			error("La clause then d'un if doit être suivie d'une clause else");
 		}
 		
 		nextSymbol();
-		
+
 		ArrayList<String> elseClause = parseEvaluable();
 		
-		result.add("(");
-		result.addAll(elseClause);
-		result.add(")");
+		result.addAll(wrapInParenthesis(elseClause));
 		
 		return result;
 	}
@@ -483,5 +498,36 @@ public class SyntaxicalAnalyser {
 		}
 		return false;
 	}
+
+    private ArrayList<String> wrapInParenthesis(ArrayList<String> expr) {
+        if(expr.size() <= 1) {
+            return expr;
+        }
+
+        if(expr.get(0).equals("(")) {
+            int count = 1, index = 1;
+
+            while(count > 0 && index < expr.size()) {
+                if(expr.get(index).equals("(")) {
+                    count++;
+                }
+                else if(expr.get(index).equals(")")) {
+                    count--;
+                }
+
+                index++;
+            }
+
+            if(index == expr.size()) {
+                return expr;
+            }
+        }
+
+        ArrayList<String> expr2 = new ArrayList<String>();
+        expr2.add("(");
+        expr2.addAll(expr);
+        expr2.add(")");
+        return expr2;
+    }
 
 }

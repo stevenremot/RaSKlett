@@ -1,23 +1,19 @@
 package compiler.graph;
 
 /**
- * @brief Convertit un graphe en chîne de caractères
+ * Convertit un graphe en chîne de caractères
  * @author remot
  *
  */
 public abstract class GraphSerializer {
 	
 	/**
-	 * @brief Méthode de sérialisation de graphe
+	 * Méthode de sérialisation de graphe
 	 */
 	public static String serialize(Node graph) {
 		String ret = "";
-		
-		// On a une expresssion a M1 M2 ..., on se place au a
-		Node root = graph;
-		while(root.getFunction().getNode() != null) {
-			root = root.getFunction().getNode();
-		}
+
+		Node root = graph.getRoot();
 		
 		// On écrit la fonction
 		ret += root.getFunction().getCombinator().getName();

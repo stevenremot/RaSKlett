@@ -8,12 +8,13 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-
+/**
+ * @brief Classe de léditeur de texte
+ *
+ * Propose des fonctions spécialisées, comme ajouter un résultat, ou une erreur
+ */
 public class Editor extends JTextPane {
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private Style defaut = this.getStyle("default");
 	private Style error = this.addStyle("error", defaut);
@@ -34,7 +35,7 @@ public class Editor extends JTextPane {
 	    
 		StyleConstants.setForeground(defaut, Color.BLACK);
 	    StyleConstants.setForeground(error, Color.RED);
-	    StyleConstants.setForeground(result, Color.GREEN);
+        StyleConstants.setForeground(result, new Color(0, 128, 0));
 
 	   doc = (StyledDocument) getDocument();
 	   doc.setParagraphAttributes(0, 1, defaut, true);
@@ -60,11 +61,11 @@ public class Editor extends JTextPane {
 		String er = "\n"+s;
 		if(getText().length() > 0){
 			doc.insertString(position, er , error);
-			doc.insertString(position + er.length(), "\n", defaut);
+			doc.insertString(position + er.length(), " ", defaut);
 		}
 		else {
 			doc.insertString(doc.getLength(), s, error);
-			doc.insertString(doc.getLength(), "\n", defaut);
+			doc.insertString(doc.getLength(), " ", defaut);
 		}
 	}
 	
@@ -72,11 +73,11 @@ public class Editor extends JTextPane {
 		String res = "\n" + s;
 		if(getText().length() > 0) {
 			doc.insertString(position, "\n"+s, result);
-			doc.insertString(position + res.length(), "\n", defaut);
+			doc.insertString(position + res.length(), " ", defaut);
 		}
 		else {
 			doc.insertString(doc.getLength(), s, result);
-			doc.insertString(doc.getLength(), "\n", defaut);
+			doc.insertString(doc.getLength(), " ", defaut);
 		}
 
 	}

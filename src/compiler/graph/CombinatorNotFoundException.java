@@ -7,6 +7,6 @@ public class CombinatorNotFoundException extends CompilerException {
 	private static final long serialVersionUID = 1L;
 
 	public CombinatorNotFoundException(String name){
-		super("Combinator " + name + " not found");
+		super("Combinateur " + name + " inconnu");
 	}
 }

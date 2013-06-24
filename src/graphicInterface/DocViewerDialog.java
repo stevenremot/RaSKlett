@@ -1,13 +1,11 @@
 package graphicInterface;
 
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.swing.JDialog;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 /**
  * Dialogue permettant d'afficher un document HTML
@@ -23,6 +21,8 @@ public class DocViewerDialog extends JDialog {
 		JTextPane view = new JTextPane();
 		view.setEnabled(false);
 		view.setContentType("text/html");
+        view.setDisabledTextColor(Color.black);
+        view.setCaretPosition(0);
 		
 		BufferedReader r = new BufferedReader(new FileReader(doc));
 		String content = "";
@@ -36,11 +36,17 @@ public class DocViewerDialog extends JDialog {
 		
 		view.setText(content);
 
-		JScrollPane scroll = new JScrollPane(view);
+		final JScrollPane scroll = new JScrollPane(view);
 		add(scroll);
 		pack();
 		
 		setSize(700, 500);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                scroll.getVerticalScrollBar().setValue(0);
+            }
+        });
 		
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setVisible(true);

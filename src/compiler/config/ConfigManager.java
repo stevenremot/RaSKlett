@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class ConfigManager {
 
 	private HashMap<String, Boolean> features;
-	private int abstractionLevel = 4;
+	private int abstractionLevel = 2; // On mettra plus quand ça fonctionnera
 	
 	private static ConfigManager instance = null;
 	

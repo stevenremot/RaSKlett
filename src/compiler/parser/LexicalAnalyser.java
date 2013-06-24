@@ -3,15 +3,16 @@ package compiler.parser;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import compiler.CompilerException;
 
 /**
- * @breif Classe d'analyse lexicale
+ * Classe d'analyse lexicale
  * 
  * Renvoie les instructions contenant les différents symboles du code.
  * 
- * @author remot
+ * @author qchen
  *
  */
 class LexicalAnalyser {
@@ -31,10 +32,8 @@ class LexicalAnalyser {
 		operators = new ArrayList<String>();
 		
 		String[] ops = {"+", "++", "+++", "++++", "-", "*", "/", "||", "&&", "!", "=", "!=", "<", ">", "<=", ">=", ":="};
-		
-		for(String op:ops) {
-			operators.add(op);
-		}
+
+        Collections.addAll(operators, ops);
 	}
 	
 	public LexicalAnalyser(Reader input) throws CompilerException {
@@ -101,9 +100,11 @@ class LexicalAnalyser {
 	}
 	
 	private void registerOperator() throws CompilerException {
+        String oldSymbol = "";
 		currentSymbol = "";
 		
 		do {
+            oldSymbol = currentSymbol;
 			currentSymbol += (char) currentChar;
 			
 			ArrayList<String> candidates = new ArrayList<String>();
@@ -126,6 +127,16 @@ class LexicalAnalyser {
 				return;
 			}
 		}
+
+        for(String op: operators) {
+            if(oldSymbol.equals(op)) {
+                String tmp = currentSymbol;
+                currentSymbol = oldSymbol;
+                registerSymbol();
+                currentSymbol = tmp.substring(tmp.length() - 1);
+                return;
+            }
+        }
 		
 		throw new CompilerException("Opérateur inconnu: " + currentSymbol, currentLine, currentPos);
 	}
@@ -152,7 +163,9 @@ class LexicalAnalyser {
 			else {
 				currentSymbol = "";
 			}
-			
+
+            currentInstruction.setLastLine(currentLine);
+
 			skipSpaces();
 			
 			registerSymbol();

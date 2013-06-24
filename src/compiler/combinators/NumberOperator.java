@@ -40,7 +40,7 @@ public abstract class NumberOperator implements Combinator {
 		Combinator c = ensureIsNumber(node1.getArgument());
 		
 		if(c == null) {
-			throw new CompilerException("La première opérande de + n'est pas un nombre");
+			throw new CompilerException("La première opérande de " + getName() + " n'est pas un nombre");
 		}
 		
 		if(c.getGraph() != null) {
@@ -53,7 +53,7 @@ public abstract class NumberOperator implements Combinator {
 		c = ensureIsNumber(node2.getArgument());
 		
 		if(c == null) {
-			throw new CompilerException("La première opérande de + n'est pas un nombre");
+			throw new CompilerException("La seconde opérande de " + getName() + " n'est pas un nombre");
 
 		}
 		

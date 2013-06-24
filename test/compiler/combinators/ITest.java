@@ -42,8 +42,8 @@ public class ITest {
 		Node x = new Node(NodeFieldFactory.create(p), NodeFieldFactory.create(q));
 		
 		Node node1 = new Node(NodeFieldFactory.create(i), NodeFieldFactory.create(x));
-		@SuppressWarnings("unused")
-		Node node2 = new Node(NodeFieldFactory.create(node1), NodeFieldFactory.create(y));
+
+        new Node(NodeFieldFactory.create(node1), NodeFieldFactory.create(y));
 		
 		Registry registry = new Registry();
 		registry.setNode(node1);
@@ -52,14 +52,16 @@ public class ITest {
 		
 		Node n = registry.getNode();
 
-		assertNotNull(n.getFunction().getNode());
-		assertEquals(p, n.getFunction().getNode().getFunction().getCombinator());
-		assertEquals(q, n.getFunction().getNode().getArgument().getCombinator());
-		assertEquals(y, n.getArgument().getCombinator());
-		
-		Node nextNode = n.getNextNode();
-		
-		assertNull(nextNode);
+		assertNull(n.getFunction().getNode());
+		assertEquals(p, n.getFunction().getCombinator());
+		assertEquals(q, n.getArgument().getCombinator());
+
+        Node nextNode = n.getNextNode();
+
+        assertNotNull(nextNode);
+
+		assertEquals(y, nextNode.getArgument().getCombinator());
+
 	}
 	
 	@Test

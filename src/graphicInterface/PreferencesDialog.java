@@ -1,6 +1,8 @@
 package graphicInterface;
 
 
+import compiler.config.ConfigManager;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -20,7 +22,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 
 
-
+/**
+ * Dialogue permettant à l'utilisateur de voir et modifier les préférences du programme
+ */
 public class PreferencesDialog extends JPanel implements ActionListener{
 	
 	private Preferences preferences = Preferences.userRoot();
@@ -28,23 +32,17 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	private static MainWindow parent;
 	
 	private ImageIcon textPreferences = null;
-	private ImageIcon combinatorPreferences = null;
+    private ImageIcon compilerPreferences = null;
     
-    private JComboBox<?> sizeList;
-    private JComboBox<?> fontList;
+    private JComboBox sizeList;
+    private JComboBox fontList;
     private JCheckBox lineNumbers;
+
+    private JComboBox abstractionLevelList;
     
     private static JFrame frame;
-	
-	
-	final String apply = "Apply";
-	final String restore = "Restore";
-	final String close = "Close";
 
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5325511632318062715L;
 
 	public PreferencesDialog(MainWindow parent) {
@@ -53,51 +51,60 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 		JTabbedPane tabbedPane = new JTabbedPane();
 		
 		textPreferences = new ImageIcon("icons/textPreferences.png");
-		combinatorPreferences = new ImageIcon("icons/combinators.png");
+        compilerPreferences = new ImageIcon("icons/compiler_preferences.png");
 		
 		JPanel textPanel = new JPanel(new GridLayout(0, 1));		
 	    
 		Object[] numbers = {6, 8, 9, 10, 11, 12, 14, 16, 18, 20};
-		sizeList = new JComboBox<Object>(numbers);
+		sizeList = new JComboBox(numbers);
 		sizeList.setEditable(true);
 		sizeList.setSelectedItem(preferences.getInt("textSize", 12));
 		sizeList.setMaximumSize(new Dimension(100,10));
 		
 		JPanel sizePanel = new JPanel(new GridLayout(0, 1));
-		sizePanel.add(new JLabel("Change text size"));
+		sizePanel.add(new JLabel("Changer la taille du texte"));
 		sizePanel.add(sizeList);
 		textPanel.add(sizePanel);
 		
 		Object[] fonts = {"Arial", "Calibri", "Comic Sans", "Courier", "Georgia", "Helvetica", "Script", "Times New Roman", "Verdana"};
-		fontList = new JComboBox<Object>(fonts);
+		fontList = new JComboBox(fonts);
 		fontList.setEditable(true);
 		fontList.setSelectedItem(preferences.get("textFont", "Calibri"));
 		fontList.setMaximumSize(new Dimension(100,10));
 		
 		JPanel fontPanel = new JPanel(new GridLayout(0, 1));
-		fontPanel.add(new JLabel("Change text font"));
+		fontPanel.add(new JLabel("Changer la police du texte"));
 		fontPanel.add(fontList);
 		textPanel.add(fontPanel);
 		
-		lineNumbers = new JCheckBox("Add line numbers");
+		lineNumbers = new JCheckBox("Montrer les numéros de ligne");
 		if (Boolean.valueOf(preferences.get("lineNumbers", "true"))) lineNumbers.setSelected(true);
 		textPanel.add(lineNumbers);
 		
 		textPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		
-	    tabbedPane.addTab("Text preferences", textPreferences, textPanel,
-                "Editor's text preferences");
-	    
-	    /*
-		JPanel combinatorsPanel = new JPanel(new GridLayout(1, 1));
-		combinatorsPanel.setLayout(new BoxLayout(combinatorsPanel, BoxLayout.PAGE_AXIS));
-		JLabel availableCombinators = new JLabel("Available combinators");
-		combinatorsPanel.add(availableCombinators);
-		
-		
-		tabbedPane.addTab("Available combinators", combinatorPreferences, combinatorsPanel,
-	            "Natively available combinators");
-		*/
+	    tabbedPane.addTab("Texte", textPreferences, textPanel,
+                "Les préférences du texte de l'éditeur");
+
+        JPanel compilerPanel = new JPanel(new GridLayout(1, 1));
+        compilerPanel.setLayout(new BoxLayout(compilerPanel, BoxLayout.PAGE_AXIS));
+
+        JPanel abstractionLevelPanel = new JPanel(new GridLayout(2, 1));
+
+        JLabel abstractionLevelLabel = new JLabel("Niveau d'abstraction par défaut:");
+
+        Integer[] abstractionLevels = {1, 2, 3, 4};
+        abstractionLevelList = new JComboBox(abstractionLevels);
+        abstractionLevelList.setSelectedIndex(ConfigManager.getInstance().getDefaultAbstractionLevel()  -1);
+
+        abstractionLevelPanel.add(abstractionLevelLabel);
+        abstractionLevelPanel.add(abstractionLevelList);
+
+        compilerPanel.add(abstractionLevelPanel);
+
+        tabbedPane.addTab("Compilateur", compilerPreferences, compilerPanel,
+                "Les paramètres du compilateur");
+
         //Add the tabbed pane to this panel.
         add(tabbedPane);
          
@@ -108,12 +115,12 @@ public class PreferencesDialog extends JPanel implements ActionListener{
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
 
-        JButton apply = new JButton("Apply");
+        JButton apply = new JButton("Appliquer");
         apply.setActionCommand("apply");
         apply.addActionListener(this);
         buttonsPanel.add(apply);
         
-        JButton reset = new JButton("Reset");
+        JButton reset = new JButton("Restaurer");
         reset.setActionCommand("reset");
         reset.addActionListener(this);
         buttonsPanel.add(reset);
@@ -127,22 +134,15 @@ public class PreferencesDialog extends JPanel implements ActionListener{
         add(buttonsPanel);
 	    	    
 	}
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from
-     * the event dispatch thread.
-     */
+
 	 public static void createAndShowGUI(MainWindow parent) {
-	        //Create and set up the window.
-	        frame = new JFrame("TabbedPaneDemo");
+	        frame = new JFrame("Configuration");
 	        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	        
 			frame.setIconImage((new ImageIcon("icons/cheese.png")).getImage());
-	         
-	        //Add content to the window.
+
 	        frame.add(new PreferencesDialog(parent), BorderLayout.CENTER);
-	        frame.setPreferredSize(new Dimension(400,300)) ;
-	        //Display the window.
+	        frame.setPreferredSize(new Dimension(400,300));
 	        frame.pack();
 			frame.setLocationRelativeTo(null);
 	        frame.setVisible(true);
@@ -150,15 +150,24 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	    
 
 	public void actionPerformed(ActionEvent e) {
-		if("apply".equals(e.getActionCommand())) {
+		if("apply".equals(e.getActionCommand()) || "close".equals(e.getActionCommand())) {
+
 	        preferences.putInt("textSize", (Integer) sizeList.getSelectedItem());
 			preferences.put("textFont", (String) fontList.getSelectedItem());
-	        preferences.put("lineNumbers", new Boolean(lineNumbers.isSelected()).toString());
-			if (lineNumbers.isSelected())  parent.getPanneauText().setRowHeaderView( parent.getLineNumbers() ) ;
-			else parent.getPanneauText().setRowHeaderView( null ) ;
+	        preferences.put("lineNumbers", Boolean.toString(lineNumbers.isSelected()));
+
+			if (lineNumbers.isSelected())
+                parent.getPanneauText().setRowHeaderView( parent.getLineNumbers() );
+			else
+                parent.getPanneauText().setRowHeaderView( null );
+
 			parent.getEditor().update();
+
+            ConfigManager.getInstance().setDefaultAbstractionLevel(((Integer)abstractionLevelList.getSelectedItem()));
 			
-		} else if ("close".equals(e.getActionCommand())) {
+		}
+
+        if ("close".equals(e.getActionCommand())) {
 		      frame.dispose();
 	    }
 		else if ("reset".equals(e.getActionCommand())) {
@@ -168,6 +177,8 @@ public class PreferencesDialog extends JPanel implements ActionListener{
 	        fontList.setSelectedItem("Calibri");
 	        preferences.put("lineNumbers", "true");
 	        lineNumbers.setSelected(true);
+            abstractionLevelList.setSelectedIndex(3);
+            ConfigManager.getInstance().setDefaultAbstractionLevel(4);
 			parent.getEditor().update();
 		}
 	}

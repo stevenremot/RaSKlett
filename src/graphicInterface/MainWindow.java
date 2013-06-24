@@ -30,7 +30,6 @@ import compiler.config.ConfigManager;
 public class MainWindow extends JFrame implements CompilerCallback{
 
 	private Compiler compiler;
-	private Thread compilationThread;
 	
 	private String filename = null;
 	private String dir = null;
@@ -62,6 +61,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JMenuItem iStop = null;
 	private JMenuItem iPreferences = null;
 	private JMenuItem iHelp = null;
+    private boolean inStepByStepCompilation = false;
 
 	private  JScrollPane panneauTexte ;
 	private TextLineNumbers tln ;
@@ -85,8 +85,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		ArrayList<String> combinatorsBool = new ArrayList<String>();
 		combinatorsBool.add("true");
 		combinatorsBool.add("false");
-		combinatorsBool.add("and ");
-		combinatorsBool.add("or");
+		combinatorsBool.add("and : B1 && B2 ");
+		combinatorsBool.add("or : B1 || B2");
 		
 		ArrayList<String> combinatorsNumbers = new ArrayList<String>();
 		combinatorsNumbers.add("+  -  *  /");
@@ -101,39 +101,39 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		
 		create = new JButton(new ImageIcon("icons/create.png"));
-		create.setToolTipText("Open a new file");
+		create.setToolTipText("Créer un nouveau fichier");
 		create.addActionListener(new ControleurCreate());
 
 		open = new JButton(new ImageIcon("icons/open.png"));
-		open.setToolTipText("Open an existing file");
+		open.setToolTipText("Ouvrir un fchier existant");
 		open.addActionListener(new ControleurOpen());
 
 		save = new JButton(new ImageIcon("icons/save.png"));
-		save.setToolTipText("Save the current file");
+		save.setToolTipText("Sauver le fichier courant");
 		save.addActionListener(new ControleurSave());
 
 		compileAll = new JButton(new ImageIcon("icons/compile.png"));
-		compileAll.setToolTipText("Compile all the code");
+		compileAll.setToolTipText("Compiler le code en entier");
 		compileAll.addActionListener(new ControleurCompileAll());
 
 		compileStepByStep = new JButton(new ImageIcon("icons/compile_sbs.png"));
-		compileStepByStep.setToolTipText("Compile the code step by step");
+		compileStepByStep.setToolTipText("Compiler le code pas-à-pas");
 		compileStepByStep.addActionListener(new ControleurCompileStepByStep());
 
 		nextStep = new JButton(new ImageIcon("icons/next.png"));
-		nextStep.setToolTipText("Compile next instruction");
+		nextStep.setToolTipText("Compiler l'étape");
 		nextStep.addActionListener(new ControleurToNextStep());
 
 		nextLine = new JButton(new ImageIcon("icons/next_line.png"));
-		nextLine.setToolTipText("Compile next line");
+		nextLine.setToolTipText("Compiler l'instruction");
 		nextLine.addActionListener(new ControleurToNextInstruction());
 
 		toEnd = new JButton(new ImageIcon("icons/to_end.png"));
-		toEnd.setToolTipText("Compile the rest of the code");
+		toEnd.setToolTipText("Compiler le reste du code");
 		toEnd.addActionListener(new ControleurCompileAll());
 
 		stop = new JButton(new ImageIcon("icons/stop.png"));	
-		stop.setToolTipText("Interrupt compilation");
+		stop.setToolTipText("Interrompre la compilation");
 		stop.addActionListener( new ControleurStop());
 		
 
@@ -160,19 +160,19 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		menuBar = new JMenuBar();
 
-		file = new JMenu("File");
+		file = new JMenu("Fichier");
 		file.setMnemonic(KeyEvent.VK_F);
 		file.getAccessibleContext().setAccessibleDescription(
-				"File menu");
+				"Fichier");
 		menuBar.add(file);
 
-		iOpen = new JMenuItem("Open");
+		iOpen = new JMenuItem("Ouvrir");
 		iOpen.addActionListener(new ControleurOpen());
 
-		iCreate = new JMenuItem("Create");
+		iCreate = new JMenuItem("Créer");
 		iCreate.addActionListener(new ControleurCreate());
 		
-		iSave = new JMenuItem("Save");
+		iSave = new JMenuItem("Sauver");
 		iSave.addActionListener(new ControleurSave());
 
 		file.add(iOpen);
@@ -182,17 +182,20 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		compilation = new JMenu("Compilation");
 		compilation.setMnemonic(KeyEvent.VK_C);
 		compilation.getAccessibleContext().setAccessibleDescription(
-				"Menu with compilation tools");
+				"Commandes de compilation");
 		menuBar.add(compilation);
 
-		iCompileAll = new JMenuItem("Compile all");
+		iCompileAll = new JMenuItem("Compiler tout le code");
 		iCompileAll.addActionListener(new ControleurCompileAll());
-		iCompileStepByStep = new JMenuItem("Compile step by step");
+		iCompileStepByStep = new JMenuItem("Compiler le code pas-à-pas");
 		iCompileStepByStep.addActionListener(new ControleurCompileStepByStep());
-		iNextStep = new JMenuItem("Compile next step");
-		iNextLine = new JMenuItem("Compile next line");
-		iToEnd = new JMenuItem("Compile to end");
-		iStop = new JMenuItem("Stop compilation");
+		iNextStep = new JMenuItem("Compiler l'étape");
+        iNextStep.addActionListener(new ControleurToNextStep());
+		iNextLine = new JMenuItem("Compiler l'instruction");
+        iNextLine.addActionListener(new ControleurToNextInstruction());
+		iToEnd = new JMenuItem("Compiler le reste du code");
+        iToEnd.addActionListener(new ControleurToEnd());
+		iStop = new JMenuItem("Interrompre la compilation");
 		iStop.addActionListener(new ControleurStop());
 
 		iNextStep.setEnabled(false);
@@ -207,24 +210,24 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		compilation.add(iToEnd);
 		compilation.add(iStop);
 
-		tools = new JMenu("Tools");
-		tools.setMnemonic(KeyEvent.VK_T);
+		tools = new JMenu("Outils");
+		tools.setMnemonic(KeyEvent.VK_O);
 		tools.getAccessibleContext().setAccessibleDescription(
-				"Tools menu");
+				"Menu des outils");
 		menuBar.add(tools);
 
-		iPreferences = new JMenuItem("Preferences");
+		iPreferences = new JMenuItem("Préférences");
 		iPreferences.addActionListener(new ControleurPreferences(this));
 
 		tools.add(iPreferences);	
 
-		help = new JMenu("Help");
-		help.setMnemonic(KeyEvent.VK_H);
+		help = new JMenu("Aide");
+		help.setMnemonic(KeyEvent.VK_A);
 		help.getAccessibleContext().setAccessibleDescription(
-				"Help menu");
+				"Menu d'aide");
 		menuBar.add(help);
 
-		iHelp = new JMenuItem("Help");
+		iHelp = new JMenuItem("Manuel");
 		iHelp.addActionListener(new ControleurManual(this));
 
 		help.add(iHelp);
@@ -242,13 +245,13 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		JPanel combinatorPanel = new JPanel(new GridLayout(0, 1));
 		combinatorPanel.setPreferredSize(new Dimension(170,0));
 
-		Border border = BorderFactory.createTitledBorder("Native combinators");
+		Border border = BorderFactory.createTitledBorder("Combinateurs natifs");
 		combinatorPanel.setBorder(border);    
 
-		CombinatorPanel basic = new CombinatorPanel(combinators, "basic-combinators : ", ConfigManager.BASIC_COMBINATORS, true);
-		CombinatorPanel bool = new CombinatorPanel(combinatorsBool, "booleans : ", ConfigManager.BOOLEANS, false);
-		CombinatorPanel numbers = new CombinatorPanel(combinatorsNumbers, "numbers : ", ConfigManager.NUMBERS, false);
-		CombinatorPanel lists = new CombinatorPanel(combinatorsLists, "lists : ", ConfigManager.LISTS, false);
+		CombinatorPanel basic = new CombinatorPanel(combinators, "Basiques : ", ConfigManager.BASIC_COMBINATORS, false);
+		CombinatorPanel bool = new CombinatorPanel(combinatorsBool, "Booléens : ", ConfigManager.BOOLEANS, false);
+		CombinatorPanel numbers = new CombinatorPanel(combinatorsNumbers, "Nombres : ", ConfigManager.NUMBERS, false);
+		CombinatorPanel lists = new CombinatorPanel(combinatorsLists, "Listes : ", ConfigManager.LISTS, false);
 		combinatorPanel.add(basic);
 		combinatorPanel.add(bool);
 		combinatorPanel.add(numbers);
@@ -271,7 +274,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		return editor;
 	}
 	
-	public void initCompilationEnvironment() {
+	private void initCompilationEnvironment() {
 		offset = 0;
 		editor.disableEdition();
 		editor.setText(editor.getCleanedText());
@@ -280,13 +283,14 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 
 		String code = editor.getCleanedText();
-		System.out.println("code : "+code);
 		Reader reader = new StringReader(code);
 		compiler = new Compiler(reader,this);
 	}
 	
-	public void startCompilationStepByStep(){
+	private void startCompilationStepByStep(){
 		initCompilationEnvironment();
+
+        inStepByStepCompilation = true;
 
 		nextStep.setEnabled(true);
 		nextLine.setEnabled(true);
@@ -297,79 +301,74 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		
 	}
 
-	public void startCompilation(){
+    private void startCompilation(){
 		initCompilationEnvironment();
+        inStepByStepCompilation = true;
 
 		enableCompilation(false);
 		compiler.reduceAll();
-		enableCompilation(true);
 
 	}
-	
-	public void toNextStep() {
-		enableCompilation(false);
+
+    private void toNextStep() {
 		if(compiler != null)
 			compiler.reduceStep();
-		enableCompilation(true);
 
 	}
-	
-	public void toNextInstruction() {
-		compilationThread = compiler.reduceInstruction();
+
+    private void toNextInstruction() {
+		compiler.reduceInstruction();
 	}
-	
-	public void toEnd() {
-		compilationThread = compiler.reduceAll();
+
+    private void toEnd() {
+		compiler.reduceAll();
 		editor.enableEdition();
 		stop.setEnabled(false);
 		iStop.setEnabled(false);
 	}
 
-	public void stopCompilation(){
-		
-		editor.enableEdition();
-		
-		nextStep.setEnabled(false);
-		nextLine.setEnabled(false);
-		toEnd.setEnabled(false);
-		stop.setEnabled(false);
-		iNextStep.setEnabled(false);
-		iNextLine.setEnabled(false);
-		iToEnd.setEnabled(false);
-		iStop.setEnabled(false);
-		
-		compiler.stopReduction();
+    private void stopCompilation(){
+
+        inStepByStepCompilation = false;
+
+        if(compiler != null) {
+		    compiler.stopReduction();
+        }
 		
 		compiler = null;
 		enableCompilation(true);
 		
 
 	}
-	
-	public void enableCompilation(boolean b)
+
+    private void enableCompilation(boolean b)
 	{
 		if(!b)
 			editor.disableEdition();
 		else
 			editor.enableEdition();
-		if(compileStepByStep.isEnabled()) {
-			nextStep.setEnabled(b);
-			nextLine.setEnabled(b);
-			toEnd.setEnabled(b);
-			iNextStep.setEnabled(b);
-			iNextLine.setEnabled(b);
-			iToEnd.setEnabled(b);
-		}
+
+        nextStep.setEnabled(inStepByStepCompilation);
+        nextLine.setEnabled(inStepByStepCompilation);
+        toEnd.setEnabled(inStepByStepCompilation);
+        iNextStep.setEnabled(inStepByStepCompilation);
+        iNextLine.setEnabled(inStepByStepCompilation);
+        iToEnd.setEnabled(inStepByStepCompilation);
+
+        iCompileStepByStep.setEnabled(b);
+        compileStepByStep.setEnabled(b);
+
 		iCompileAll.setEnabled(b);
 		compileAll.setEnabled(b);
+
 		stop.setEnabled(!b);
 		iStop.setEnabled(!b);
 		
 		
 	}
-	
 
-	public class ControleurCompileAll implements ActionListener {
+
+    private class ControleurCompileAll implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			startCompilation();
@@ -377,29 +376,29 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	}
 
-	public class ControleurCompileStepByStep implements ActionListener {
+    private class ControleurCompileStepByStep implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			startCompilationStepByStep();
 		}
 
 	}
-	
-	public class ControleurToNextStep implements ActionListener {
+
+    private class ControleurToNextStep implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			toNextStep();
 		}
 	}
-	
-	public class ControleurToNextInstruction implements ActionListener {
+
+    private class ControleurToNextInstruction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			toNextInstruction();
 		}
 	}
-	
-	public class ControleurToEnd implements ActionListener {
+
+    private class ControleurToEnd implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			toEnd();
@@ -407,7 +406,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
 
-	public class ControleurStop implements ActionListener {
+    private class ControleurStop implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			stopCompilation();
@@ -416,7 +415,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
 
-	public class ControleurPreferences implements ActionListener {
+    private class ControleurPreferences implements ActionListener {
 
 		private MainWindow window;
 
@@ -430,11 +429,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 	}
 	/**
-	 * @brief Ouvre une boÃ®te de dialogue pour sÃ©lectionner le fichier Ã  ouvrir.
+	 * Ouvre une boîte de dialogue pour sélectionner le fichier à  ouvrir.
 	 * @author lagrange
 	 *
 	 */
-	public class ControleurOpen implements ActionListener{
+    private class ControleurOpen implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -470,7 +469,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	}
 
-	public class ControleurCreate implements ActionListener{
+    private class ControleurCreate implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -485,38 +484,18 @@ public class MainWindow extends JFrame implements CompilerCallback{
 				e.printStackTrace();
 			}
 			editor.setText(null);
-//			try {
-//				String[] s = editor.getCleanedText().split("\n");
-//				int n = s.length;
-//				System.out.println("nb lignes : "+n);
-//				for(int i = 0; i < n ; i ++) {
-//					if(s[i].length() > 0) {
-//						int k = s[i].split(";").length;
-//						System.out.println("nb instruct ligne "+i+ " : "+k);
-//						
-//						for(int j = 0; j < k; j++) {
-//							int pos = getPos(i,j);
-//							editor.insertResult("RÃ©sultat ligne "+i+ " instruction "+j +";",pos +offset -2 +i);
-//						}
-//						offset += k;
-//					}
-//					
-//				}		
-//			} catch (BadLocationException e) {
-//				e.printStackTrace();
-//			}
 		}
 
 	}
 
 	/**
-	 * @brief Listener pour le bouton "save"
+	 * Listener pour le bouton "save"
 	 * Ouvre un dialogue pour choisir le fichier dans lequel Ã©crire si on n'a pas encore sauvegardÃ©.
 	 * Si c'est le cas, sauvegarde dans le fichier que l'on a prÃ©cisÃ© Ã  la premiÃ¨re sauvegarde.
 	 * @author lagrange
 	 *
 	 */
-	public class ControleurSave implements ActionListener {
+    private class ControleurSave implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -546,8 +525,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			} 		
 		}
 	}
-	
-	public class ControleurManual implements ActionListener {
+
+    private class ControleurManual implements ActionListener {
 		private MainWindow parent;
 		
 		public ControleurManual(MainWindow parent) {
@@ -557,7 +536,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
-				new DocViewerDialog(parent, "data/manuel.html", "User manual");
+				new DocViewerDialog(parent, "data/manuel.html", "Manuel d'utilisation");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -565,23 +544,22 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	
 	/**
-	 * @brief Méthode calculant la position d'une erreur ou d'un rÃ©sultat dans l'Ã©diteur de texte aprÃ¨s la compilation.
-	 * @param line la ligne de l'instruction correspondant Ã  l'erreur ou au rÃ©sultat.
+	 * Méthode calculant la position d'une erreur ou d'un résultat dans l'éditeur de texte après la compilation.
+	 * @param line la ligne de l'instruction correspondant à l'erreur ou au résultat.
 	 * @param position la  position de l'instruction au sein d'une ligne d'instructions. 
-	 * @return pos la position oÃ¹ l'on va insÃ©rer le texte
+	 * @return pos la position où l'on va insÃ©rer le texte
 	 */
-	public int getPos(int line, int position) {
+    private int getPos(int line, int position) {
 		String s = editor.getText();
 		// On transforme le code en un tableau de lignes.
 		String[] instructions = s.split("\n");
-		int pos = 1;
+		int pos = 1 - position;
 
-		System.out.println(line + offset + position);
-		// line correspond au numÃ©ro de ligne AVANT l'insertion de rÃ©sultats ou d'erreurs.
-		// L'offset prend en compte le dÃ©calage occasionnÃ© par les insertions prÃ©cÃ©dentes de rÃ©sultats de compilation.
 		// line correspond au numéro de ligne AVANT l'insertion de résultats ou d'erreurs.
 		// L'offset prend en compte le décalage occasionné par les insertions précédentes de résultats de compilation.
-		for(int i = 0; i < line + offset + position +1; i++) {
+		// line correspond au numéro de ligne AVANT l'insertion de résultats ou d'erreurs.
+		// L'offset prend en compte le décalage occasionné par les insertions précédentes de résultats de compilation.
+		for(int i = 0; i < line + offset + 1; i++) {
 			pos += instructions[i].length();
 		}
 		
@@ -595,14 +573,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			if(!finished) {
 				int pos = getPos(line ,position);
 				int l = line + offset + 1;
-				System.out.println(reducedGraph);
-				editor.insertResult(">>> Résultat de la ligne "+ l +" : "+reducedGraph,pos + l-2);
+				editor.insertResult(">>> "+reducedGraph,pos + l-2);
 				offset++;
 			}
 			else {
-				compileStepByStep.setEnabled(false);
 				stopCompilation();
-				compileStepByStep.setEnabled(true);
 			}
 		} catch (BadLocationException e) {
 			e.printStackTrace();
@@ -616,12 +591,12 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		int l = line + offset + 1;
 		int pos = getPos(line,0);
 		try {
-			editor.insertError("!!! Erreur : " +e.getMessage(),pos + l - 2);
-			//editor.insertError("!!! Erreur ligne "+l+" " +e.getMessage(),line + offset );
+			editor.insertError("!!! " +e.getMessage(),pos + l - 2);
 			offset++;
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
+        stopCompilation();
 	}
 	
 	public JScrollPane getPanneauText(){

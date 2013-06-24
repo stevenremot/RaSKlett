@@ -62,27 +62,34 @@ public class Node {
 			node = node.getFunction().getNode();
 		return node;
 	}
-	
-	public Node copy() {
-		NodeField func, arg;
 
-		func = this.getFunction();
-		
-		if(this.getArgument().getCombinator() != null) {
-			arg = this.getArgument();
-		}
-		else {
-			arg = NodeFieldFactory.create(this.getArgument().getNode().copy());
-		}
-		
-		Node clone = new Node(func, arg);
-		
-		if(this.getNextNode() != null) {
-			Node n = this.getNextNode().copy();
-			n.setFunction(NodeFieldFactory.create(clone));
-		}
-		
-		return clone;
+    /**
+     *
+     * @return la copie entière du graphe contenant le noeud
+     */
+	public Node copy() {
+        Node root = this.getRoot();
+
+		return root.copy(root.getFunction());
 	}
+
+    private Node copy(NodeField func) {
+        NodeField arg;
+
+        if(this.getArgument().getCombinator() != null) {
+            arg = this.getArgument();
+        }
+        else {
+            arg = NodeFieldFactory.create(this.getArgument().getNode().copy().getLastNode());
+        }
+
+        Node clone = new Node(func, arg);
+
+        if(this.getNextNode() != null) {
+            this.getNextNode().copy(NodeFieldFactory.create(clone));
+        }
+
+        return clone;
+    }
 
 }

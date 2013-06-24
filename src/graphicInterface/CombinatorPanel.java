@@ -13,11 +13,11 @@ import javax.swing.border.Border;
 
 import compiler.config.ConfigManager;
 
+/**
+ * @brief Classe créant un composant contenant un champ de texte affichant un groupe de combinateurs et un bouton permettant de les activer ou non
+ */
 public class CombinatorPanel extends JPanel{
-	
-	/**
-	 * @brief Classe créant un composant contenant un champ de texte affichant un groupe de combinateurs et un bouton permettant de les activer ou non
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private JTextArea text;
 	private JButton button;
@@ -74,10 +74,10 @@ public class CombinatorPanel extends JPanel{
 			manager.toggle(feature, enabled);
 			text.setEnabled(enabled);
 			if(enabled) {
-				button.setText("Disable");
+				button.setText("Désactiver");
 			}
 			else
-				button.setText("Enable");
+				button.setText("Activer");
 		}
 	}
 }

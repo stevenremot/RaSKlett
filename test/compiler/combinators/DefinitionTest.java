@@ -26,10 +26,13 @@ public class DefinitionTest {
 		
 		Registry reg = new Registry();
 		reg.setNode(node1);
-		
+
+        CombinatorManager.reset();
+        CombinatorManager cm = CombinatorManager.getInstance();
+
+
 		assertFalse(def.applyReduction(reg));
-		
-		CombinatorManager cm = CombinatorManager.getInstance();
+
 		
 		Combinator c = cm.get("f");
 		
