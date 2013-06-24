@@ -100,7 +100,7 @@ class LexicalAnalyser {
 	}
 	
 	private void registerOperator() throws CompilerException {
-        String oldSymbol = "";
+        String oldSymbol;
 		currentSymbol = "";
 		
 		do {
@@ -172,6 +172,12 @@ class LexicalAnalyser {
 			registerInstruction();
 			return;
 		}
+        else if(currentChar == '#') {
+            while(currentChar != '\n') {
+                nextChar();
+            }
+            return;
+        }
 		
 		currentSymbol = "" + (char)currentChar;
 		registerSymbol();

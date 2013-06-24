@@ -94,7 +94,7 @@ public class Compiler {
 		Node graph;
 		
 		currentInstruction = symbols.get(currentInstructionIndex);
-		
+
 		try {
             graph = GraphFactory.create(currentInstruction.getInstruction());
 
