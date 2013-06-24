@@ -1,6 +1,8 @@
 package graphicInterface;
 
 import java.awt.Color;
+import java.util.Arrays;
+import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
@@ -81,7 +83,55 @@ public class Editor extends JTextPane {
 		}
 
 	}
-	
+
+    /**
+     * @return une liste avec 3 arguments: le début de l'instruction avant la sélection, la sélection, puis la fin de l'instruction, ou null si pas de sélection.
+     */
+    public List<String> getSelectedInstruction() {
+        String selectionText = getSelectedText(),
+                text = getText();
+
+        // Pour trouver le début, on cherche le premier point virgule ou le début du texte, et à partir de là on passe les espaces, les commentaires, les résultats et les erreurs
+        int selectionStart = getSelectionStart(),
+                start = selectionStart;
+
+        while(start > 0 && text.charAt(start) != ';') {
+            // Si on sélectionn l'expression d'un résultat, la suite risque de sauter le début sans cette condition
+            if(text.substring(start).equals(">>>")) {
+                start += 3;
+                break;
+            }
+            start--;
+        }
+
+        boolean isStart = false;
+        while(!isStart) {
+            while(" \n\t".contains(Character.toString(text.charAt(start)))) start++;
+
+            String subText = text.substring(start);
+
+            if(subText.startsWith("#") ||
+                    subText.startsWith(">>>") ||
+                    subText.startsWith("!!!")) {
+
+                while(start < selectionStart && text.charAt(start) != '\n') start++;
+
+            }
+        }
+
+        String startText = text.substring(start, selectionStart);
+
+        // Pour trouver la fin, on cherche le prochain point-virgule ou la fin du texte
+        int selectionEnd = getSelectionEnd(),
+                end = selectionEnd;
+
+        while(end < text.length() && text.charAt(end) != ';') end++;
+
+        String endText = text.substring(selectionEnd, end);
+
+        return Arrays.asList(new String[] { startText, selectionText, endText});
+    }
+
 	public void insertResultCompilationSelection(String s) throws BadLocationException{
 		int chercheFin = getSelectionEnd();
 		boolean finished = false;

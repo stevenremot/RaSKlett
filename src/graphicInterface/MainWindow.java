@@ -43,6 +43,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JButton saveAs = null;
 	private JButton compileAll = null;
 	private JButton compileStepByStep = null;
+    private JButton compileSelection = null;
 	private JButton nextStep = null;
 	private JButton nextLine = null;
 	private JButton toEnd = null;
@@ -59,6 +60,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JMenuItem iSaveAs = null;
 	private JMenuItem iCompileAll = null;
 	private JMenuItem iCompileStepByStep = null;
+    private JMenuItem iCompileSelection = null;
 	private JMenuItem iNextStep = null;
 	private JMenuItem iNextLine = null;
 	private JMenuItem iToEnd = null;
@@ -129,6 +131,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		compileStepByStep.setToolTipText("Compiler le code pas-à-pas");
 		compileStepByStep.addActionListener(new ControleurCompileStepByStep());
 
+        compileSelection = new JButton();
+        compileSelection.setToolTipText("COmpiler le texte sélectionné");
+        compileSelection.addActionListener(new ControleurCompileSelection());
+
 		nextStep = new JButton(new ImageIcon("icons/next.png"));
 		nextStep.setToolTipText("Compiler l'étape");
 		nextStep.addActionListener(new ControleurToNextStep());
@@ -163,6 +169,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		toolBar.add(saveAs);
 		toolBar.add(compileAll);
 		toolBar.add(compileStepByStep);
+        toolBar.add(compileSelection);
 		toolBar.add(nextStep);
 		toolBar.add(nextLine);
 		toolBar.add(toEnd);
@@ -208,16 +215,25 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		iCompileAll = new JMenuItem("Compiler tout le code");
 		iCompileAll.addActionListener(new ControleurCompileAll());
+
 		iCompileStepByStep = new JMenuItem("Compiler le code pas-à-pas");
 		iCompileStepByStep.addActionListener(new ControleurCompileStepByStep());
+
+        iCompileSelection = new JMenuItem("Compiler la sélection");
+        iCompileSelection.addActionListener(new ControleurCompileSelection());
+
 		iNextStep = new JMenuItem("Compiler l'étape");
         iNextStep.addActionListener(new ControleurToNextStep());
+
 		iNextLine = new JMenuItem("Compiler l'instruction");
         iNextLine.addActionListener(new ControleurToNextInstruction());
+
 		iToEnd = new JMenuItem("Compiler le reste du code");
         iToEnd.addActionListener(new ControleurToEnd());
+
 		iStop = new JMenuItem("Interrompre la compilation");
 		iStop.addActionListener(new ControleurStop());
+
 		iClean= new JMenuItem("Nettoyer le code");
 		clean.addActionListener(new ControleurClean());
 
@@ -228,6 +244,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		compilation.add(iCompileAll);
 		compilation.add(iCompileStepByStep);
+        compilation.add(iCompileSelection);
 		compilation.add(iNextStep);
 		compilation.add(iNextLine);
 		compilation.add(iToEnd);
@@ -346,6 +363,14 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	}
 
+    private void startCompileSelection() {
+        initCompilationEnvironment();
+
+        for(String s: getEditor().getSelectedInstruction()) {
+            System.out.println("--" + s);
+        }
+    }
+
     private void toNextStep() {
 		if(compiler != null)
 			compiler.reduceStep();
@@ -432,6 +457,13 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 
 	}
+
+    private class ControleurCompileSelection implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            startCompileSelection();
+        }
+    }
 
     private class ControleurToNextStep implements ActionListener {
 		@Override
