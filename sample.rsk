@@ -3,11 +3,11 @@ mod x y := x - ((x / y) * y);
 entier x := [x, entier(x + 1)];
 
 elim_mult x l :=
-	if mod (head l) x = 0
+	if (mod (head l) x) = 0
 	then elim_mult x (tail l)
 	else [head l, elim_mult x (tail l)];
 
-crible l := [head l, elim_mult (head l) (tail l)];
+crible l := [head l, crible (elim_mult (head l) (tail l))];
 
 
 nth k l := 
@@ -16,3 +16,5 @@ nth k l :=
 	else nth (k - 1) (tail l);
 
 npremier n := nth n (crible (entier 2));
+
+npremier 2;
