@@ -19,7 +19,6 @@ public class DocViewerDialog extends JDialog {
 		super(owner, title);
 		
 		JTextPane view = new JTextPane();
-		view.setEnabled(false);
 		view.setContentType("text/html");
         view.setDisabledTextColor(Color.black);
         view.setCaretPosition(0);
@@ -35,6 +34,7 @@ public class DocViewerDialog extends JDialog {
 		r.close();
 		
 		view.setText(content);
+        view.setEnabled(false);
 
 		final JScrollPane scroll = new JScrollPane(view);
 		add(scroll);

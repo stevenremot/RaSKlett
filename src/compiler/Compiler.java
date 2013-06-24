@@ -96,7 +96,7 @@ public class Compiler {
 		currentInstruction = symbols.get(currentInstructionIndex);
 		
 		try {
-			graph = GraphFactory.create(currentInstruction.getInstruction());
+            graph = GraphFactory.create(currentInstruction.getInstruction());
 
             Abstracter ab = new Abstracter(graph.getRoot());
             graph = ab.getAbstractedGraph();
@@ -178,6 +178,7 @@ public class Compiler {
 				synchronized(t) {
 					try {
 						t.instruction();
+                        t.sendResult();
 					}
 					catch(CompilerException e) {
 						sendFailure(e, true);
