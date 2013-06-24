@@ -96,34 +96,18 @@ public class Editor extends JTextPane {
 	 */
 	public String getCleanedText() {
 		String text = "";
-//		int posInit = getCaretPosition();
+
 		String textInit = getText();
 		String[] lines = textInit.split("\n");
 		for(int i = 0; i < lines.length; i++) {
-			// Chaque message de résultat de compilation débute par ">>>" et chaque erreur par "!!!".
-			// Pour obtenir les instructions, on élimine les lignes qui commencent ainsi.
+			
 			if(!(lines[i].indexOf(">>>") == 0 || lines[i].indexOf("!!!") == 0))
 				if(i == 0)
 					text += lines[i];
 				else
 					text += "\n" + lines[i];
 		}
-//		for(int pos = 0; pos < getText().length(); pos++) {
-//			AttributeSet attr = getCharacterAttributes();
-//			if(doc.getForeground(attr) == Color.BLACK)
-//				text += getText().charAt(pos);
-//		    Enumeration<?> e = attr.getAttributeNames();
-//		    while (e.hasMoreElements()) {
-//		      Object name = e.nextElement();
-//		      Object value = attr.getAttribute(name);
-//		      System.out.println(value + " "+ name);
-//		      if(value == Color.BLACK) {
-//					text += getText().charAt(pos);
-//		      }
-//		    }
-//			moveCaretPosition(pos);
-//		}
-//		moveCaretPosition(posInit);
+
 		return text;
 	}
 	
@@ -140,9 +124,7 @@ public class Editor extends JTextPane {
 		  
 		  for (int pos = 0; pos < getText().length(); pos++){
 			  moveCaretPosition(pos);
-			  System.out.println(pos);
 			  Color couleur = (doc.getForeground(getCharacterAttributes()));
-			  System.out.println(couleur);
 			  if (couleur == Color.BLACK) doc.setCharacterAttributes(pos, 1, defaut, true);
 			  else if (couleur == Color.RED) doc.setCharacterAttributes(pos, 1, error, true);
 			  else doc.setCharacterAttributes(pos, 1, result, true);
