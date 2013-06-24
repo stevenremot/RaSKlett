@@ -643,19 +643,20 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	@Override
 	public void onResult(String reducedGraph, int line, int position,
 			boolean finished) {
-		try {
-			if(!finished) {
+        if(!finished) {
+		    try {
 				int pos = getPos(line ,position);
 				int l = line + offset + 1;
 				editor.insertResult(">>> "+reducedGraph,pos + l-2);
 				offset++;
 			}
-			else {
-				stopCompilation();
-			}
-		} catch (BadLocationException e) {
-			e.printStackTrace();
+            catch (BadLocationException e) {
+                e.printStackTrace();
+            }
 		}
+        else {
+            stopCompilation();
+        }
 	}
 
 
