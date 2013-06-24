@@ -39,6 +39,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JButton create = null;
 	private JButton open = null;
 	private JButton save = null;
+	private JButton saveAs = null;
 	private JButton compileAll = null;
 	private JButton compileStepByStep = null;
 	private JButton nextStep = null;
@@ -54,6 +55,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private JMenuItem iOpen = null;
 	private JMenuItem iCreate = null;
 	private JMenuItem iSave = null;
+	private JMenuItem iSaveAs = null;
 	private JMenuItem iCompileAll = null;
 	private JMenuItem iCompileStepByStep = null;
 	private JMenuItem iNextStep = null;
@@ -113,6 +115,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		save = new JButton(new ImageIcon("icons/save.png"));
 		save.setToolTipText("Sauver le fichier courant");
 		save.addActionListener(new ControleurSave());
+		
+		saveAs = new JButton(new ImageIcon("icons/save_as.png"));
+		saveAs.setToolTipText("Enregistrer sous");
+		saveAs.addActionListener(new ControleurSaveAs());
 
 		compileAll = new JButton(new ImageIcon("icons/compile.png"));
 		compileAll.setToolTipText("Compiler le code en entier");
@@ -153,6 +159,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		toolBar.add(create);
 		toolBar.add(open);
 		toolBar.add(save);
+		toolBar.add(saveAs);
 		toolBar.add(compileAll);
 		toolBar.add(compileStepByStep);
 		toolBar.add(nextStep);
@@ -178,12 +185,16 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		iCreate = new JMenuItem("Créer");
 		iCreate.addActionListener(new ControleurCreate());
 		
-		iSave = new JMenuItem("Sauver");
+		iSave = new JMenuItem("Enregistrer");
 		iSave.addActionListener(new ControleurSave());
-
+		
+		iSaveAs = new JMenuItem("Enregistrer sous");
+		iSaveAs.addActionListener(new ControleurSaveAs());
+		
 		file.add(iOpen);
 		file.add(iCreate);
 		file.add(iSave);	
+		file.add(iSaveAs);
 
 		compilation = new JMenu("Compilation");
 		compilation.setMnemonic(KeyEvent.VK_C);
@@ -373,6 +384,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
         iNextStep.setEnabled(inStepByStepCompilation);
         iNextLine.setEnabled(inStepByStepCompilation);
         iToEnd.setEnabled(inStepByStepCompilation);
+        
 
         iCompileStepByStep.setEnabled(b);
         compileStepByStep.setEnabled(b);
@@ -382,6 +394,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		stop.setEnabled(!b);
 		iStop.setEnabled(!b);
+		
+		clean.setEnabled(b);
+		iClean.setEnabled(b);
 		
 		
 	}
@@ -524,7 +539,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	 *
 	 */
     private class ControleurSave implements ActionListener {
-
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if(filename == null) {
@@ -553,6 +567,34 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			} 		
 		}
 	}
+    
+    private class ControleurSaveAs implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			JFileChooser chooser = new JFileChooser();
+			FileNameExtensionFilter filter = new FileNameExtensionFilter(
+					"rsk files", "rsk");
+			chooser.setFileFilter(filter);
+			int returnVal = chooser.showSaveDialog(null);
+			if(returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = chooser.getSelectedFile();		
+				filename = file.getName();
+				dir = file.getPath();
+				try {
+					if(dir != null) {
+						
+						FileWriter writer = new FileWriter(new File(dir));
+						String text = editor.getCleanedText();
+						char[] buffer = text.toCharArray();
+						writer.write(buffer);
+						writer.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				} 		
+			}
+		}
+    }
 
     private class ControleurManual implements ActionListener {
 		private MainWindow parent;
