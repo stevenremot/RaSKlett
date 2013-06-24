@@ -80,7 +80,7 @@ public class Compiler {
 	}
 
     public boolean isInterrupted() {
-        return(compilationThread != null && compilationThread.isInterrupted());
+        return(sk == null || (compilationThread != null && compilationThread.isInterrupted()));
     }
 	
 	// Compile l'instruction en graphe

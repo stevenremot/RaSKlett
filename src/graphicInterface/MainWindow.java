@@ -339,8 +339,10 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		initCompilationEnvironment();
         inStepByStepCompilation = true;
 
-		enableCompilation(false);
-		compiler.reduceAll();
+        if(compiler != null && !compiler.isInterrupted()) {
+		    enableCompilation(false);
+		    compiler.reduceAll();
+        }
 
 	}
 
