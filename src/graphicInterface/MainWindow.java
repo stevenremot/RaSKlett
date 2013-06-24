@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import javax.swing.*;
@@ -75,8 +76,13 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	private  Preferences preferences = Preferences.userRoot();
 
 	private JToolBar toolBar = null;
-	
+
+    // Décalage des lignes lors de l'affichage des résultats
 	private int offset = 0;
+
+    // Dans le cas d'une compilation de sélection, contient l'avant, l'après, et la sélection
+    private List<String> selectedInstruction = null;
+
 
 	/**
 	 * Constructeur de la classe Fenetre
@@ -364,10 +370,16 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
     private void startCompileSelection() {
-        initCompilationEnvironment();
+        selectedInstruction = getEditor().getSelectedInstruction();
 
-        for(String s: getEditor().getSelectedInstruction()) {
-            System.out.println("--" + s);
+        if(selectedInstruction != null) {
+            initCompilationEnvironment();
+            compiler = new Compiler(new StringReader(selectedInstruction.get(1)), this);
+
+            if(compiler != null && !compiler.isInterrupted()) {
+                enableCompilation(false);
+                compiler.reduceAll();
+            }
         }
     }
 
@@ -389,7 +401,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
     private void stopCompilation(){
-
+        selectedInstruction = null;
         inStepByStepCompilation = false;
 
         if(compiler != null) {
@@ -681,7 +693,17 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		    try {
 				int pos = getPos(line ,position);
 				int l = line + offset + 1;
-				editor.insertResult(">>> "+reducedGraph,pos + l-2);
+
+                String result;
+
+                if(selectedInstruction != null) {
+                    result = selectedInstruction.get(0) + " " + reducedGraph + " " + selectedInstruction.get(2);
+                }
+                else {
+                    result = reducedGraph;
+                }
+
+				editor.insertResult(">>> "+ result,pos + l-2);
 				offset++;
 			}
             catch (BadLocationException e) {

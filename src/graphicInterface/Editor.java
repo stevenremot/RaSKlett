@@ -117,6 +117,9 @@ public class Editor extends JTextPane {
                 while(start < selectionStart && text.charAt(start) != '\n') start++;
 
             }
+            else {
+                isStart = true;
+            }
         }
 
         String startText = text.substring(start, selectionStart);
@@ -129,41 +132,8 @@ public class Editor extends JTextPane {
 
         String endText = text.substring(selectionEnd, end);
 
-        return Arrays.asList(new String[] { startText, selectionText, endText});
+        return Arrays.asList(new String[] { startText.trim(), selectionText.trim(), endText.trim()});
     }
-
-	public void insertResultCompilationSelection(String s) throws BadLocationException{
-		int finSelection = getSelectionEnd();
-		int chercheFin = finSelection;
-		boolean finished = false;
-		while (!finished && chercheFin+1 < getText().length()){
-			if (this.getText(chercheFin, 1).equals(";")) finished = true;
-			chercheFin++;
-		}
-		int debutSelection = getSelectionStart();
-		int chercheDebut = debutSelection - 1;
-		finished = false;
-		while (!finished && chercheDebut > 0){
-			if (this.getText(chercheDebut, 1).equals(";")) finished = true;				
-			chercheDebut --;
-		}
-		String[] lignes = getText(chercheDebut, debutSelection - chercheDebut).split("\n");
-		String instruction = "";
-		for (int i = 0 ; i < lignes.length; i++){
-			int index = 0;
-			boolean fin = false;
-			String ligne = lignes[i];
-			while (index < ligne.length() && !fin){
-				char c = ligne.charAt(index);
-				if (c == '#') fin = true;
-				else if (c != ' ') {
-					instruction += ligne + "\n";
-					fin = true;
-				}
-			}
-		}
-		doc.insertString(chercheFin + 1, instruction + s + doc.getText(finSelection, chercheFin + 1 - finSelection), result);
-	}
 	
 	public void disableEdition(){
 		setEditable(false);
