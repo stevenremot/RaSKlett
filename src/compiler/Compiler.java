@@ -50,8 +50,14 @@ public class Compiler {
 		if(sk == null) {
 			return "";
 		}
-		
-		return GraphSerializer.serialize(sk.getReducedGraph());
+
+		String result = GraphSerializer.serialize(sk.getReducedGraph());
+
+        if(result.startsWith("I ")) {
+            result = result.substring(2);
+        }
+
+        return result;
 	}
 	
 	/*
