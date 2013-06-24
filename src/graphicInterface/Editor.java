@@ -9,7 +9,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 /**
- * @brief Classe de léditeur de texte
+ * Classe de léditeur de texte
  *
  * Propose des fonctions spécialisées, comme ajouter un résultat, ou une erreur
  */
@@ -91,7 +91,7 @@ public class Editor extends JTextPane {
 	}
 	
 	/**
-	 * @brief Méthode renvoyant les intructions écrites dans l'éditeur sans les erreurs et les résultats.  
+	 * Méthode renvoyant les intructions écrites dans l'éditeur sans les erreurs et les résultats.
 	 * @return text : une string ne contenant que les instructions.
 	 */
 	public String getCleanedText() {
