@@ -187,12 +187,14 @@ public class SyntaxicalAnalyserTest {
 			
 			ArrayList<String> symbols = ins.getInstruction();
 			
-			assertEquals(5, symbols.size());
+			assertEquals(7, symbols.size());
             assertEquals("(", symbols.get(0));
-			assertEquals(op, symbols.get(1));
-			assertEquals("a", symbols.get(2));
-			assertEquals("b", symbols.get(3));
+            assertEquals(op, symbols.get(1));
+            assertEquals("(", symbols.get(2));
+			assertEquals("a", symbols.get(3));
             assertEquals(")", symbols.get(4));
+			assertEquals("b", symbols.get(5));
+            assertEquals(")", symbols.get(6));
 		}
 		
 		for(String op: ops) {
@@ -214,11 +216,11 @@ public class SyntaxicalAnalyserTest {
 			
 			ArrayList<String> symbols = ins.getInstruction();
 			
-			assertEquals(8, symbols.size());
+			assertEquals(10, symbols.size());
             assertEquals("(", symbols.get(0));
             assertEquals(op, symbols.get(1));
 			assertEquals("(", symbols.get(2));
-			assertEquals("a", symbols.get(3));
+			assertEquals("(", symbols.get(3));
 		}
 	}
 	
@@ -311,17 +313,18 @@ public class SyntaxicalAnalyserTest {
 		
 		ArrayList<String> symbols = ins.getInstruction();
 		
-		assertEquals(10, symbols.size());
+		assertEquals(11, symbols.size());
         assertEquals("I", symbols.get(0));
         assertEquals("(", symbols.get(1));
 		assertEquals("lambda++", symbols.get(2));
-		assertEquals("$x", symbols.get(3));
-		assertEquals("(", symbols.get(4));
-		assertEquals("vec", symbols.get(5));
-		assertEquals("a", symbols.get(6));
-		assertEquals("$x", symbols.get(7));
-		assertEquals(")", symbols.get(8));
+        assertEquals("$x", symbols.get(3));
+        assertEquals("I", symbols.get(4));
+		assertEquals("(", symbols.get(5));
+		assertEquals("vec", symbols.get(6));
+		assertEquals("a", symbols.get(7));
+		assertEquals("$x", symbols.get(8));
 		assertEquals(")", symbols.get(9));
+		assertEquals(")", symbols.get(10));
 	}
 	
 	@Test
@@ -347,21 +350,19 @@ public class SyntaxicalAnalyserTest {
 		
 		ArrayList<String> symbols = ins.getInstruction();
 		
-		assertEquals(14, symbols.size());
+		assertEquals(12, symbols.size());
         assertEquals("(", symbols.get(0));
-        assertEquals("(", symbols.get(1));
-		assertEquals("=", symbols.get(2));
-		assertEquals("x", symbols.get(3));
-		assertEquals("0", symbols.get(4));
-        assertEquals(")", symbols.get(5));
+		assertEquals("=", symbols.get(1));
+        assertEquals("(", symbols.get(2));
+        assertEquals("x", symbols.get(3));
+        assertEquals(")", symbols.get(4));
+		assertEquals("0", symbols.get(5));
         assertEquals(")", symbols.get(6));
 		assertEquals("(", symbols.get(7));
 		assertEquals("a", symbols.get(8));
 		assertEquals("b", symbols.get(9));
 		assertEquals(")", symbols.get(10));
-		assertEquals("(", symbols.get(11));
-		assertEquals("c", symbols.get(12));
-		assertEquals(")", symbols.get(13));
+		assertEquals("c", symbols.get(11));
 	}
 	
 	@Test
@@ -400,12 +401,10 @@ public class SyntaxicalAnalyserTest {
 		
 		ArrayList<String> symbols = ins.getInstruction();
 		
-		assertEquals(5, symbols.size());
+		assertEquals(3, symbols.size());
 		assertEquals(":=", symbols.get(0));
 		assertEquals("$f", symbols.get(1));
-		assertEquals("(", symbols.get(2));
-		assertEquals("a", symbols.get(3));
-		assertEquals(")", symbols.get(4));
+		assertEquals("a", symbols.get(2));
 	}
 	
 	@Test
@@ -429,18 +428,25 @@ public class SyntaxicalAnalyserTest {
 		
 		ArrayList<String> symbols = ins.getInstruction();
 		
-		assertEquals(11, symbols.size());
+		assertEquals(18, symbols.size());
 		assertEquals(":=", symbols.get(0));
-		assertEquals("$f", symbols.get(1));
-		assertEquals("(", symbols.get(2));
-		assertEquals("lambda", symbols.get(3));
-		assertEquals("$x", symbols.get(4));
-		assertEquals("lambda", symbols.get(5));
-		assertEquals("$y", symbols.get(6));
-		assertEquals("@f", symbols.get(7));
-		assertEquals("$y", symbols.get(8));
-		assertEquals("$x", symbols.get(9));
-		assertEquals(")", symbols.get(10));
+        assertEquals("$f", symbols.get(1));
+        assertEquals("I", symbols.get(2));
+		assertEquals("(", symbols.get(3));
+		assertEquals("lambda", symbols.get(4));
+        assertEquals("$x", symbols.get(5));
+        assertEquals("I", symbols.get(6));
+        assertEquals("(", symbols.get(7));
+        assertEquals("lambda", symbols.get(8));
+		assertEquals("$y", symbols.get(9));
+        assertEquals("I", symbols.get(10));
+        assertEquals("(", symbols.get(11));
+		assertEquals("@f", symbols.get(12));
+		assertEquals("$y", symbols.get(13));
+		assertEquals("$x", symbols.get(14));
+        assertEquals(")", symbols.get(15));
+        assertEquals(")", symbols.get(16));
+        assertEquals(")", symbols.get(17));
 	}
 
 }

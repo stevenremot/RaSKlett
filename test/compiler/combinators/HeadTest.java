@@ -33,40 +33,10 @@ public class HeadTest {
 		
 		assertTrue(head.applyReduction(reg));
 		
-		assertEquals(root, reg.getNode());
-		assertEquals("I", root.getFunction().getCombinator().getName());
-		assertEquals(a, root.getArgument().getCombinator());
-	}
-	
-	@Test
-	public void testReplacesHeadWithoutI() throws CompilerException {
-		Combinator head = new Head(), vec = new Vector(),
-				a = new DummyCombinator("A"), b = new DummyCombinator("B");
-		
-		Node vecNode1 = new Node(
-				NodeFieldFactory.create(vec),
-				NodeFieldFactory.create(a));
-		
-		Node vecNode2 = new Node(
-				NodeFieldFactory.create(vecNode1),
-				NodeFieldFactory.create(b));
-		
-		Node root = new Node(
-				NodeFieldFactory.create(head),
-				NodeFieldFactory.create(vecNode2));
-		
-		Node node2 = new Node(
-				NodeFieldFactory.create(root),
-				NodeFieldFactory.create(b));
-		
-		
-		Registry reg = new Registry();
-		reg.setNode(root);
-		
-		assertTrue(head.applyReduction(reg));
-		
-		assertEquals(node2, reg.getNode());
-		assertEquals(a, node2.getFunction().getCombinator());
-		assertEquals(b, node2.getArgument().getCombinator());
+		assertEquals(vecNode1, reg.getNode());
+		assertEquals("vec", vecNode1.getFunction().getCombinator().getName());
+		assertEquals(a, vecNode1.getArgument().getCombinator());
+        assertEquals(b, vecNode2.getArgument().getCombinator());
+        assertEquals("K", vecNode2.getNextNode().getArgument().getCombinator().getName());
 	}
 }

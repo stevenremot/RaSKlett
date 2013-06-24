@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import compiler.CompilerException;
@@ -22,7 +23,6 @@ import compiler.combinators.CombinatorManager;
 import compiler.combinators.DummyCombinator;
 import compiler.combinators.Lambda;
 import compiler.combinators.Var;
-import compiler.config.ConfigManager;
 
 public class AbstracterTest {
 	
@@ -331,6 +331,7 @@ public void debugTest(){
 }
 
 @Test
+@Ignore
 public void lambda4PlusTest() throws CompilerException{
 	CombinatorManager manager = CombinatorManager.getInstance();
 	manager.addCombinator(new B());

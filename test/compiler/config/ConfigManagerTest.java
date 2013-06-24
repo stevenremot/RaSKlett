@@ -10,7 +10,7 @@ public class ConfigManagerTest {
 		ConfigManager c = ConfigManager.getInstance();
 		
 		assertFalse(c.isEnabled(ConfigManager.BASIC_COMBINATORS));
-		assertEquals(4, c.getDefaultAbstractionLevel());
+		assertEquals(3, c.getDefaultAbstractionLevel());
 	}
 	
 	@Test
