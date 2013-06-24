@@ -135,7 +135,7 @@ public class Abstracter {
 		}
 		
 		// règle lambda++++x . F ( G x ) = B F G
-		/*
+		
 		if(level >= 4 && lastNode.getArgument().getCombinator() == null)
 			if(lastNode.getArgument().getNode().getArgument().getCombinator() != null && lastNode.getArgument().getNode().getArgument().getCombinator().equals(var)){
 				
@@ -176,10 +176,37 @@ public class Abstracter {
 							
 					}
 					
+					else if(!varNode.equals(currentNode)) {
+						
+						if(varNode.getNextNode().equals(currentNode))
+							fNodeField = currentNode.getArgument();
+						
+						else {
+							
+							Node fRootNode = varNode.getNextNode();
+							
+							if(fRootNode.getArgument().getCombinator() == null)
+								fRootNode.setFunction(NodeFieldFactory.create(cmanager.get("I")));
+							else
+								fRootNode.getNextNode().setFunction(fRootNode.getArgument());
+							
+							currentNode.setNextNode(null);
+							fNodeField = NodeFieldFactory.create(currentNode);
+							
+						}
+							
+						varNode.setNextNode(null);
+						bNode = new Node(NodeFieldFactory.create(cmanager.get("B")),fNodeField);
+						gNode.setFunction(NodeFieldFactory.create(bNode));
+						
+						Node sNode = new Node(nfS, abstractNodeField(NodeFieldFactory.create(varNode),level,var));
+						return new Node(NodeFieldFactory.create(sNode),NodeFieldFactory.create(bNode));
+					}
+					
 				}
 					
 			}
-		*/
+		
 		
 		//règle lambda+++x . F = K F
 		if(level >= 3 && (lastNode.getArgument().getCombinator() == null || !lastNode.getArgument().getCombinator().equals(var))){
