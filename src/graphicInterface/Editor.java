@@ -82,6 +82,25 @@ public class Editor extends JTextPane {
 
 	}
 	
+	public void insertResultCompilationSelection(String s) throws BadLocationException{
+		int chercheFin = getSelectionEnd();
+		boolean finished = false;
+		while (!finished && chercheFin+1 < getText().length()){
+			if (this.getText(chercheFin, 1).equals(";")) finished = true;
+			chercheFin++;
+		}
+		int debutSelection = getSelectionStart();
+		int chercheDebut = debutSelection - 1;
+		finished = false;
+		while (!finished && chercheDebut > 0){
+			if (this.getText(chercheDebut, 1).equals(";")){
+				
+				
+			}
+		}
+		
+	}
+	
 	public void disableEdition(){
 		setEditable(false);
 	}
