@@ -292,12 +292,12 @@ public class Abstracter {
 		
 		
 		//règle lambda++++x . F x G = C F G	
-		/*
+		
 		if(level >= 4) {
 			
 			currentNode = searchVariable(lastNode,var);
 			
-			if(currentNode != null && !currentNode.equals(lastNode)){
+			if(currentNode != null && !currentNode.equals(lastNode) && currentNode.getArgument().getCombinator() != null && currentNode.getArgument().getCombinator().equals(var)){
 				
 				Node gNode = null;
 				
@@ -341,7 +341,7 @@ public class Abstracter {
 					return gNode;
 				}
 				
-				else if(!varNode.equals(currentNode)){
+				else if(!varNode.equals(currentNode) && varNode.getArgument().getCombinator() != null && varNode.getArgument().getCombinator().equals(var)){
 					
 					if(varNode.getNextNode().equals(currentNode))
 						fNodeField = currentNode.getArgument();
@@ -373,7 +373,7 @@ public class Abstracter {
 			}
 				
 		}
-		*/
+		
 				
 				
 		//règle lambda+++x . F = K F
