@@ -88,7 +88,7 @@ public class Editor extends JTextPane {
      * @return une liste avec 3 arguments: le début de l'instruction avant la sélection, la sélection, puis la fin de l'instruction, ou null si pas de sélection.
      */
     public List<String> getSelectedInstruction() {
-        String selectionText = getSelectedText(),
+        String selectionText = getSelectedText().trim(),
                 text = getText();
 
         if(selectionText == null || selectionText.isEmpty()) {
@@ -132,7 +132,11 @@ public class Editor extends JTextPane {
         int selectionEnd = getSelectionEnd(),
                 end = selectionEnd;
 
-        while(end < text.length() && text.charAt(end) != ';') end++;
+        if(selectionText.charAt(selectionText.length() - 1) != ';') {
+
+            while(end < text.length() && text.charAt(end) != ';') end++;
+
+        }
 
         String endText = text.substring(selectionEnd, end);
         return Arrays.asList(new String[] { startText.trim().replace('\n', ' ').replace('\t', ' '),
@@ -153,17 +157,33 @@ public class Editor extends JTextPane {
         int line = 0;
 
         boolean afterEnd  = false;
+        boolean atEndOfInstruction = false;
+
         for(int c = 0; c <t.length(); c++) {
             if(c == end) {
+                if(atEndOfInstruction) {
+                    break;
+                }
                 afterEnd = true;
             }
 
-            if(afterEnd && t.charAt(c) == ';') {
-                break;
+            int ch = t.charAt(c);
+
+            if(ch == ';') {
+                atEndOfInstruction = true;
+
+                if(afterEnd) {
+                    break;
+                }
             }
 
-            if(t.charAt(c) == '\n') {
-                line++;
+            if(atEndOfInstruction && " \n\t".contains("" + (char)ch)) {
+
+                if(ch == '\n') {
+                    line++;
+                }
+
+                atEndOfInstruction = false;
             }
         }
 
