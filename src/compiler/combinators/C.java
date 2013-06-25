@@ -12,7 +12,7 @@ public class C implements Combinator {
 	}
 
 	/**
-	 * @brief Applique le combinateur de permutation C au graphe
+	 * Applique le combinateur de permutation C au graphe
 	 * Vérifie qu'on a au moins trois arguments F X Y et remplace le troisième noeud par (F Y) X
 	 */
 	@Override

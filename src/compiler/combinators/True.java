@@ -8,7 +8,7 @@ import compiler.reducer.Registry;
  * 
  * @author Juliette
  *
- * @brief Combinateur True
+ * Combinateur True
  * 
  * Prend le premier argument, ignore le suivant
  */

@@ -3,7 +3,7 @@ package compiler.graph;
 import compiler.combinators.Combinator;
 
 /**
- * @brief Champ de noeud contenant une référence vers un autre noeud
+ * Champ de noeud contenant une référence vers un autre noeud
  * 
  * @author kazmiero
  *

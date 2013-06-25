@@ -4,7 +4,7 @@ import compiler.CompilerException;
 import compiler.graph.Node;
 
 /**
- * @brief Implémentation du coeur de la machine SK
+ * Implémentation du coeur de la machine SK
  * 
  * Déclenche la réduction d'un graphe en laissant les combinateurs
  * se charger de modifier le graphe.
@@ -32,7 +32,7 @@ public class SKMachine {
 	}
 	
 	/**
-	 * @brief Effectue une étape de la réduction
+	 * Effectue une étape de la réduction
 	 * 
 	 * Le graphe, avant step(), représente une expression a M1 M2 ...
 	 * On s'assure que e registre pointe sur le combinateur a.

@@ -5,7 +5,7 @@ import compiler.graph.Node;
 import compiler.reducer.Registry;
 
 /**
- * @brief Combinateur permettant de créer un vecteur
+ * Combinateur permettant de créer un vecteur
  * 
  * Équivalent de pi x, y, z := z x y
  * 

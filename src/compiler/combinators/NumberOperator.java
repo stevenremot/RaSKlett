@@ -7,7 +7,7 @@ import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
 
 /**
- * @brief Classe abstraite pour un opérateur prenant deux entiers
+ * Classe abstraite pour un opérateur prenant deux entiers
  * 
  * Définit des méthodes pour s'assurer que les deux opérandes sont entières
  * 
@@ -18,9 +18,6 @@ public abstract class NumberOperator implements Combinator {
 	
 	/**
 	 * Les opérateurs doivent définir cette méthode pour appliquer l'opération
-	 * @param n1
-	 * @param n2
-	 * @return
 	 */
 	protected abstract Combinator doOperation(int n1, int n2);
 	
@@ -76,16 +73,14 @@ public abstract class NumberOperator implements Combinator {
 	
 	/**
 	 * Effectue le traitement sur une opérande, et retourne le combinateur correspondany
-	 * 
-	 * @param nf
+	 *
 	 * @return le Number correspondant, ou un Combinator anonyme contenant un graphe de l'expression qui a été réduite, ou null si il ne peut y avoir de nombre 
 	 * @throws CompilerException 
 	 */
 	protected Combinator ensureIsNumber(NodeField nf) throws CompilerException {
 		if(nf.getCombinator() != null) {
 			try {
-				Number n = (Number) nf.getCombinator();
-				return n;
+				return nf.getCombinator();
 			}
 			catch(ClassCastException e) {
 				return null;
@@ -129,8 +124,7 @@ public abstract class NumberOperator implements Combinator {
 					}
 					
 					try {
-						Number n = (Number) c;
-						return n;
+						return c;
 					}
 					catch(ClassCastException e) {
 						return null;

@@ -11,7 +11,7 @@ public class I implements Combinator {
 	}
 
 	/**
-	 * @brief Applique le combinateur I au graphe.
+	 * Applique le combinateur I au graphe.
 	 */
 	@Override
 	public boolean applyReduction(Registry registry) {

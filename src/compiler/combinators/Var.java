@@ -4,7 +4,7 @@ import compiler.graph.Node;
 import compiler.reducer.Registry;
 
 /**
- * @brief Classe de combinateurs représentant les variables à abstraire. Le nom d'une variable commence par le caractère '$'
+ * Classe de combinateurs représentant les variables à abstraire. Le nom d'une variable commence par le caractère '$'
  * @author kazmiero
  *
  */

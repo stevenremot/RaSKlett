@@ -7,7 +7,7 @@ import compiler.CompilerException;
 import compiler.config.ConfigManager;
 
 /**
- * @brief Enregistre et rend disponible les combinateurs natifs et créés par l'utilisateur
+ * Enregistre et rend disponible les combinateurs natifs et créés par l'utilisateur
  * 
  * @author lagrange
  *
@@ -72,7 +72,7 @@ public class CombinatorManager {
 			}
 		}
 		catch(CompilerException e) {
-			
+			 e.printStackTrace();
 		}
 	}
 	
@@ -93,7 +93,6 @@ public class CombinatorManager {
 	}
 	
 	/**
-	 * @param name
 	 * @return le combinateur de nom name
 	 */
 	public Combinator get(String name) {
@@ -136,9 +135,7 @@ public class CombinatorManager {
 	
 	/**
 	 * Enregistre le combinator combinator avec le nom name
-	 * 
-	 * @param name
-	 * @param combinator
+	 *
 	 * @throws CompilerException si le nom est déjà pris
 	 */
 	public void addCombinator(String name, Combinator combinator) throws CompilerException {
@@ -150,9 +147,7 @@ public class CombinatorManager {
 	
 	/**
 	 * Enregistre le combinator combinator
-	 * 
-	 * @param name
-	 * @param combinator
+	 *
 	 * @throws CompilerException si son nom est déjà pris
 	 */
 	public void addCombinator(Combinator combinator) throws CompilerException {
@@ -160,8 +155,7 @@ public class CombinatorManager {
 	}
 	
 	/**
-	 * @brief Ajoute une factory de combinateurs à interroger dans get.
-	 * @param factory
+	 * Ajoute une factory de combinateurs à interroger dans get.
 	 */
 	public void addFactory(CombinatorFactory factory) {
 		factories.add(factory);

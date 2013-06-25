@@ -6,7 +6,7 @@ import java.util.List;
 import compiler.combinators.CombinatorManager;
 
 /**
- * @brief Construit un graphe à partir d'un tableau de String
+ * Construit un graphe à partir d'un tableau de String
  * Ce tableau contient des noms de combinateurs ainsi que des parenthèses associatives 
  * 
  * @author kazmiero
@@ -16,7 +16,7 @@ import compiler.combinators.CombinatorManager;
 public class GraphFactory {
 	
 	/**
-	 * @brief Petit parser pour supprimer les parenthèses inutiles (sans valeur sémantique)
+	 * Petit parser pour supprimer les parenthèses inutiles (sans valeur sémantique)
 	 * Prend en argument une liste de String correspondant à une expression à réduire
 	 * L'expression est déjà supposée syntaxiquement correcte
 	 * Le parser supprime :
@@ -35,7 +35,6 @@ public class GraphFactory {
 			combinators.remove(matchingIndex);
 			combinators.remove(0);
 			parseParenthesis(combinators);
-			return;			
 		}
 		
 		else{
@@ -60,8 +59,7 @@ public class GraphFactory {
 	/**
 	 * Récupère pour la position "(" index, la position de la parenthèse ")" correspondante, dans la liste de String list, supposée syntaxiquement correcte.
 	 * Renvoie 0 en cas d'échec, ce qui correspond à une liste d'entrée syntaxiquement incorrecte
-	 * @param list
-	 * @param index
+     *
 	 * @return matchingIndex
 	 */
 	public static int getMatchingParenthesis(List<String> list, int index){
@@ -85,7 +83,7 @@ public class GraphFactory {
 	}
 	
 	/**
-	 * @brief création de graphe
+	 * création de graphe
 	 * 
 	 * Prend en argument une pile correspondant à l'expression à évaluer
 	 * 
@@ -103,8 +101,7 @@ public class GraphFactory {
 	 * Gestion des expressions entre parenthèses :
 	 * Pour chaque parenthèse ouvrante "(", un appel récursif de create(combinators, currentNode) permet de construire le sous-graphe associé à l'expression entre parenthèses
 	 * La détection de la parenthèse fermante "(" sert de condition d'arrêt à la méthode.
-	 * 
-	 * @param combinators
+	 *
 	 * @return currentNode
 	 * @throws EmptyStackException
 	 * @throws BadParenthesisException
@@ -116,8 +113,8 @@ public class GraphFactory {
 			throw new EmptyStackException();	
 		
 		// initialisation
-		Node currentNode = null, previousNode = null;
-		NodeField currentFunc = null, currentArg = null;
+		Node currentNode, previousNode;
+		NodeField currentFunc, currentArg;
 		
 		String currentString = combinators.pop();
 		
@@ -177,9 +174,9 @@ public class GraphFactory {
 
 	
 	/**
-	 * @brief crée un CombinatorNodeField à partir d'un combinateur trouvé dans le CombinatorManager
+	 * crée un CombinatorNodeField à partir d'un combinateur trouvé dans le CombinatorManager
 	 * Si le combinateur n'est pas dans le manager, une exception est renvoyée
-	 * @param name
+     *
 	 * @return CombinatorNodeField
 	 * @throws CombinatorNotFoundException
 	 */
@@ -198,12 +195,11 @@ public class GraphFactory {
 	
 	
 	/**
-	 * @brief méthode haut-niveau de la construction du graphe
+	 * méthode haut-niveau de la construction du graphe
 	 * Prend en argument l'ArrayList envoyée par le compilateur correspondant à l'expression à réduire
 	 * Applique parseParenthesis pour supprimer les parenthèses non sémantiques
 	 * Construit la pile puis applique la construction de graphe
-	 * 
-	 * @param combinators
+	 *
 	 * @return graph
 	 * @throws EmptyStackException
 	 * @throws BadParenthesisException

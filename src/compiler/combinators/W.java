@@ -11,7 +11,7 @@ public class W implements Combinator {
 	}
 
 	/**
-	 * @brief Applique le combinateur permutateur W au graphe.
+	 * Applique le combinateur permutateur W au graphe.
 	 * On vérifie qu'on a au moins 2 arguments F et X.
 	 * Ensuite on remplace le deuxième noeud par (F X) X
 	 */

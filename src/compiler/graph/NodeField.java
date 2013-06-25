@@ -3,7 +3,7 @@ package compiler.graph;
 import compiler.combinators.Combinator;
 
 /**
- * @brief Interface pour un champ d'un noeud dans le graphe
+ * Interface pour un champ d'un noeud dans le graphe
  * Le champ peut contenir un combinateur ou un noeud
  * 
  * @author kazmiero

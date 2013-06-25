@@ -3,7 +3,7 @@ package compiler.graph;
 import compiler.CompilerException;
 
 /**
- * @brief Exception pour GraphFactory. Appelée lorsque la pile est vide à l'initialisation.
+ * Exception pour GraphFactory. Appelée lorsque la pile est vide à l'initialisation.
  * @author kazmiero
  *
  */

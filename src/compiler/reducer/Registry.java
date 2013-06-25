@@ -3,7 +3,7 @@ package compiler.reducer;
 import compiler.graph.Node;
 
 /**
- * @brief Registre de la machine SK
+ * Registre de la machine SK
  * 
  * Contient une référence vers le noeud sur lequel s'applique la réduction
  * 
