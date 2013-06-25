@@ -53,7 +53,7 @@ public class Compiler {
 
 		String result = GraphSerializer.serialize(sk.getReducedGraph());
 
-        if(result.startsWith("I ")) {
+        if(isFinished() && result.startsWith("I ")) {
             result = result.substring(2);
         }
 
