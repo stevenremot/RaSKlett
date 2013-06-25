@@ -1,5 +1,6 @@
 package compiler.abstracter;
 
+import compiler.combinators.B;
 import compiler.graph.*;
 import compiler.combinators.CombinatorManager;
 import compiler.combinators.Lambda;
@@ -170,7 +171,9 @@ public class Abstracter {
 						root.getNextNode().setFunction(root.getArgument());
 						currentNode.setNextNode(null);
 						fNodeField = NodeFieldFactory.create(currentNode);
-						bNode = new Node(NodeFieldFactory.create(cmanager.get("B")),fNodeField);
+
+                        // Contrairement au reste du code, on instancie B directement pour ne pas avoir d'erreurs si l'utilisateur a désactivé ces combinateurs
+						bNode = new Node(NodeFieldFactory.create(new B()),fNodeField);
 						gNode.setFunction(NodeFieldFactory.create(bNode));
 						return gNode;
 							
