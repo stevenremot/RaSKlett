@@ -5,8 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,19 +41,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
         nextStepAction, nextLineAction, toEndAction,
         stopAction, cleanAction, manualAction, preferencesAction;
 
-	private JMenuBar menuBar = null;
-	private JMenu file = null;
-	private JMenu compilation = null;
-	private JMenu tools = null;
-	private JMenu help = null;
-
     private boolean inStepByStepCompilation = false;
 
 	private  JScrollPane panneauTexte ;
 	private TextLineNumbers tln ;
 	private  Preferences preferences = Preferences.userRoot();
-
-	private JToolBar toolBar = null;
 
     // Décalage des lignes lors de l'affichage des résultats
 	private int offset = 0;
@@ -113,7 +103,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		stopAction.setEnabled(false);
 
 		editor = new Editor();
-		toolBar = new JToolBar();	
+		JToolBar toolBar = new JToolBar();
 
 		toolBar.add(createToolBarButton(createAction));
 		toolBar.add(createToolBarButton(openAction));
@@ -131,9 +121,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		add(toolBar, BorderLayout.NORTH);
 
-		menuBar = new JMenuBar();
+		JMenuBar menuBar = new JMenuBar();
 
-		file = new JMenu("Fichier");
+		JMenu file = new JMenu("Fichier");
 		file.setMnemonic(KeyEvent.VK_F);
 		file.getAccessibleContext().setAccessibleDescription(
 				"Fichier");
@@ -144,7 +134,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		file.add(saveAction);
 		file.add(saveAsAction);
 
-		compilation = new JMenu("Compilation");
+		JMenu compilation = new JMenu("Compilation");
 		compilation.setMnemonic(KeyEvent.VK_C);
 		compilation.getAccessibleContext().setAccessibleDescription(
 				"Commandes de compilation");
@@ -159,7 +149,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		compilation.add(stopAction);
 		compilation.add(cleanAction);
 
-		tools = new JMenu("Outils");
+		JMenu tools = new JMenu("Outils");
 		tools.setMnemonic(KeyEvent.VK_O);
 		tools.getAccessibleContext().setAccessibleDescription(
 				"Menu des outils");
@@ -167,7 +157,7 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		tools.add(preferencesAction);
 
-		help = new JMenu("Aide");
+		JMenu help = new JMenu("Aide");
 		help.setMnemonic(KeyEvent.VK_A);
 		help.getAccessibleContext().setAccessibleDescription(
 				"Menu d'aide");
