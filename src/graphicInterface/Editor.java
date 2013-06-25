@@ -139,9 +139,9 @@ public class Editor extends JTextPane {
         }
 
         String endText = text.substring(selectionEnd, end);
-        return Arrays.asList(new String[] { startText.trim().replace('\n', ' ').replace('\t', ' '),
-                selectionText.trim(),
-                endText.trim().replace('\n', ' ').replace('\t', ' ')});
+        return Arrays.asList(startText.trim().replace('\n', ' ').replace('\t', ' '),
+                selectionText,
+                endText.trim().replace('\n', ' ').replace('\t', ' '));
     }
 
     /**
