@@ -1,5 +1,15 @@
 # RaSKlett
 
-Les sources du projet sont dans src, les tests dans test.
+## Disposition du projet
 
-La documentation se trouve dans le dossier doc, et le manuel à data/manual.html
+- *src*: les sources du projet
+- *test*: les tests unitaires
+- *icons*: les icônes de l'interface
+- *data*: contient un unique fichier, le manuel d'utilisation
+- *doc*: Documentation
+- *sample.rsk*: Programme d'exemple, implémentation du crible d'Eratosthène
+
+## Lancement du programme
+
+Le main se trouve dans la classe graphicinterface.Main.
+
