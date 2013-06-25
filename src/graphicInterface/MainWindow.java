@@ -27,7 +27,7 @@ import compiler.CompilerCallback;
 import compiler.CompilerException;
 import compiler.config.ConfigManager;
 
-public class MainWindow extends JFrame implements CompilerCallback{
+public class MainWindow extends JFrame implements CompilerCallback {
 
 	private Compiler compiler;
 	
@@ -105,18 +105,18 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		editor = new Editor();
 		JToolBar toolBar = new JToolBar();
 
-		toolBar.add(createToolBarButton(createAction));
-		toolBar.add(createToolBarButton(openAction));
-		toolBar.add(createToolBarButton(saveAction));
-		toolBar.add(createToolBarButton(saveAsAction));
-		toolBar.add(createToolBarButton(compileAllAction));
-        toolBar.add(createToolBarButton(compileSelectionAction));
-		toolBar.add(createToolBarButton(compileStepByStepAction));
-		toolBar.add(createToolBarButton(nextStepAction));
-		toolBar.add(createToolBarButton(nextLineAction));
-		toolBar.add(createToolBarButton(toEndAction));
-		toolBar.add(createToolBarButton(stopAction));
-		toolBar.add(createToolBarButton(cleanAction));
+		toolBar.add(createAction);
+		toolBar.add(openAction);
+		toolBar.add(saveAction);
+		toolBar.add(saveAsAction);
+		toolBar.add(compileAllAction);
+        toolBar.add(compileSelectionAction);
+		toolBar.add(compileStepByStepAction);
+		toolBar.add(nextStepAction);
+		toolBar.add(nextLineAction);
+		toolBar.add(toEndAction);
+		toolBar.add(stopAction);
+		toolBar.add(cleanAction);
 
 
 		add(toolBar, BorderLayout.NORTH);
@@ -202,12 +202,6 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}
-
-    private JButton createToolBarButton(Action a) {
-        JButton but = new JButton(a);
-        but.setHideActionText(true);
-        return but;
-    }
 
 	public Editor getEditor(){
 		return editor;
