@@ -138,8 +138,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		compileStepByStep.setToolTipText("Compiler le code pas-à-pas");
 		compileStepByStep.addActionListener(new ControleurCompileStepByStep());
 
-        compileSelection = new JButton();
-        compileSelection.setToolTipText("COmpiler le texte sélectionné");
+        compileSelection = new JButton(new ImageIcon("icons/compile_selected.png"));
+        compileSelection.setToolTipText("Compiler le texte sélectionné");
         compileSelection.addActionListener(new ControleurCompileSelection());
 
 		nextStep = new JButton(new ImageIcon("icons/next.png"));
