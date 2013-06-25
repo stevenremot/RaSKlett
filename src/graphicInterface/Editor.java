@@ -91,6 +91,10 @@ public class Editor extends JTextPane {
         String selectionText = getSelectedText(),
                 text = getText();
 
+        if(selectionText == null || selectionText.isEmpty()) {
+            return null;
+        }
+
         // Pour trouver le début, on cherche le premier point virgule ou le début du texte, et à partir de là on passe les espaces, les commentaires, les résultats et les erreurs
         int selectionStart = getSelectionStart(),
                 start = selectionStart;

@@ -134,13 +134,13 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		compileAll.setToolTipText("Compiler le code en entier");
 		compileAll.addActionListener(new ControleurCompileAll());
 
-		compileStepByStep = new JButton(new ImageIcon("icons/compile_sbs.png"));
-		compileStepByStep.setToolTipText("Compiler le code pas-à-pas");
-		compileStepByStep.addActionListener(new ControleurCompileStepByStep());
-
         compileSelection = new JButton(new ImageIcon("icons/compile_selected.png"));
         compileSelection.setToolTipText("Compiler le texte sélectionné");
         compileSelection.addActionListener(new ControleurCompileSelection());
+
+		compileStepByStep = new JButton(new ImageIcon("icons/compile_sbs.png"));
+		compileStepByStep.setToolTipText("Compiler le code pas-à-pas");
+		compileStepByStep.addActionListener(new ControleurCompileStepByStep());
 
 		nextStep = new JButton(new ImageIcon("icons/next.png"));
 		nextStep.setToolTipText("Compiler l'étape");
@@ -175,8 +175,8 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		toolBar.add(save);
 		toolBar.add(saveAs);
 		toolBar.add(compileAll);
-		toolBar.add(compileStepByStep);
         toolBar.add(compileSelection);
+		toolBar.add(compileStepByStep);
 		toolBar.add(nextStep);
 		toolBar.add(nextLine);
 		toolBar.add(toEnd);
@@ -222,27 +222,36 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 		iCompileAll = new JMenuItem("Compiler tout le code");
 		iCompileAll.addActionListener(new ControleurCompileAll());
-
-		iCompileStepByStep = new JMenuItem("Compiler le code pas-à-pas");
-		iCompileStepByStep.addActionListener(new ControleurCompileStepByStep());
+        iCompileAll.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
 
         iCompileSelection = new JMenuItem("Compiler la sélection");
         iCompileSelection.addActionListener(new ControleurCompileSelection());
+        iCompileSelection.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
+
+
+        iCompileStepByStep = new JMenuItem("Compiler le code pas-à-pas");
+		iCompileStepByStep.addActionListener(new ControleurCompileStepByStep());
+        iCompileStepByStep.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0));
 
 		iNextStep = new JMenuItem("Compiler l'étape");
         iNextStep.addActionListener(new ControleurToNextStep());
+        iNextStep.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0));
 
 		iNextLine = new JMenuItem("Compiler l'instruction");
         iNextLine.addActionListener(new ControleurToNextInstruction());
+        iNextLine.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0));
 
 		iToEnd = new JMenuItem("Compiler le reste du code");
         iToEnd.addActionListener(new ControleurToEnd());
+        iToEnd.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0));
 
 		iStop = new JMenuItem("Interrompre la compilation");
 		iStop.addActionListener(new ControleurStop());
+        iStop.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
 
 		iClean= new JMenuItem("Nettoyer le code");
-		clean.addActionListener(new ControleurClean());
+		iClean.addActionListener(new ControleurClean());
+        iClean.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
 
 		iNextStep.setEnabled(false);
 		iNextLine.setEnabled(false);
