@@ -131,8 +131,9 @@ public class Editor extends JTextPane {
         while(end < text.length() && text.charAt(end) != ';') end++;
 
         String endText = text.substring(selectionEnd, end);
-
-        return Arrays.asList(new String[] { startText.trim(), selectionText.trim(), endText.trim()});
+        return Arrays.asList(new String[] { startText.trim().replace('\n', ' ').replace('\t', ' '),
+                selectionText.trim(),
+                endText.trim().replace('\n', ' ').replace('\t', ' ')});
     }
 
     /**
@@ -147,7 +148,16 @@ public class Editor extends JTextPane {
         int end = getSelectionEnd();
         int line = 0;
 
-        for(int c = 0; c < end; c++) {
+        boolean afterEnd  = false;
+        for(int c = 0; c <t.length(); c++) {
+            if(c == end) {
+                afterEnd = true;
+            }
+
+            if(afterEnd && t.charAt(c) == ';') {
+                break;
+            }
+
             if(t.charAt(c) == '\n') {
                 line++;
             }
