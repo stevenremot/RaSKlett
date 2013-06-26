@@ -101,8 +101,8 @@ public class Editor extends JTextPane {
 
         while(start > 0 && text.charAt(start) != ';') {
             // Si on sélectionn l'expression d'un résultat, la suite risque de sauter le début sans cette condition
-            if(text.substring(start).startsWith(">>> ")) {
-                start += 4;
+            if(text.substring(start).startsWith(">>>")) {
+                start += 3;
                 break;
             }
             start--;
@@ -111,23 +111,28 @@ public class Editor extends JTextPane {
         if(text.charAt(start) == ';') {
         	start++;
         }
+        
+        if(start < selectionStart) {
+        	boolean isStart = false;
+        	while(!isStart) {
+        		while(" \n\t".contains(Character.toString(text.charAt(start)))) start++;
 
-        boolean isStart = false;
-        while(!isStart) {
-            while(" \n\t".contains(Character.toString(text.charAt(start)))) start++;
+        		String subText = text.substring(start);
 
-            String subText = text.substring(start);
+        		if(subText.startsWith("#") ||
+        				subText.startsWith(">>>") ||
+        				subText.startsWith("!!!")) {
 
-            if(subText.startsWith("#") ||
-                    subText.startsWith(">>>") ||
-                    subText.startsWith("!!!")) {
+        			while(start < selectionStart && text.charAt(start) != '\n') start++;
 
-                while(start < selectionStart && text.charAt(start) != '\n') start++;
-
-            }
-            else {
-                isStart = true;
-            }
+        		}
+        		else {
+        			isStart = true;
+        		}
+        	}
+        }
+        else {
+        	start = selectionStart;
         }
 
         String startText = text.substring(start, selectionStart);
