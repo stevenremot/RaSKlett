@@ -4,6 +4,12 @@ import compiler.graph.Node;
 import compiler.graph.NodeField;
 import compiler.reducer.Registry;
 
+/**
+ * Combinateur de permutation C
+ * C F X Y := F Y X 
+ * @author lagrange
+ *
+ */
 public class C implements Combinator {
 
 	@Override

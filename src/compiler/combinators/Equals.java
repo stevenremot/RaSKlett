@@ -1,7 +1,7 @@
 package compiler.combinators;
 
 /**
- * Représente l'galité entre entiers
+ * Représente l'égalité entre entiers
  * @author steven
  *
  */

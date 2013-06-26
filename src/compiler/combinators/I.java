@@ -3,6 +3,12 @@ package compiler.combinators;
 import compiler.graph.Node;
 import compiler.reducer.Registry;
 
+/**
+ * Combinateur I
+ * I X := X
+ * @author lagrange
+ *
+ */
 public class I implements Combinator {
 
 	@Override

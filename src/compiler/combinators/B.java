@@ -4,6 +4,12 @@ import compiler.graph.Node;
 import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
 
+/**
+ * Combinateur de composition B
+ * B F G X := F (G X)
+ * @author lagrange
+ *
+ */
 public class B implements Combinator{
 
 	@Override
@@ -12,7 +18,7 @@ public class B implements Combinator{
 	} 
 
 	/**
-	 * Applique le combinateur de compostion B au graphe
+	 * Applique le combinateur de composition B au graphe
 	 * On vérifie qu'on a au moins 3 arguments F G X.
 	 * Puis on remplace le troisième noeud par F (GX).
 	 */

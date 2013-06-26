@@ -4,7 +4,12 @@ import compiler.graph.Node;
 import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
 
-
+/**
+ * Combinateur K
+ * K X Y := X
+ * @author lagrange
+ *
+ */
 public class K implements Combinator {
 
 	@Override

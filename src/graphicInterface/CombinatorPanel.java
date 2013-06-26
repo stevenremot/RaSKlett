@@ -28,7 +28,8 @@ public class CombinatorPanel extends JPanel{
 	/**
 	 * Le constructeur de CombinatorPanel
 	 * @param combinators liste des combinateurs qui seront natifs ou non à l'aide de ce composant
-	 * @param category catégorie des combinateurs (ex : opérateurs logiques)
+	 * @param category nom du panneau de combinateurs (ex : opérateurs logiques)
+	 * @param feature catégorie de combinateurs que l'on active dans le ConfogManager
 	 * @param enabled les combinateurs sont natifs par défaut si enabled vaut true
 	 */
 	public CombinatorPanel(ArrayList<String> combinators, String category, String feature, boolean enabled) {
