@@ -133,6 +133,7 @@ public class MainWindow extends JFrame implements CompilerCallback {
 		file.add(openAction);
 		file.add(saveAction);
 		file.add(saveAsAction);
+		file.add(new ControleurQuit(this));
 
 		JMenu compilation = new JMenu("Compilation");
 		compilation.setMnemonic(KeyEvent.VK_C);
@@ -665,6 +666,24 @@ public class MainWindow extends JFrame implements CompilerCallback {
 			}
 		}
 	}
+    
+    private class ControleurQuit extends AbstractAction {
+    	private static final long serialVersionUID = 1L;
+    	private MainWindow parent;
+    	
+    	public ControleurQuit(MainWindow parent) {
+    		super("Quitter");
+    		putValue(SHORT_DESCRIPTION, "Quitter le programme");
+    		putValue(MNEMONIC_KEY, KeyEvent.VK_Q);
+    		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
+    		this.parent = parent;
+    	}
+    	
+    	@Override
+    	public void actionPerformed(ActionEvent arg0) {
+    		parent.dispose();
+    	}
+    }
 	
 	/**
 	 * Méthode calculant la position d'une erreur ou d'un résultat dans l'éditeur de texte après la compilation.
