@@ -329,7 +329,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
     
     private class ControleurClean extends AbstractAction {
 
-        public ControleurClean() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurClean() {
             super("Nettoyer", new ImageIcon("icons/clean.png"));
             putValue(SHORT_DESCRIPTION, "Effacer les résultats et les erreurs");
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK));
@@ -345,7 +347,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
 
     private class ControleurCompileAll extends AbstractAction {
 
-        public ControleurCompileAll() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurCompileAll() {
             super("Compiler tout", new ImageIcon("icons/compile.png"));
             putValue(SHORT_DESCRIPTION, "Compiler le code entier");
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
@@ -360,7 +364,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
 
     private class ControleurCompileStepByStep extends AbstractAction {
 
-        public ControleurCompileStepByStep() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurCompileStepByStep() {
             super("Compiler pas-à-pas", new ImageIcon("icons/compile_sbs.png"));
             putValue(SHORT_DESCRIPTION, "Compiler le code pas-à-pas");
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0));
@@ -375,7 +381,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
 
     private class ControleurCompileSelection extends AbstractAction {
 
-        public ControleurCompileSelection() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurCompileSelection() {
             super("Compiler la sélection", new ImageIcon("icons/compile_selected.png"));
             putValue(SHORT_DESCRIPTION, "Compiler le code sélectionné");
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
@@ -389,7 +397,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
 
     private class ControleurToNextStep extends AbstractAction {
 
-        public ControleurToNextStep() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurToNextStep() {
             super("Compiler l'étape", new ImageIcon("icons/next.png"));
             putValue(SHORT_DESCRIPTION, "Effectuer une étape de réduction");
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0));
@@ -403,7 +413,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
 
     private class ControleurToNextInstruction extends AbstractAction {
 
-        public ControleurToNextInstruction() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurToNextInstruction() {
             super("Compiler l'instruction", new ImageIcon("icons/next_line.png"));
             putValue(SHORT_DESCRIPTION, "Compier l'instruction courante");
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0));
@@ -418,7 +430,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
 
     private class ControleurToEnd extends AbstractAction {
 
-        public ControleurToEnd() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurToEnd() {
             super("Compiler le reste", new ImageIcon("icons/to_end.png"));
             putValue(SHORT_DESCRIPTION, "Compiler le reste du code qui ne l'a pas été");
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0));
@@ -433,7 +447,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
 
     private class ControleurStop extends AbstractAction {
 
-        public ControleurStop() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurStop() {
             super("Interrompre", new ImageIcon("icons/stop.png"));
             putValue(SHORT_DESCRIPTION, "Interrompre la compilation");
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
@@ -449,7 +465,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
 
 
     private class ControleurPreferences extends AbstractAction {
-        private MainWindow window;
+
+		private static final long serialVersionUID = 1L;
+		private MainWindow window;
 
         public ControleurPreferences(MainWindow window) {
             super("Préférences");
@@ -471,7 +489,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
 	 */
     private class ControleurOpen extends AbstractAction {
 
-        public ControleurOpen() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurOpen() {
             super("Ouvrir", new ImageIcon("icons/open.png"));
             putValue(SHORT_DESCRIPTION, "Ouvrir un fichier");
             putValue(MNEMONIC_KEY, KeyEvent.VK_O);
@@ -514,7 +534,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
 
     private class ControleurCreate extends AbstractAction {
 
-        public ControleurCreate() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurCreate() {
             super("Nouveau", new ImageIcon("icons/create.png"));
             putValue(SHORT_DESCRIPTION, "Créer un nouveau fichier");
             putValue(MNEMONIC_KEY, KeyEvent.VK_N);
@@ -547,7 +569,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
 	 */
     private class ControleurSave extends AbstractAction {
 
-        public ControleurSave() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurSave() {
             super("Sauver", new ImageIcon("icons/save.png"));
             putValue(SHORT_DESCRIPTION, "Sauver le fichier courant");
             putValue(MNEMONIC_KEY, KeyEvent.VK_S);
@@ -585,7 +609,9 @@ public class MainWindow extends JFrame implements CompilerCallback {
     
     private class ControleurSaveAs extends AbstractAction {
 
-        public ControleurSaveAs() {
+		private static final long serialVersionUID = 1L;
+
+		public ControleurSaveAs() {
             super("Sauver sous", new ImageIcon("icons/save_as.png"));
             putValue(SHORT_DESCRIPTION, "Enregistrer le fichier courant sous un autre nom");
             putValue(MNEMONIC_KEY, KeyEvent.VK_U);
@@ -619,6 +645,8 @@ public class MainWindow extends JFrame implements CompilerCallback {
     }
 
     private class ControleurManual extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
 		private MainWindow parent;
 
         public ControleurManual(MainWindow parent) {
