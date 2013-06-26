@@ -484,7 +484,7 @@ public class MainWindow extends JFrame implements CompilerCallback {
 	}
 	/**
 	 * Ouvre une boîte de dialogue pour sélectionner le fichier à  ouvrir.
-	 * @author lagrange
+	 * 
 	 *
 	 */
     private class ControleurOpen extends AbstractAction {
@@ -564,7 +564,6 @@ public class MainWindow extends JFrame implements CompilerCallback {
 	 * Listener pour le bouton "save"
 	 * Ouvre un dialogue pour choisir le fichier dans lequel Ã©crire si on n'a pas encore sauvegardÃ©.
 	 * Si c'est le cas, sauvegarde dans le fichier que l'on a prÃ©cisÃ© Ã  la premiÃ¨re sauvegarde.
-	 * @author lagrange
 	 *
 	 */
     private class ControleurSave extends AbstractAction {
@@ -572,7 +571,7 @@ public class MainWindow extends JFrame implements CompilerCallback {
 		private static final long serialVersionUID = 1L;
 
 		public ControleurSave() {
-            super("Sauver", new ImageIcon("icons/save.png"));
+            super("Enregistrer", new ImageIcon("icons/save.png"));
             putValue(SHORT_DESCRIPTION, "Sauver le fichier courant");
             putValue(MNEMONIC_KEY, KeyEvent.VK_S);
             putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
@@ -612,7 +611,7 @@ public class MainWindow extends JFrame implements CompilerCallback {
 		private static final long serialVersionUID = 1L;
 
 		public ControleurSaveAs() {
-            super("Sauver sous", new ImageIcon("icons/save_as.png"));
+            super("Enregistrer sous", new ImageIcon("icons/save_as.png"));
             putValue(SHORT_DESCRIPTION, "Enregistrer le fichier courant sous un autre nom");
             putValue(MNEMONIC_KEY, KeyEvent.VK_U);
         }
