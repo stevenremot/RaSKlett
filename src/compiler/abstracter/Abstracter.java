@@ -112,6 +112,10 @@ public class Abstracter {
 		
 		CombinatorManager cmanager = CombinatorManager.getInstance();
 		NodeField nfS = NodeFieldFactory.create(cmanager.get("S"));
+		NodeField nfK = NodeFieldFactory.create(cmanager.get("K"));
+		NodeField nfI = NodeFieldFactory.create(cmanager.get("I"));
+		NodeField nfB = NodeFieldFactory.create(new B());
+		NodeField nfC = NodeFieldFactory.create(new C());
 		
 		Node root = expression.getRoot();
 		
@@ -130,9 +134,9 @@ public class Abstracter {
 		if(lastNode.equals(root)){
 			
 			if(root.getArgument().getCombinator() != null && root.getArgument().getCombinator().equals(var))
-				return new Node(NodeFieldFactory.create(cmanager.get("I")),NodeFieldFactory.create(cmanager.get("I")));
+				return new Node(nfI,nfI);
 			else
-				return new Node(NodeFieldFactory.create(cmanager.get("K")),NodeFieldFactory.create(root.getArgument().getCombinator()));
+				return new Node(nfK,NodeFieldFactory.create(root.getArgument().getCombinator()));
 			
 		}
 		
@@ -160,7 +164,7 @@ public class Abstracter {
 					
 					if(currentNode.equals(root) && !currentNode.getArgument().getCombinator().equals(var)){
 						fNodeField = currentNode.getArgument();
-						bNode = new Node(NodeFieldFactory.create(new B()),fNodeField);
+						bNode = new Node(nfB,fNodeField);
 						gNode.setFunction(NodeFieldFactory.create(bNode));
 						return gNode;
 					}
@@ -174,7 +178,7 @@ public class Abstracter {
 						fNodeField = NodeFieldFactory.create(currentNode);
 
                         // Contrairement au reste du code, on instancie B directement pour ne pas avoir d'erreurs si l'utilisateur a désactivé ces combinateurs
-						bNode = new Node(NodeFieldFactory.create(new B()),fNodeField);
+						bNode = new Node(nfB,fNodeField);
 						gNode.setFunction(NodeFieldFactory.create(bNode));
 						return gNode;
 							
@@ -190,7 +194,7 @@ public class Abstracter {
 							Node fRootNode = varNode.getNextNode();
 							
 							if(fRootNode.getArgument().getCombinator() == null)
-								fRootNode.setFunction(NodeFieldFactory.create(cmanager.get("I")));
+								fRootNode.setFunction(nfI);
 							else
 								fRootNode.getNextNode().setFunction(fRootNode.getArgument());
 							
@@ -200,7 +204,7 @@ public class Abstracter {
 						}
 							
 						varNode.setNextNode(null);
-						bNode = new Node(NodeFieldFactory.create(new B()),fNodeField);
+						bNode = new Node(nfB,fNodeField);
 						gNode.setFunction(NodeFieldFactory.create(bNode));
 						
 						Node sNode = new Node(nfS, abstractNodeField(NodeFieldFactory.create(varNode),level,var));
@@ -234,8 +238,8 @@ public class Abstracter {
 							Node sNode = null;
 							
 							if(currentNode.equals(root)){
-								fNodeField = NodeFieldFactory.create(cmanager.get("I"));
-								sNode = new Node(NodeFieldFactory.create(cmanager.get("S")),fNodeField);
+								fNodeField = nfI;
+								sNode = new Node(nfS,fNodeField);
 								gNode.setFunction(NodeFieldFactory.create(sNode));
 								return gNode;
 							}
@@ -248,12 +252,12 @@ public class Abstracter {
 								currentNode.setNextNode(null);
 								
 								if(currentNode.equals(root))
-									currentNode.setFunction(NodeFieldFactory.create(cmanager.get("I")));
+									currentNode.setFunction(nfI);
 								else
 									root.getNextNode().setFunction(root.getArgument());
 
 								fNodeField = NodeFieldFactory.create(currentNode);
-								sNode = new Node(NodeFieldFactory.create(cmanager.get("S")),fNodeField);
+								sNode = new Node(nfS,fNodeField);
 								gNode.setFunction(NodeFieldFactory.create(sNode));
 								return gNode;
 									
@@ -269,7 +273,7 @@ public class Abstracter {
 									Node fRootNode = varNode.getNextNode();
 									
 									if(fRootNode.getArgument().getCombinator() == null)
-										fRootNode.setFunction(NodeFieldFactory.create(cmanager.get("I")));
+										fRootNode.setFunction(nfI);
 									else
 										fRootNode.getNextNode().setFunction(fRootNode.getArgument());
 									
@@ -279,7 +283,7 @@ public class Abstracter {
 								}
 									
 								varNode.setNextNode(null);
-								sNode = new Node(NodeFieldFactory.create(cmanager.get("S")),fNodeField);
+								sNode = new Node(nfS,fNodeField);
 								gNode.setFunction(NodeFieldFactory.create(sNode));
 								
 								Node parentNode = new Node(nfS, abstractNodeField(NodeFieldFactory.create(varNode),level,var));
@@ -309,7 +313,7 @@ public class Abstracter {
 				else {
 					Node nextNode = currentNode.getNextNode();
 					if(nextNode.getArgument().getCombinator() == null)			
-						nextNode.setFunction(NodeFieldFactory.create(cmanager.get("I")));
+						nextNode.setFunction(nfI);
 					else
 						nextNode.getNextNode().setFunction(nextNode.getArgument());
 					currentNode.setNextNode(null);
@@ -328,7 +332,7 @@ public class Abstracter {
 				if(varNode == null){
 					
 					if(currentNode.equals(root)){
-						cNode = new Node(NodeFieldFactory.create(new C()), currentNode.getArgument());
+						cNode = new Node(nfC, currentNode.getArgument());
 						gNode.setFunction(NodeFieldFactory.create(cNode));
 						return gNode;
 					}
@@ -336,7 +340,7 @@ public class Abstracter {
 					root.getNextNode().setFunction(root.getArgument());
 					currentNode.setNextNode(null);
 					fNodeField = NodeFieldFactory.create(currentNode);
-					cNode = new Node(NodeFieldFactory.create(new C()), fNodeField);
+					cNode = new Node(nfC, fNodeField);
 					gNode.setFunction(NodeFieldFactory.create(cNode));
 					return gNode;
 				}
@@ -351,7 +355,7 @@ public class Abstracter {
 						Node fRootNode = varNode.getNextNode();
 						
 						if(fRootNode.getArgument().getCombinator() == null)
-							fRootNode.setFunction(NodeFieldFactory.create(cmanager.get("I")));
+							fRootNode.setFunction(nfI);
 						else
 							fRootNode.getNextNode().setFunction(fRootNode.getArgument());
 						
@@ -361,7 +365,7 @@ public class Abstracter {
 					}
 						
 					varNode.setNextNode(null);
-					cNode = new Node(NodeFieldFactory.create(new C()),fNodeField);
+					cNode = new Node(nfC,fNodeField);
 					gNode.setFunction(NodeFieldFactory.create(cNode));
 					
 					Node parentNode = new Node(nfS, abstractNodeField(NodeFieldFactory.create(varNode),level,var));
@@ -435,7 +439,7 @@ public class Abstracter {
 			if(currentNode == null){
 				
 				if(root.getNextNode().equals(lastNode))
-					return new Node(NodeFieldFactory.create(cmanager.get("I")), NodeFieldFactory.create(root.getArgument().getCombinator()));
+					return new Node(nfI, NodeFieldFactory.create(root.getArgument().getCombinator()));
 				
 				root.getNextNode().setFunction(root.getArgument());
 				lastNode.getFunction().getNode().setNextNode(null);
