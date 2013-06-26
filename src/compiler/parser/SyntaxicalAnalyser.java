@@ -207,10 +207,8 @@ public class SyntaxicalAnalyser {
 					}
 				}
 			}
-
-            // Rajout d'une garde I, voir parseLambda
-            result.add("I");
-            result.addAll(wrapInParenthesis(expr));
+			
+			result.addAll(expr);
 
             for (int i = 0; i < varNames.size(); i++) {
                 result.add(")");

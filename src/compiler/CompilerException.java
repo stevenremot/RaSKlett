@@ -1,7 +1,7 @@
 package compiler;
 
 /**
- * @brief Exception de base du compilateur
+ * Exception de base du compilateur
  * 
  * @author remot
  *
