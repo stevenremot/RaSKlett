@@ -289,7 +289,7 @@ public class SyntaxicalAnalyser {
 				operandsPosition.pop();
 				
 				if(operandsPosition.isEmpty()) {
-					error("Opérateur " + currentSymbolIndex + "n'a pas d'opérande gauche");
+					error("Opérateur " + currentSymbol + "n'a pas d'opérande gauche");
 				}
 				
 				parseOperator(result, operandsPosition.peek());
