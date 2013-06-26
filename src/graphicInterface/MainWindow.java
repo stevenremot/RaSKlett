@@ -728,7 +728,7 @@ public class MainWindow extends JFrame implements CompilerCallback {
 
                 int pos = getPos(line ,position);
 
-				editor.insertResult(">>> "+ result,pos + l-2);
+				editor.insertResult(">>> "+ result + ";",pos + l-2);
 				offset++;
 			}
             catch (BadLocationException e) {
@@ -753,7 +753,7 @@ public class MainWindow extends JFrame implements CompilerCallback {
 
         int pos = getPos(line , 0);
 		try {
-			editor.insertError("!!! " +e.getMessage(),pos + l - 2);
+			editor.insertError("!!! " +e.getMessage() + ";",pos + l - 2);
 			offset++;
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
