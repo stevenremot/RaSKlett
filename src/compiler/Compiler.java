@@ -53,7 +53,7 @@ public class Compiler {
 
 		String result = GraphSerializer.serialize(sk.getReducedGraph());
 
-        if(isFinished() && result.startsWith("I ")) {
+        if(lineFinished && result.startsWith("I ")) {
             result = result.substring(2);
         }
 
@@ -145,7 +145,9 @@ public class Compiler {
 		while(!isFinished() && !isInterrupted() && sk != null) {
 			instruction();
 			sendResult();
+			registerNextInstruction();
 		}
+		sendResult();
 	}
 	
 	/**
@@ -157,11 +159,15 @@ public class Compiler {
 			try {
 				step();
 
+				sendResult();
+				
                 if(lineFinished) {
                     registerNextInstruction();
                 }
-
-				sendResult();
+                
+                if(isFinished()) {
+                	sendResult();
+                }
 			}
 			catch(CompilerException e) {
 				sendFailure(e, true);
@@ -185,6 +191,7 @@ public class Compiler {
 					try {
 						t.instruction();
                         t.sendResult();
+                        registerNextInstruction();
 					}
 					catch(CompilerException e) {
 						sendFailure(e, true);
