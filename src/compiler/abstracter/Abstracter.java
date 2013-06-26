@@ -105,7 +105,7 @@ public class Abstracter {
 	/**
 	 * Réalise l'abstraction du graphe donné par 'expression', au niveau (nombre de +) 'level', pour la variable 'var'
 	 * la fonction findAbstracter assure qu'il s'agit d'une abstraction simple (à une seule variable)
-	 * Les abstractions lambda+, lambda++ et lambda+++ sont implémentées.
+	 * Les abstractions lambda+, lambda++, lambda+++ et lambda++++ sont implémentées.
 	 * @return expression abstraite
 	 */
 	public Node abstraction(Node expression, int level, Var var){
