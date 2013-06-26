@@ -1,6 +1,10 @@
 # RaSKlett
 
+http://github.com/stevenremot/RaSKlett
+
 ## Disposition du projet
+
+Le dossier contient un projet eclipse.
 
 - *src*: les sources du projet
 - *test*: les tests unitaires
@@ -12,4 +16,3 @@
 ## Lancement du programme
 
 Le main se trouve dans la classe graphicinterface.Main.
-
