@@ -3,6 +3,12 @@ package compiler.combinators;
 import compiler.graph.Node;
 import compiler.reducer.Registry;
 
+/**
+ * Combinateur de permutation CStar
+ * CStar X Y := Y X
+ * @author lagrange
+ *
+ */
 public class CStar implements Combinator {
 
 	@Override
@@ -11,7 +17,7 @@ public class CStar implements Combinator {
 	}
 
 	/**
-	 * Applique le combinateur de permutation pour deux arguments : C* X Y := Y X
+	 * Applique le combinateur de permutation pour deux arguments : CStar X Y := Y X
 	 * On vérifie qu'on a deux arguments et on remplace le deuxième noeud par Y X.
 	 */
 	@Override

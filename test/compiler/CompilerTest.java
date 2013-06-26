@@ -40,7 +40,7 @@ public class CompilerTest {
 		CompilerCallback callback = new CompilerCallback() {
 			public void onResult(String result, int line, int position, boolean finished) {
 				if(finished) {
-					assertEquals("I K", result);
+					assertEquals("K", result);
 				}
 			}
 			
@@ -179,12 +179,13 @@ public class CompilerTest {
 
 			@Override
 			public void onResult(String reducedGraph, int line, int position, boolean finished) {
-				fail();
+				assertEquals("", reducedGraph);
 				
 			}
 
 			@Override
 			public void onFailure(CompilerException e) {
+                assertEquals(0, e.getLine());
 			}		
 		};
 		
@@ -202,7 +203,7 @@ public class CompilerTest {
 			@Override
 			public void onResult(String reducedGraph, int line, int position, boolean finished) {
 				if(finished) {
-					assertEquals(":= $f (  * 2 )", reducedGraph);
+					assertEquals(":= f I ( B I ( * 2 ) )", reducedGraph);
 				}
 			}
 

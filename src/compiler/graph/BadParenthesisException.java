@@ -3,7 +3,7 @@ package compiler.graph;
 import compiler.CompilerException;
 
 /**
- * @brief Exception pour GraphFactory. Appelée lorsqu'il y a des parenthèses non désirables.
+ * Exception pour GraphFactory. Appelée lorsqu'il y a des parenthèses non désirables.
  * @author kazmiero
  *
  */

@@ -6,7 +6,7 @@ import compiler.graph.NodeFieldFactory;
 import compiler.reducer.Registry;
 
 /**
- * @brief Combinateur permettant l'appel de fonction de manière paresseuse
+ * Combinateur permettant l'appel de fonction de manière paresseuse
  * 
  * LazyCall reçoit le nom d'une fonction en argument, et insère son graphe
  * dans le graphe de l'expression au moment de la réduction.

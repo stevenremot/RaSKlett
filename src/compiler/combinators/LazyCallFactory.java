@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @brief Factory pour créer des LazyCall
+ * Factory pour créer des LazyCall
  * 
  * @author remot
  *

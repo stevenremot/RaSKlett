@@ -5,8 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,6 +14,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
 
 import javax.swing.*;
@@ -28,7 +27,7 @@ import compiler.CompilerCallback;
 import compiler.CompilerException;
 import compiler.config.ConfigManager;
 
-public class MainWindow extends JFrame implements CompilerCallback{
+public class MainWindow extends JFrame implements CompilerCallback {
 
 	private Compiler compiler;
 	
@@ -37,44 +36,24 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	private static final long serialVersionUID = 1L;
 	private static Editor editor = null;
-	private JButton create = null;
-	private JButton open = null;
-	private JButton save = null;
-	private JButton saveAs = null;
-	private JButton compileAll = null;
-	private JButton compileStepByStep = null;
-	private JButton nextStep = null;
-	private JButton nextLine = null;
-	private JButton toEnd = null;
-	private JButton stop = null;
-	private JButton clean = null;
-	private JMenuBar menuBar = null;
-	private JMenu file = null;
-	private JMenu compilation = null;
-	private JMenu tools = null;
-	private JMenu help = null;
-	private JMenuItem iOpen = null;
-	private JMenuItem iCreate = null;
-	private JMenuItem iSave = null;
-	private JMenuItem iSaveAs = null;
-	private JMenuItem iCompileAll = null;
-	private JMenuItem iCompileStepByStep = null;
-	private JMenuItem iNextStep = null;
-	private JMenuItem iNextLine = null;
-	private JMenuItem iToEnd = null;
-	private JMenuItem iStop = null;
-	private JMenuItem iClean = null;
-	private JMenuItem iPreferences = null;
-	private JMenuItem iHelp = null;
+    private Action createAction, openAction, saveAction, saveAsAction,
+        compileAllAction, compileStepByStepAction, compileSelectionAction,
+        nextStepAction, nextLineAction, toEndAction,
+        stopAction, cleanAction, manualAction, preferencesAction;
+
     private boolean inStepByStepCompilation = false;
 
 	private  JScrollPane panneauTexte ;
 	private TextLineNumbers tln ;
 	private  Preferences preferences = Preferences.userRoot();
 
-	private JToolBar toolBar = null;
-	
+    // Décalage des lignes lors de l'affichage des résultats
 	private int offset = 0;
+
+    // Dans le cas d'une compilation de sélection, contient l'avant, l'après, et la sélection
+    private List<String> selectedInstruction = null;
+    private int selectedInstructionLine = -1;
+
 
 	/**
 	 * Constructeur de la classe Fenetre
@@ -103,158 +82,89 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		combinatorsLists.add("head [X,Y,Z] -> X");
 		combinatorsLists.add("tail [X,Y,Z] -> [Y,Z]");
 
+        createAction = new ControleurCreate();
+        openAction = new ControleurOpen();
+        saveAction = new ControleurSave();
+        saveAsAction = new ControleurSaveAs();
+        compileAllAction = new ControleurCompileAll();
+        compileStepByStepAction = new ControleurCompileStepByStep();
+        compileSelectionAction = new ControleurCompileSelection();
+        nextStepAction = new ControleurToNextStep();
+        nextLineAction = new ControleurToNextInstruction();
+        toEndAction = new ControleurToEnd();
+        stopAction = new ControleurStop();
+        cleanAction = new ControleurClean();
+        manualAction = new ControleurManual(this);
+        preferencesAction = new ControleurPreferences(this);
 
-		
-		create = new JButton(new ImageIcon("icons/create.png"));
-		create.setToolTipText("Créer un nouveau fichier");
-		create.addActionListener(new ControleurCreate());
-
-		open = new JButton(new ImageIcon("icons/open.png"));
-		open.setToolTipText("Ouvrir un fchier existant");
-		open.addActionListener(new ControleurOpen());
-
-		save = new JButton(new ImageIcon("icons/save.png"));
-		save.setToolTipText("Sauver le fichier courant");
-		save.addActionListener(new ControleurSave());
-		
-		saveAs = new JButton(new ImageIcon("icons/save_as.png"));
-		saveAs.setToolTipText("Enregistrer sous");
-		saveAs.addActionListener(new ControleurSaveAs());
-
-		compileAll = new JButton(new ImageIcon("icons/compile.png"));
-		compileAll.setToolTipText("Compiler le code en entier");
-		compileAll.addActionListener(new ControleurCompileAll());
-
-		compileStepByStep = new JButton(new ImageIcon("icons/compile_sbs.png"));
-		compileStepByStep.setToolTipText("Compiler le code pas-à-pas");
-		compileStepByStep.addActionListener(new ControleurCompileStepByStep());
-
-		nextStep = new JButton(new ImageIcon("icons/next.png"));
-		nextStep.setToolTipText("Compiler l'étape");
-		nextStep.addActionListener(new ControleurToNextStep());
-
-		nextLine = new JButton(new ImageIcon("icons/next_line.png"));
-		nextLine.setToolTipText("Compiler l'instruction");
-		nextLine.addActionListener(new ControleurToNextInstruction());
-
-		toEnd = new JButton(new ImageIcon("icons/to_end.png"));
-		toEnd.setToolTipText("Compiler le reste du code");
-		toEnd.addActionListener(new ControleurCompileAll());
-
-		stop = new JButton(new ImageIcon("icons/stop.png"));	
-		stop.setToolTipText("Interrompre la compilation");
-		stop.addActionListener( new ControleurStop());
-		
-		clean = new JButton(new ImageIcon("icons/clean.png"));
-		clean.setToolTipText("Effacer les réultats et les erreurs");
-		clean.addActionListener(new ControleurClean());
-
-		nextStep.setEnabled(false);
-		nextLine.setEnabled(false);
-		toEnd.setEnabled(false);
-		stop.setEnabled(false);
+		nextStepAction.setEnabled(false);
+		nextLineAction.setEnabled(false);
+		toEndAction.setEnabled(false);
+		stopAction.setEnabled(false);
 
 		editor = new Editor();
-		toolBar = new JToolBar();	
+		JToolBar toolBar = new JToolBar();
 
-		toolBar.add(create);
-		toolBar.add(open);
-		toolBar.add(save);
-		toolBar.add(saveAs);
-		toolBar.add(compileAll);
-		toolBar.add(compileStepByStep);
-		toolBar.add(nextStep);
-		toolBar.add(nextLine);
-		toolBar.add(toEnd);
-		toolBar.add(stop);
-		toolBar.add(clean);
+		toolBar.add(createAction);
+		toolBar.add(openAction);
+		toolBar.add(saveAction);
+		toolBar.add(saveAsAction);
+		toolBar.add(compileAllAction);
+        toolBar.add(compileSelectionAction);
+		toolBar.add(compileStepByStepAction);
+		toolBar.add(nextStepAction);
+		toolBar.add(nextLineAction);
+		toolBar.add(toEndAction);
+		toolBar.add(stopAction);
+		toolBar.add(cleanAction);
 
 
 		add(toolBar, BorderLayout.NORTH);
 
-		menuBar = new JMenuBar();
+		JMenuBar menuBar = new JMenuBar();
 
-		file = new JMenu("Fichier");
+		JMenu file = new JMenu("Fichier");
 		file.setMnemonic(KeyEvent.VK_F);
 		file.getAccessibleContext().setAccessibleDescription(
 				"Fichier");
 		menuBar.add(file);
 
-		iOpen = new JMenuItem("Ouvrir");
-		iOpen.addActionListener(new ControleurOpen());
-		iOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O,InputEvent.CTRL_DOWN_MASK));
+        file.add(createAction);
+		file.add(openAction);
+		file.add(saveAction);
+		file.add(saveAsAction);
+		file.add(new ControleurQuit(this));
 
-		iCreate = new JMenuItem("Créer");
-		iCreate.addActionListener(new ControleurCreate());
-		iCreate.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,InputEvent.CTRL_DOWN_MASK));
-		
-		iSave = new JMenuItem("Enregistrer");
-		iSave.addActionListener(new ControleurSave());
-		iSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,InputEvent.CTRL_DOWN_MASK));
-		
-		iSaveAs = new JMenuItem("Enregistrer sous");
-		iSaveAs.addActionListener(new ControleurSaveAs());
-		
-		file.add(iOpen);
-		file.add(iCreate);
-		file.add(iSave);	
-		file.add(iSaveAs);
-
-		compilation = new JMenu("Compilation");
+		JMenu compilation = new JMenu("Compilation");
 		compilation.setMnemonic(KeyEvent.VK_C);
 		compilation.getAccessibleContext().setAccessibleDescription(
 				"Commandes de compilation");
 		menuBar.add(compilation);
 
-		iCompileAll = new JMenuItem("Compiler tout le code");
-		iCompileAll.addActionListener(new ControleurCompileAll());
-		iCompileStepByStep = new JMenuItem("Compiler le code pas-à-pas");
-		iCompileStepByStep.addActionListener(new ControleurCompileStepByStep());
-		iNextStep = new JMenuItem("Compiler l'étape");
-        iNextStep.addActionListener(new ControleurToNextStep());
-		iNextLine = new JMenuItem("Compiler l'instruction");
-        iNextLine.addActionListener(new ControleurToNextInstruction());
-		iToEnd = new JMenuItem("Compiler le reste du code");
-        iToEnd.addActionListener(new ControleurToEnd());
-		iStop = new JMenuItem("Interrompre la compilation");
-		iStop.addActionListener(new ControleurStop());
-		iClean= new JMenuItem("Nettoyer le code");
-		clean.addActionListener(new ControleurClean());
+		compilation.add(compileAllAction);
+		compilation.add(compileStepByStepAction);
+        compilation.add(compileSelectionAction);
+		compilation.add(nextStepAction);
+		compilation.add(nextLineAction);
+		compilation.add(toEndAction);
+		compilation.add(stopAction);
+		compilation.add(cleanAction);
 
-		iNextStep.setEnabled(false);
-		iNextLine.setEnabled(false);
-		iToEnd.setEnabled(false);
-		iStop.setEnabled(false);
-
-		compilation.add(iCompileAll);
-		compilation.add(iCompileStepByStep);
-		compilation.add(iNextStep);
-		compilation.add(iNextLine);
-		compilation.add(iToEnd);
-		compilation.add(iStop);
-		compilation.add(iClean);
-
-		tools = new JMenu("Outils");
+		JMenu tools = new JMenu("Outils");
 		tools.setMnemonic(KeyEvent.VK_O);
 		tools.getAccessibleContext().setAccessibleDescription(
 				"Menu des outils");
 		menuBar.add(tools);
 
-		iPreferences = new JMenuItem("Préférences");
-		iPreferences.addActionListener(new ControleurPreferences(this));
+		tools.add(preferencesAction);
 
-		tools.add(iPreferences);	
-
-		help = new JMenu("Aide");
+		JMenu help = new JMenu("Aide");
 		help.setMnemonic(KeyEvent.VK_A);
 		help.getAccessibleContext().setAccessibleDescription(
 				"Menu d'aide");
 		menuBar.add(help);
 
-		iHelp = new JMenuItem("Manuel");
-		iHelp.addActionListener(new ControleurManual(this));
-
-		help.add(iHelp);
+		help.add(manualAction);
 
 		setJMenuBar(menuBar);
 
@@ -307,13 +217,20 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			e.printStackTrace();
 		}
 	}
-	
-	private void initCompilationEnvironment() {
+
+    private void initCompilationEnvironment() {
+        initCompilationEnvironment(true);
+    }
+
+	private void initCompilationEnvironment(boolean cleanText) {
 		offset = 0;
 		editor.disableEdition();
-		editor.setText(editor.getCleanedText());
-		stop.setEnabled(true);
-		iStop.setEnabled(true);
+        if(cleanText) {
+		    editor.setText(editor.getCleanedText());
+        }
+
+		stopAction.setEnabled(true);
+
 		
 
 		String code = editor.getCleanedText();
@@ -326,12 +243,9 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
         inStepByStepCompilation = true;
 
-		nextStep.setEnabled(true);
-		nextLine.setEnabled(true);
-		toEnd.setEnabled(true);
-		iNextStep.setEnabled(true);
-		iNextLine.setEnabled(true);
-		iToEnd.setEnabled(true);
+		nextStepAction.setEnabled(true);
+		nextLineAction.setEnabled(true);
+		toEndAction.setEnabled(true);
 		
 	}
 
@@ -346,6 +260,21 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	}
 
+    private void startCompileSelection() {
+        selectedInstruction = getEditor().getSelectedInstruction();
+
+        if(selectedInstruction != null) {
+            selectedInstructionLine = getEditor().getSelectedLineNumber();
+            initCompilationEnvironment(false);
+            compiler = new Compiler(new StringReader(selectedInstruction.get(1)), this);
+
+            if(!compiler.isInterrupted()) {
+                enableCompilation(false);
+                compiler.reduceAll();
+            }
+        }
+    }
+
     private void toNextStep() {
 		if(compiler != null)
 			compiler.reduceStep();
@@ -359,12 +288,11 @@ public class MainWindow extends JFrame implements CompilerCallback{
     private void toEnd() {
 		compiler.reduceAll();
 		editor.enableEdition();
-		stop.setEnabled(false);
-		iStop.setEnabled(false);
+		stopAction.setEnabled(false);
 	}
 
     private void stopCompilation(){
-
+        selectedInstruction = null;
         inStepByStepCompilation = false;
 
         if(compiler != null) {
@@ -384,30 +312,31 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		else
 			editor.enableEdition();
 
-        nextStep.setEnabled(inStepByStepCompilation);
-        nextLine.setEnabled(inStepByStepCompilation);
-        toEnd.setEnabled(inStepByStepCompilation);
-        iNextStep.setEnabled(inStepByStepCompilation);
-        iNextLine.setEnabled(inStepByStepCompilation);
-        iToEnd.setEnabled(inStepByStepCompilation);
+        nextStepAction.setEnabled(inStepByStepCompilation);
+        nextLineAction.setEnabled(inStepByStepCompilation);
+        toEndAction.setEnabled(inStepByStepCompilation);
         
 
-        iCompileStepByStep.setEnabled(b);
-        compileStepByStep.setEnabled(b);
+        compileStepByStepAction.setEnabled(b);
 
-		iCompileAll.setEnabled(b);
-		compileAll.setEnabled(b);
+		compileAllAction.setEnabled(b);
 
-		stop.setEnabled(!b);
-		iStop.setEnabled(!b);
+		stopAction.setEnabled(!b);
 		
-		clean.setEnabled(b);
-		iClean.setEnabled(b);
+		cleanAction.setEnabled(b);
 		
 		
 	}
     
-    private class ControleurClean implements ActionListener {
+    private class ControleurClean extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public ControleurClean() {
+            super("Nettoyer", new ImageIcon("icons/clean.png"));
+            putValue(SHORT_DESCRIPTION, "Effacer les résultats et les erreurs");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK));
+        }
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -417,7 +346,16 @@ public class MainWindow extends JFrame implements CompilerCallback{
     }
 
 
-    private class ControleurCompileAll implements ActionListener {
+    private class ControleurCompileAll extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public ControleurCompileAll() {
+            super("Compiler tout", new ImageIcon("icons/compile.png"));
+            putValue(SHORT_DESCRIPTION, "Compiler le code entier");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
+        }
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			startCompilation();
@@ -425,7 +363,16 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	}
 
-    private class ControleurCompileStepByStep implements ActionListener {
+    private class ControleurCompileStepByStep extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public ControleurCompileStepByStep() {
+            super("Compiler pas-à-pas", new ImageIcon("icons/compile_sbs.png"));
+            putValue(SHORT_DESCRIPTION, "Compiler le code pas-à-pas");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0));
+        }
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			startCompilationStepByStep();
@@ -433,21 +380,65 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	}
 
-    private class ControleurToNextStep implements ActionListener {
+    private class ControleurCompileSelection extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public ControleurCompileSelection() {
+            super("Compiler la sélection", new ImageIcon("icons/compile_selected.png"));
+            putValue(SHORT_DESCRIPTION, "Compiler le code sélectionné");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent arg0) {
+            startCompileSelection();
+        }
+    }
+
+    private class ControleurToNextStep extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public ControleurToNextStep() {
+            super("Compiler l'étape", new ImageIcon("icons/next.png"));
+            putValue(SHORT_DESCRIPTION, "Effectuer une étape de réduction");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0));
+        }
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			toNextStep();
 		}
 	}
 
-    private class ControleurToNextInstruction implements ActionListener {
+    private class ControleurToNextInstruction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public ControleurToNextInstruction() {
+            super("Compiler l'instruction", new ImageIcon("icons/next_line.png"));
+            putValue(SHORT_DESCRIPTION, "Compier l'instruction courante");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0));
+
+        }
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			toNextInstruction();
 		}
 	}
 
-    private class ControleurToEnd implements ActionListener {
+    private class ControleurToEnd extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public ControleurToEnd() {
+            super("Compiler le reste", new ImageIcon("icons/to_end.png"));
+            putValue(SHORT_DESCRIPTION, "Compiler le reste du code qui ne l'a pas été");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0));
+        }
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			toEnd();
@@ -455,7 +446,17 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
 
-    private class ControleurStop implements ActionListener {
+    private class ControleurStop extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public ControleurStop() {
+            super("Interrompre", new ImageIcon("icons/stop.png"));
+            putValue(SHORT_DESCRIPTION, "Interrompre la compilation");
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0));
+
+        }
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			stopCompilation();
@@ -464,13 +465,18 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 
 
-    private class ControleurPreferences implements ActionListener {
+    private class ControleurPreferences extends AbstractAction {
 
+		private static final long serialVersionUID = 1L;
 		private MainWindow window;
 
-		public ControleurPreferences(MainWindow window) {
-		this.window = window;
-		}
+        public ControleurPreferences(MainWindow window) {
+            super("Préférences");
+            putValue(SHORT_DESCRIPTION, "Modifier les options de RaSKlett");
+            putValue(MNEMONIC_KEY, KeyEvent.VK_P);
+
+            this.window = window;
+        }
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -479,10 +485,19 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	}
 	/**
 	 * Ouvre une boîte de dialogue pour sélectionner le fichier à  ouvrir.
-	 * @author lagrange
+	 * 
 	 *
 	 */
-    private class ControleurOpen implements ActionListener{
+    private class ControleurOpen extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public ControleurOpen() {
+            super("Ouvrir", new ImageIcon("icons/open.png"));
+            putValue(SHORT_DESCRIPTION, "Ouvrir un fichier");
+            putValue(MNEMONIC_KEY, KeyEvent.VK_O);
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
+        }
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -518,8 +533,17 @@ public class MainWindow extends JFrame implements CompilerCallback{
 
 	}
 
-    private class ControleurCreate implements ActionListener{
+    private class ControleurCreate extends AbstractAction {
 
+		private static final long serialVersionUID = 1L;
+
+		public ControleurCreate() {
+            super("Nouveau", new ImageIcon("icons/create.png"));
+            putValue(SHORT_DESCRIPTION, "Créer un nouveau fichier");
+            putValue(MNEMONIC_KEY, KeyEvent.VK_N);
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
+        }
+        
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			filename = null;
@@ -541,10 +565,19 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	 * Listener pour le bouton "save"
 	 * Ouvre un dialogue pour choisir le fichier dans lequel Ã©crire si on n'a pas encore sauvegardÃ©.
 	 * Si c'est le cas, sauvegarde dans le fichier que l'on a prÃ©cisÃ© Ã  la premiÃ¨re sauvegarde.
-	 * @author lagrange
 	 *
 	 */
-    private class ControleurSave implements ActionListener {
+    private class ControleurSave extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public ControleurSave() {
+            super("Enregistrer", new ImageIcon("icons/save.png"));
+            putValue(SHORT_DESCRIPTION, "Sauver le fichier courant");
+            putValue(MNEMONIC_KEY, KeyEvent.VK_S);
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+        }
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			if(filename == null) {
@@ -574,7 +607,16 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
 	}
     
-    private class ControleurSaveAs implements ActionListener {
+    private class ControleurSaveAs extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public ControleurSaveAs() {
+            super("Enregistrer sous", new ImageIcon("icons/save_as.png"));
+            putValue(SHORT_DESCRIPTION, "Enregistrer le fichier courant sous un autre nom");
+            putValue(MNEMONIC_KEY, KeyEvent.VK_U);
+        }
+
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			JFileChooser chooser = new JFileChooser();
@@ -602,12 +644,18 @@ public class MainWindow extends JFrame implements CompilerCallback{
 		}
     }
 
-    private class ControleurManual implements ActionListener {
+    private class ControleurManual extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
 		private MainWindow parent;
-		
-		public ControleurManual(MainWindow parent) {
-			this.parent = parent;
-		}
+
+        public ControleurManual(MainWindow parent) {
+            super("Manuel d'utilisation");
+            putValue(SHORT_DESCRIPTION, "Afficher le manuel d'utilisation");
+            putValue(MNEMONIC_KEY, KeyEvent.VK_M);
+
+            this.parent = parent;
+        }
 		
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
@@ -618,6 +666,24 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			}
 		}
 	}
+    
+    private class ControleurQuit extends AbstractAction {
+    	private static final long serialVersionUID = 1L;
+    	private MainWindow parent;
+    	
+    	public ControleurQuit(MainWindow parent) {
+    		super("Quitter");
+    		putValue(SHORT_DESCRIPTION, "Quitter le programme");
+    		putValue(MNEMONIC_KEY, KeyEvent.VK_Q);
+    		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
+    		this.parent = parent;
+    	}
+    	
+    	@Override
+    	public void actionPerformed(ActionEvent arg0) {
+    		parent.dispose();
+    	}
+    }
 	
 	/**
 	 * Méthode calculant la position d'une erreur ou d'un résultat dans l'éditeur de texte après la compilation.
@@ -647,9 +713,21 @@ public class MainWindow extends JFrame implements CompilerCallback{
 			boolean finished) {
         if(!finished) {
 		    try {
-				int pos = getPos(line ,position);
-				int l = line + offset + 1;
-				editor.insertResult(">>> "+reducedGraph,pos + l-2);
+                int l = line + offset + 1;
+                String result;
+
+                if(selectedInstruction != null) {
+                    result = selectedInstruction.get(0) + " " + reducedGraph + " " + selectedInstruction.get(2);
+                    line = selectedInstructionLine;
+                    position = 0;
+                }
+                else {
+                    result = reducedGraph;
+                }
+
+                int pos = getPos(line ,position);
+
+				editor.insertResult(">>> "+ result,pos + l-2);
 				offset++;
 			}
             catch (BadLocationException e) {
@@ -665,8 +743,13 @@ public class MainWindow extends JFrame implements CompilerCallback{
 	@Override
 	public void onFailure(CompilerException e) {
 		int line = e.getLine();
-		int l = line + offset + 1;
-		int pos = getPos(line,0);
+        int l = line + offset + 1;
+
+        if(selectedInstruction != null) {
+            line = selectedInstructionLine;
+        }
+
+        int pos = getPos(line , 0);
 		try {
 			editor.insertError("!!! " +e.getMessage(),pos + l - 2);
 			offset++;

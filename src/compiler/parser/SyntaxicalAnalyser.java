@@ -449,10 +449,7 @@ public class SyntaxicalAnalyser {
 			result.add("$" + varName);
 		}
 
-        // ICI aussi on a besoin d'un I, car l'abstraction n'accepte pas
-        // les parnethèses au début
-        result.add("I");
-        result.addAll(wrapInParenthesis(expr));
+		result.addAll(expr);
 
 		result.add(")");
 

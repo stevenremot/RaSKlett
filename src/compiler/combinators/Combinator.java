@@ -5,7 +5,7 @@ import compiler.graph.Node;
 import compiler.reducer.Registry;
 
 /**
- * 
+ * Interface permettant de définir les combinateurs du programme
  * @author lagrange
  *
  */

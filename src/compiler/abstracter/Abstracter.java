@@ -1,6 +1,8 @@
 package compiler.abstracter;
 
+import compiler.combinators.B;
 import compiler.graph.*;
+import compiler.combinators.C;
 import compiler.combinators.CombinatorManager;
 import compiler.combinators.Lambda;
 import compiler.combinators.Var;
@@ -103,7 +105,7 @@ public class Abstracter {
 	/**
 	 * Réalise l'abstraction du graphe donné par 'expression', au niveau (nombre de +) 'level', pour la variable 'var'
 	 * la fonction findAbstracter assure qu'il s'agit d'une abstraction simple (à une seule variable)
-	 * Les abstractions lambda+, lambda++ et lambda+++ sont implémentées.
+	 * Les abstractions lambda+, lambda++, lambda+++ et lambda++++ sont implémentées.
 	 * @return expression abstraite
 	 */
 	public Node abstraction(Node expression, int level, Var var){
@@ -135,7 +137,7 @@ public class Abstracter {
 		}
 		
 		// règle lambda++++x . F ( G x ) = B F G
-		/*
+		
 		if(level >= 4 && lastNode.getArgument().getCombinator() == null)
 			if(lastNode.getArgument().getNode().getArgument().getCombinator() != null && lastNode.getArgument().getNode().getArgument().getCombinator().equals(var)){
 				
@@ -158,7 +160,7 @@ public class Abstracter {
 					
 					if(currentNode.equals(root) && !currentNode.getArgument().getCombinator().equals(var)){
 						fNodeField = currentNode.getArgument();
-						bNode = new Node(NodeFieldFactory.create(cmanager.get("B")),fNodeField);
+						bNode = new Node(NodeFieldFactory.create(new B()),fNodeField);
 						gNode.setFunction(NodeFieldFactory.create(bNode));
 						return gNode;
 					}
@@ -170,17 +172,210 @@ public class Abstracter {
 						root.getNextNode().setFunction(root.getArgument());
 						currentNode.setNextNode(null);
 						fNodeField = NodeFieldFactory.create(currentNode);
-						bNode = new Node(NodeFieldFactory.create(cmanager.get("B")),fNodeField);
+
+                        // Contrairement au reste du code, on instancie B directement pour ne pas avoir d'erreurs si l'utilisateur a désactivé ces combinateurs
+						bNode = new Node(NodeFieldFactory.create(new B()),fNodeField);
 						gNode.setFunction(NodeFieldFactory.create(bNode));
 						return gNode;
 							
 					}
 					
+					else if(!varNode.equals(currentNode)) {
+						
+						if(varNode.getNextNode().equals(currentNode))
+							fNodeField = currentNode.getArgument();
+						
+						else {
+							
+							Node fRootNode = varNode.getNextNode();
+							
+							if(fRootNode.getArgument().getCombinator() == null)
+								fRootNode.setFunction(NodeFieldFactory.create(cmanager.get("I")));
+							else
+								fRootNode.getNextNode().setFunction(fRootNode.getArgument());
+							
+							currentNode.setNextNode(null);
+							fNodeField = NodeFieldFactory.create(currentNode);
+							
+						}
+							
+						varNode.setNextNode(null);
+						bNode = new Node(NodeFieldFactory.create(new B()),fNodeField);
+						gNode.setFunction(NodeFieldFactory.create(bNode));
+						
+						Node sNode = new Node(nfS, abstractNodeField(NodeFieldFactory.create(varNode),level,var));
+						return new Node(NodeFieldFactory.create(sNode),NodeFieldFactory.create(bNode));
+					}
+					
 				}
 					
 			}
-		*/
 		
+		// règle lambda++++x . F x ( G x ) = S F G
+		
+				if(level >= 4 && lastNode.getArgument().getCombinator() == null)
+					if(lastNode.getArgument().getNode().getArgument().getCombinator() != null && lastNode.getArgument().getNode().getArgument().getCombinator().equals(var)){
+						
+						Node subgraphNode = lastNode.getArgument().getNode();
+						
+						Node gNode = null;
+						if(subgraphNode.getFunction().getNode() == null && !subgraphNode.getFunction().getCombinator().equals(var))
+							gNode = new Node(new NodeNodeField(null), NodeFieldFactory.create(subgraphNode.getFunction().getCombinator()));
+						else if(searchVariable(subgraphNode.getFunction().getNode(), var) == null){
+							subgraphNode.getFunction().getNode().setNextNode(null);
+							gNode = new Node(new NodeNodeField(null), NodeFieldFactory.create(subgraphNode.getFunction().getNode()));
+						}
+						
+						currentNode = lastNode.getFunction().getNode();
+						
+						if(gNode != null && currentNode.getArgument().getCombinator() != null && currentNode.getArgument().getCombinator().equals(var)){
+							
+							NodeField fNodeField = null;
+							Node sNode = null;
+							
+							if(currentNode.equals(root)){
+								fNodeField = NodeFieldFactory.create(cmanager.get("I"));
+								sNode = new Node(NodeFieldFactory.create(cmanager.get("S")),fNodeField);
+								gNode.setFunction(NodeFieldFactory.create(sNode));
+								return gNode;
+							}
+							
+							currentNode = currentNode.getFunction().getNode();							
+							Node varNode = searchVariable(currentNode,var);
+							
+							if(varNode == null){
+								
+								currentNode.setNextNode(null);
+								
+								if(currentNode.equals(root))
+									currentNode.setFunction(NodeFieldFactory.create(cmanager.get("I")));
+								else
+									root.getNextNode().setFunction(root.getArgument());
+
+								fNodeField = NodeFieldFactory.create(currentNode);
+								sNode = new Node(NodeFieldFactory.create(cmanager.get("S")),fNodeField);
+								gNode.setFunction(NodeFieldFactory.create(sNode));
+								return gNode;
+									
+							}
+							
+							else if(!varNode.equals(currentNode)) {
+								
+								if(varNode.getNextNode().equals(currentNode))
+									fNodeField = currentNode.getArgument();
+								
+								else {
+									
+									Node fRootNode = varNode.getNextNode();
+									
+									if(fRootNode.getArgument().getCombinator() == null)
+										fRootNode.setFunction(NodeFieldFactory.create(cmanager.get("I")));
+									else
+										fRootNode.getNextNode().setFunction(fRootNode.getArgument());
+									
+									currentNode.setNextNode(null);
+									fNodeField = NodeFieldFactory.create(currentNode);
+									
+								}
+									
+								varNode.setNextNode(null);
+								sNode = new Node(NodeFieldFactory.create(cmanager.get("S")),fNodeField);
+								gNode.setFunction(NodeFieldFactory.create(sNode));
+								
+								Node parentNode = new Node(nfS, abstractNodeField(NodeFieldFactory.create(varNode),level,var));
+								return new Node(NodeFieldFactory.create(parentNode),NodeFieldFactory.create(sNode));
+							}
+							
+						}
+							
+					}
+		
+		
+		//règle lambda++++x . F x G = C F G	
+		
+		if(level >= 4) {
+			
+			currentNode = searchVariable(lastNode,var);
+			
+			if(currentNode != null && !currentNode.equals(lastNode) && currentNode.getArgument().getCombinator() != null && currentNode.getArgument().getCombinator().equals(var)){
+				
+				Node gNode = null;
+				
+				if(currentNode.getNextNode().equals(lastNode)){
+					gNode = new Node(new NodeNodeField(null), lastNode.getArgument());
+					currentNode.setNextNode(null);
+					
+				}
+				else {
+					Node nextNode = currentNode.getNextNode();
+					if(nextNode.getArgument().getCombinator() == null)			
+						nextNode.setFunction(NodeFieldFactory.create(cmanager.get("I")));
+					else
+						nextNode.getNextNode().setFunction(nextNode.getArgument());
+					currentNode.setNextNode(null);
+					gNode = new Node(new NodeNodeField(null), NodeFieldFactory.create(lastNode));
+					
+				}
+				
+				if(gNode != null && !currentNode.equals(root)){
+				
+				Node cNode = null;
+				NodeField fNodeField = null;
+				
+				currentNode = currentNode.getFunction().getNode();
+				Node varNode = searchVariable(currentNode,var);
+				
+				if(varNode == null){
+					
+					if(currentNode.equals(root)){
+						cNode = new Node(NodeFieldFactory.create(new C()), currentNode.getArgument());
+						gNode.setFunction(NodeFieldFactory.create(cNode));
+						return gNode;
+					}
+					
+					root.getNextNode().setFunction(root.getArgument());
+					currentNode.setNextNode(null);
+					fNodeField = NodeFieldFactory.create(currentNode);
+					cNode = new Node(NodeFieldFactory.create(new C()), fNodeField);
+					gNode.setFunction(NodeFieldFactory.create(cNode));
+					return gNode;
+				}
+				
+				else if(!varNode.equals(currentNode) && varNode.getArgument().getCombinator() != null && varNode.getArgument().getCombinator().equals(var)){
+					
+					if(varNode.getNextNode().equals(currentNode))
+						fNodeField = currentNode.getArgument();
+					
+					else {
+						
+						Node fRootNode = varNode.getNextNode();
+						
+						if(fRootNode.getArgument().getCombinator() == null)
+							fRootNode.setFunction(NodeFieldFactory.create(cmanager.get("I")));
+						else
+							fRootNode.getNextNode().setFunction(fRootNode.getArgument());
+						
+						currentNode.setNextNode(null);
+						fNodeField = NodeFieldFactory.create(currentNode);
+						
+					}
+						
+					varNode.setNextNode(null);
+					cNode = new Node(NodeFieldFactory.create(new C()),fNodeField);
+					gNode.setFunction(NodeFieldFactory.create(cNode));
+					
+					Node parentNode = new Node(nfS, abstractNodeField(NodeFieldFactory.create(varNode),level,var));
+					return new Node(NodeFieldFactory.create(parentNode),NodeFieldFactory.create(cNode));
+				}
+				
+			}	
+				
+			}
+				
+		}
+		
+				
+				
 		//règle lambda+++x . F = K F
 		if(level >= 3 && (lastNode.getArgument().getCombinator() == null || !lastNode.getArgument().getCombinator().equals(var))){
 			

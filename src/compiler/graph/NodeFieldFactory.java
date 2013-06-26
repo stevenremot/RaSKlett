@@ -3,7 +3,7 @@ package compiler.graph;
 import compiler.combinators.Combinator;
 
 /**
- * @brief NodeFieldFactory : crée des NodeFields correspondant à un combinateur ou un noeud
+ * NodeFieldFactory : crée des NodeFields correspondant à un combinateur ou un noeud
  * 
  * @author kazmiero
  *

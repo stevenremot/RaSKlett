@@ -4,6 +4,12 @@ import compiler.graph.Node;
 import compiler.graph.NodeField;
 import compiler.reducer.Registry;
 
+/**
+ * Combinateur de permutation C
+ * C F X Y := F Y X 
+ * @author lagrange
+ *
+ */
 public class C implements Combinator {
 
 	@Override
@@ -12,7 +18,7 @@ public class C implements Combinator {
 	}
 
 	/**
-	 * @brief Applique le combinateur de permutation C au graphe
+	 * Applique le combinateur de permutation C au graphe
 	 * Vérifie qu'on a au moins trois arguments F X Y et remplace le troisième noeud par (F Y) X
 	 */
 	@Override

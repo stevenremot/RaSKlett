@@ -3,6 +3,12 @@ package compiler.combinators;
 import compiler.graph.Node;
 import compiler.reducer.Registry;
 
+/**
+ * Combinateur I
+ * I X := X
+ * @author lagrange
+ *
+ */
 public class I implements Combinator {
 
 	@Override
@@ -11,7 +17,7 @@ public class I implements Combinator {
 	}
 
 	/**
-	 * @brief Applique le combinateur I au graphe.
+	 * Applique le combinateur I au graphe.
 	 */
 	@Override
 	public boolean applyReduction(Registry registry) {

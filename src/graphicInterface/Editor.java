@@ -1,6 +1,8 @@
 package graphicInterface;
 
 import java.awt.Color;
+import java.util.Arrays;
+import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
@@ -81,39 +83,112 @@ public class Editor extends JTextPane {
 		}
 
 	}
-	
-	public void insertResultCompilationSelection(String s) throws BadLocationException{
-		int finSelection = getSelectionEnd();
-		int chercheFin = finSelection;
-		boolean finished = false;
-		while (!finished && chercheFin+1 < getText().length()){
-			if (this.getText(chercheFin, 1).equals(";")) finished = true;
-			chercheFin++;
-		}
-		int debutSelection = getSelectionStart();
-		int chercheDebut = debutSelection - 1;
-		finished = false;
-		while (!finished && chercheDebut > 0){
-			if (this.getText(chercheDebut, 1).equals(";")) finished = true;				
-			chercheDebut --;
-		}
-		String[] lignes = getText(chercheDebut, debutSelection - chercheDebut).split("\n");
-		String instruction = "";
-		for (int i = 0 ; i < lignes.length; i++){
-			int index = 0;
-			boolean fin = false;
-			String ligne = lignes[i];
-			while (index < ligne.length() && !fin){
-				char c = ligne.charAt(index);
-				if (c == '#') fin = true;
-				else if (c != ' ') {
-					instruction += ligne + "\n";
-					fin = true;
-				}
-			}
-		}
-		doc.insertString(chercheFin + 1, instruction + s + doc.getText(finSelection, chercheFin + 1 - finSelection), result);
-	}
+
+    /**
+     * @return une liste avec 3 arguments: le début de l'instruction avant la sélection, la sélection, puis la fin de l'instruction, ou null si pas de sélection.
+     */
+    public List<String> getSelectedInstruction() {
+        String selectionText = getSelectedText().trim(),
+                text = getText();
+
+        if(selectionText == null || selectionText.isEmpty()) {
+            return null;
+        }
+
+        // Pour trouver le début, on cherche le premier point virgule ou le début du texte, et à partir de là on passe les espaces, les commentaires, les résultats et les erreurs
+        int selectionStart = getSelectionStart(),
+                start = selectionStart;
+
+        while(start > 0 && text.charAt(start) != ';') {
+            // Si on sélectionn l'expression d'un résultat, la suite risque de sauter le début sans cette condition
+            if(text.substring(start).startsWith(">>> ")) {
+                start += 4;
+                break;
+            }
+            start--;
+        }
+
+        boolean isStart = false;
+        while(!isStart) {
+            while(" \n\t".contains(Character.toString(text.charAt(start)))) start++;
+
+            String subText = text.substring(start);
+
+            if(subText.startsWith("#") ||
+                    subText.startsWith(">>>") ||
+                    subText.startsWith("!!!")) {
+
+                while(start < selectionStart && text.charAt(start) != '\n') start++;
+
+            }
+            else {
+                isStart = true;
+            }
+        }
+
+        String startText = text.substring(start, selectionStart);
+
+        // Pour trouver la fin, on cherche le prochain point-virgule ou la fin du texte
+        int selectionEnd = getSelectionEnd(),
+                end = selectionEnd;
+
+        if(selectionText.charAt(selectionText.length() - 1) != ';') {
+
+            while(end < text.length() && text.charAt(end) != ';') end++;
+
+        }
+
+        String endText = text.substring(selectionEnd, end);
+        return Arrays.asList(startText.trim().replace('\n', ' ').replace('\t', ' '),
+                selectionText,
+                endText.trim().replace('\n', ' ').replace('\t', ' '));
+    }
+
+    /**
+     * @return La ligne de l'instruction sélectionnée, ou -1
+     */
+    public int getSelectedLineNumber() {
+        if(getSelectedText() == null) {
+            return -1;
+        }
+
+        String t = getText();
+        int end = getSelectionEnd();
+        int line = 0;
+
+        boolean afterEnd  = false;
+        boolean atEndOfInstruction = false;
+
+        for(int c = 0; c <t.length(); c++) {
+            if(c == end) {
+                if(atEndOfInstruction) {
+                    break;
+                }
+                afterEnd = true;
+            }
+
+            int ch = t.charAt(c);
+
+            if(ch == ';') {
+                atEndOfInstruction = true;
+
+                if(afterEnd) {
+                    break;
+                }
+            }
+
+            if(atEndOfInstruction && " \n\t".contains("" + (char)ch)) {
+
+                if(ch == '\n') {
+                    line++;
+                }
+
+                atEndOfInstruction = false;
+            }
+        }
+
+        return line;
+    }
 	
 	public void disableEdition(){
 		setEditable(false);

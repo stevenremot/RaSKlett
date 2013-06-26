@@ -3,7 +3,7 @@ package compiler.graph;
 import compiler.combinators.Combinator;
 
 /**
- * @brief Champ de noeud contenant un combinateur
+ * Champ de noeud contenant un combinateur
  * 
  * @author kazmiero
  *

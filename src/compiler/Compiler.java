@@ -50,8 +50,14 @@ public class Compiler {
 		if(sk == null) {
 			return "";
 		}
-		
-		return GraphSerializer.serialize(sk.getReducedGraph());
+
+		String result = GraphSerializer.serialize(sk.getReducedGraph());
+
+        if(isFinished() && result.startsWith("I ")) {
+            result = result.substring(2);
+        }
+
+        return result;
 	}
 	
 	/*
@@ -143,7 +149,7 @@ public class Compiler {
 	}
 	
 	/**
-	 * effectue une nétape de la réduction
+	 * effectue une étape de la réduction
 	 * @return false si aucune étape n'a pu être effectué et que la réduction est donc finie, true sinon
 	 */
 	public boolean reduceStep() {

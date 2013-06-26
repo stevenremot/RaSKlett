@@ -14,7 +14,7 @@ import javax.swing.border.Border;
 import compiler.config.ConfigManager;
 
 /**
- * @brief Classe créant un composant contenant un champ de texte affichant un groupe de combinateurs et un bouton permettant de les activer ou non
+ * Classe créant un composant contenant un champ de texte affichant un groupe de combinateurs et un bouton permettant de les activer ou non
  */
 public class CombinatorPanel extends JPanel{
 
@@ -26,9 +26,10 @@ public class CombinatorPanel extends JPanel{
 	private String feature;
 	
 	/**
-	 * @brief Le constructeur de CombinatorPanel
+	 * Le constructeur de CombinatorPanel
 	 * @param combinators liste des combinateurs qui seront natifs ou non à l'aide de ce composant
-	 * @param category catégorie des combinateurs (ex : opérateurs logiques)
+	 * @param category nom du panneau de combinateurs (ex : opérateurs logiques)
+	 * @param feature catégorie de combinateurs que l'on active dans le ConfogManager
 	 * @param enabled les combinateurs sont natifs par défaut si enabled vaut true
 	 */
 	public CombinatorPanel(ArrayList<String> combinators, String category, String feature, boolean enabled) {
