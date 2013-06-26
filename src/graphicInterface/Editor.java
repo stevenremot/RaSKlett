@@ -107,6 +107,10 @@ public class Editor extends JTextPane {
             }
             start--;
         }
+        
+        if(text.charAt(start) == ';') {
+        	start++;
+        }
 
         boolean isStart = false;
         while(!isStart) {
@@ -160,14 +164,23 @@ public class Editor extends JTextPane {
         boolean atEndOfInstruction = false;
 
         for(int c = 0; c <t.length(); c++) {
+        	int ch = t.charAt(c);
+            
+        	if(ch == '\n') {
+                line++;
+            }
+            
             if(c == end) {
+            	
+            	if(ch == '\n') {
+            		line--;
+            	}
+            	
                 if(atEndOfInstruction) {
                     break;
                 }
                 afterEnd = true;
             }
-
-            int ch = t.charAt(c);
 
             if(ch == ';') {
                 atEndOfInstruction = true;
@@ -176,13 +189,7 @@ public class Editor extends JTextPane {
                     break;
                 }
             }
-
-            if(atEndOfInstruction && " \n\t".contains("" + (char)ch)) {
-
-                if(ch == '\n') {
-                    line++;
-                }
-
+            else if(atEndOfInstruction && !" \n\t".contains("" + (char)ch)) {
                 atEndOfInstruction = false;
             }
         }

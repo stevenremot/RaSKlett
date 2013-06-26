@@ -713,7 +713,6 @@ public class MainWindow extends JFrame implements CompilerCallback {
 			boolean finished) {
         if(!finished) {
 		    try {
-                int l = line + offset + 1;
                 String result;
 
                 if(selectedInstruction != null) {
@@ -724,6 +723,8 @@ public class MainWindow extends JFrame implements CompilerCallback {
                 else {
                     result = reducedGraph;
                 }
+                
+                int l = line + offset + 1;
 
                 int pos = getPos(line ,position);
 
@@ -743,11 +744,12 @@ public class MainWindow extends JFrame implements CompilerCallback {
 	@Override
 	public void onFailure(CompilerException e) {
 		int line = e.getLine();
-        int l = line + offset + 1;
 
         if(selectedInstruction != null) {
             line = selectedInstructionLine;
         }
+        
+        int l = line + offset + 1;
 
         int pos = getPos(line , 0);
 		try {
